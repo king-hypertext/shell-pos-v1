@@ -16,8 +16,7 @@
                                     use App\Models\Customers;
                                     $customers = Customers::select('name')->get();
                                 @endphp
-                                <select @required(true) class="form-select" name="worker"
-                                    id="worker">
+                                <select @required(true) class="form-select" name="worker" id="worker">
                                     <option selected value=""> Select Customer </option>
                                     @foreach ($customers as $customer)
                                         <option value="{{ $customer->name }}">
@@ -28,13 +27,11 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <input type="date" class="form-control d-inline-block"
-                                style="width: auto" value="{{ Date('Y-m-d') }}" max="{{ Date('Y-m-d') }}" name="date"
-                                id="date" />
+                            <input type="date" class="form-control d-inline-block" style="width: auto"
+                                value="{{ Date('Y-m-d') }}" max="{{ Date('Y-m-d') }}" name="date" id="date" />
                         </div>
                         <div class="col-3">
-                            <button type="submit"
-                                class="btn btn-primary d-inline-block ripple-surface">Search</button>
+                            <button type="submit" class="btn btn-primary d-inline-block ripple-surface">Search</button>
                         </div>
                     </div>
                 </form>
@@ -51,8 +48,30 @@
     </div>
 </div>
 <script type="text/javascript">
-    $('#filter-order').on('submit', function(e){
+    $('#filter-order').on('submit', function(e) {
         e.preventDefault();
-        console.log(e.currentTarget);
+        console.log(e);
+        var selected_worker = e.currentTarget[0].value,
+            date = e.currentTarget[1].value;
+        console.log(selected_worker, date);
+        $.ajax({
+            url: '/edit-invoice',
+            data: {
+                _token: "{{ csrf_token() }}",
+                worker: selected_worker,
+                date: date
+            },
+            success: function(data) {
+                console.log(data);
+                if (data.data) {
+                    window.open(data.data, '_blank');
+                } else if (data.empty) {
+                    alert(data.empty);
+                }
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        })
     })
 </script>

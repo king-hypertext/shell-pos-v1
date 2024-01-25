@@ -6,6 +6,7 @@ use App\Http\Controllers\v1\CreateSupplierOrderController;
 use App\Http\Controllers\v1\CustomerOrdersController;
 use App\Http\Controllers\v1\CustomersController;
 use App\Http\Controllers\v1\CustomersInvoiceController;
+use App\Http\Controllers\v1\EditInvoicesController;
 use App\Http\Controllers\v1\IndexController;
 use App\Http\Controllers\v1\InvoiceGeneratorController;
 use App\Http\Controllers\v1\ProductsController;
@@ -53,6 +54,8 @@ Route::controller(InvoiceGeneratorController::class)->group(function () {
     Route::get('/view-file/open-stock', 'open_stock')->name('view-file.open-stock');
 });
 Route::get('/product/{name}', [ProductsController::class, 'fetch']);
+Route::get('/edit-invoice/q/{name}/{date}', [EditInvoicesController::class, 'edit'])->name('order.edit');
+Route::resource('/edit-invoice', EditInvoicesController::class);
 Route::resource('/products', ProductsController::class);
 Route::resource('/customers', CustomersController::class);
 Route::resource('/suppliers', SuppliersController::class);
