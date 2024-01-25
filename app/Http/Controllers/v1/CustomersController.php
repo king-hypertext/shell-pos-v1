@@ -27,10 +27,12 @@ class CustomersController extends Controller
         $request->validate([
             'customer-name' => 'required|string',
             'contact' => 'required|numeric',
-            'customer-image' => 'required|file|mimes:png,jpg,jpeg,webp',
         ]);
 
         if ($request->hasFile("customer-image")) {
+            $request->validate([
+                'customer-image' => 'required|file|mimes:png,jpg,jpeg,webp',
+            ]);
             $path = $request->file("customer-image")->store('/public/customers');
         }
         Customers::insert([
@@ -52,7 +54,7 @@ class CustomersController extends Controller
     public function show($id, Customers $customers)
     {
         $customer = $customers->find($id);
-        return response()->json(['data' => $customer]);
+        return response()->json($customer);
     }
 
     /**
@@ -66,8 +68,8 @@ class CustomersController extends Controller
             $request->validate([
                 "customer-image" => "required|file|mimes:png,jpg,jpeg,webp",
             ]);
-            if (file_exists(storage_path() . '/app/public/customers/' . $customer->image)) {
-                unlink(storage_path() . '/app/public/customers/' . $customer->image);
+            if (file_exists(public_path("$customer->image"))) {
+                unlink(public_path("$customer->image"));
             }
             $path = $request->file("customer-image")->store('/public/customers');
             Customers::where('id', $request->id)->update([
@@ -96,10 +98,8 @@ class CustomersController extends Controller
     public function destroy(Customers $customers, Request $request, $id)
     {
         $customer = $customers->find($id);
-        // dd($customer->image);
-        $file = str_replace(['/storage/', 'customers/'], '', $customer->image);
-        if (file_exists(storage_path() . '/app/public/customers/' . $file)) {
-            unlink(storage_path() . '/app/public/customers/' . $file);
+        if (file_exists(public_path("$customer->image"))) {
+            unlink(public_path("$customer->image"));
         }
         Customers::destroy($customer->id);
         return back()->with('success', 'Worker Deleted');

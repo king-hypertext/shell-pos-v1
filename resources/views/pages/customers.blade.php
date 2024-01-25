@@ -1,6 +1,7 @@
 @extends('app.index')
 @section('content')
     <div class="container-fluid mt-4 ">
+        <h2 class="h2 text-uppercase">All Workers</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
             <a class="btn btn-success me-2 " href="{{ route('customer.index') }}" role="button">Create Order</a>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-addCustomer">
@@ -34,13 +35,13 @@
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Customer Name</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Contact</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Gender</th>
-                        <th scope="col">Date of Birth</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">WORKER</th>
+                        <th scope="col">IMAGE</th>
+                        <th scope="col">CONTACT</th>
+                        <th scope="col">ADDRESS</th>
+                        <th scope="col">GENDER</th>
+                        <th scope="col" title="Date of Birth">DOB</th>
+                        <th scope="col">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +50,7 @@
                             <td id="col_id" scope="row">{{ $customer->id }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>
-                                <img class="table-image" src="{{ $customer->image }}" alt="product-image"/>
+                                <img class="table-image" src="{{ $customer->image }}" alt="product-image" />
                             </td>
                             <td>{{ $customer->contact }}</td>
                             <td>{{ $customer->address }}</td>
@@ -64,7 +65,8 @@
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                     @csrf
-                                    <button onclick="confirmDelete(event)" class="btn text-danger text-uppercase my-1 outline-0"
+                                    <button type="button" onclick="confirmDelete(event)"
+                                        class="btn text-danger text-uppercase my-1 outline-0"
                                         title="delete {{ $customer->name }}">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
@@ -84,7 +86,7 @@
                     <div class="row justify-content-center">
                         <div class="divider my-0">
                             <div class="divider-text">
-                                <h5 class="h3 text-capitalize" id="modal-title"></h5>
+                                <h5 class="h3 text-capitalize px-5 " id="modal-title">Edit Customer</h5>
                             </div>
                         </div>
                         <div class="d-flex justify-content-center">
@@ -129,11 +131,11 @@
                                     style="width: 55px; height: 55px;">
                             </div>
                             <div class="mb-4">
-                                <label for="customerImage">Customer Image</label>
+                                <label for="customerImage">Worker Image</label>
                                 <input required type="file" onchange="previewImageFromServer()" name="customer-image"
                                     accept="image/*" id="customer_image" class="form-control" />
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Update Customer</button>
+                            <button type="submit" class="btn btn-primary btn-block">Update Worker</button>
                         </form>
                     </div>
                 </div>
@@ -151,15 +153,16 @@
                     <div class="row justify-content-center">
                         <div class="divider my-0">
                             <div class="divider-text">
-                                <h5 class="h3 text-capitalize">Add New Worker</h5>
+                                <h5 class="h3 text-capitalize px-5 ">Add New Worker</h5>
                             </div>
                         </div>
                         <form autocomplete="off" class="px-5 py-2" action="{{ route('customers.store') }}"
                             method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-outline mb-4">
-                                <input required type="text" name="customer-name" id="cusName"
-                                    placeholder="Enter worker name" class="form-control autofocus" autofocus />
+                                <input required type="text" oninput="this.value.toUpperCase()" name="customer-name"
+                                    id="cusName" placeholder="Enter worker name" class="form-control autofocus"
+                                    autofocus />
                                 <label class="form-label" for="cusName">Worker Name</label>
                             </div>
                             <div class="row mb-4">
@@ -190,7 +193,7 @@
                                     style="width: 55px; height: 55px;">
                             </div>
                             <div class="mb-4">
-                                <label for="customerImage">Customer Image</label>
+                                <label for="customerImage">Worker Image</label>
                                 <input required type="file" onchange="preview()" name="customer-image"
                                     id="customerImage" accept="image/*" class="form-control" />
                             </div>
@@ -226,56 +229,52 @@
             var file_preview = input_data.files[0];
             const filereader = new FileReader();
             filereader.addEventListener('load', (e) => {
-                console.log(e.target.result);
                 img.src = e.target.result;
             });
             filereader.readAsDataURL(file_preview);
         }
+        window.confirmDelete = function(e) {
+            e.preventDefault();
+            var form = e.target.offsetParent.form;
+            Swal.fire({
+                title: "Confirm Delete!",
+                text: "Are you sure you want to delete?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        }
         $(document).ready(function() {
             $("#form_edit_worker").submit(function(event) {
-                // Set the action attribute to a different URL
-                console.log(event);
                 $(this).attr("action", "/customers/" + event.currentTarget[1].value);
                 // Continue with the form submission
                 return true;
             });
-            window.confirmDelete = function(e) {
-                e.preventDefault();
-                var form = e.target.form;
-                Swal.fire({
-                    title: "Confirm Delete!",
-                    text: "Are you sure you want to delete?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                })
-            }
+
             $(document).on('click', 'button.btn_edit', function(e) {
-                var customer_id = e.target.id;
+                var customer_id = e.currentTarget.id;
                 var dob = $('input#dob'),
                     name = $('input#customertName'),
                     gender = $('select#cust-gender'),
                     contact = $('input#customerContact'),
                     address = $('input#customerAddress');
-                modal_title = $('#modal-title')[0];
                 $.ajax({
                     url: "/customers/" + customer_id,
-                    success: function(res) {
-                        console.log(res);
-                        $('#customer_id').val(res.data.id);
-                        name.val(res.data.name);
-                        dob.val(res.data.date_of_birth);
-                        gender.selected = res.data.gender;
-                        contact.val(res.data.contact);
-                        address.val(res.data.address);
-                        $('img#cust-image')[0].src = res.data.image;
-                        modal_title.textContent = `Edit Customer ${res.data.name}`;
+                    success: function(data) {
+                        console.log(data);
+                        $('#customer_id').val(data.id);
+                        name.val(data.name);
+                        dob.val(data.date_of_birth);
+                        gender.val(data.gender);
+                        contact.val(data.contact);
+                        address.val(data.address);
+                        $('img#cust-image')[0].src = data.image;
                     },
                     error: function(res) {
                         console.log(res);
@@ -319,23 +318,26 @@
             dom: 'Bfrtip',
             buttons: [{
                     extend: 'excel',
-                    className: 'btn btn-success',
+                    text: 'Export Excel <i class="fas fa-file-excel" ></i>',
+                    className: 'btn btn-success text-capitalize',
                     exportOptions: {
-                        columns: [1, 2, 3, 4]
+                        columns: [0, 1, 3, 4, 5, 6]
                     }
                 },
                 {
                     extend: 'pdf',
-                    className: 'btn btn-danger',
+                    text: 'Save <i class="fas fa-file-pdf"></i>',
+                    className: 'btn btn-danger text-capitalize',
                     exportOptions: {
-                        columns: [1, 2, 3, 4]
+                        columns: [0, 1, 3, 4, 5, 6]
                     }
                 },
                 {
                     extend: 'print',
-                    className: 'btn btn-primary',
+                    text: 'Print <i class="fas fa-print"></i>',
+                    className: 'btn btn-primary text-capitalize',
                     exportOptions: {
-                        columns: [1, 2, 3, 4]
+                        columns: [0, 1, 3, 4, 5, 6]
                     }
                 },
             ]

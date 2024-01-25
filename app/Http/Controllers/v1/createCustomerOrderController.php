@@ -37,7 +37,10 @@ class createCustomerOrderController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->dd();
+        // $request->dd();'
+        $request->validate([
+            'product.*' => 'required|exists:products,name',
+        ]);
         $customer = Customers::find($request->customer);
         $products = $request->product;
         $price = $request->price;

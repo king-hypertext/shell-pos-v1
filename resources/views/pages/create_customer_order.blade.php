@@ -1,6 +1,6 @@
 @extends('app.index')
 @section('content')
-    <h3 class="fw-bold text-center text-uppercase mt-2 ">create customer order</h3>
+    <h3 class="fw-bold text-uppercase mt-2 ">create customer order</h3>
     <hr class="hr text-dark" />
     @php
         use Illuminate\Support\Facades\DB;
@@ -35,9 +35,9 @@
             <div class="container-fluid ">
                 <div class="row">
                     <div class="col-md-3 col-sm-6">
-                        <label for="customer" class="d-block">Customer: </label>
+                        <label for="customer" class="d-block">Worker: </label>
                         <select required name="customer" id="customer" class="form-select">
-                            <option value="" selected>Select Customer</option>
+                            <option value="" selected>Select WORKER</option>
                             @foreach ($customers as $customer)
                                 <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                             @endforeach
@@ -63,11 +63,6 @@
             @csrf
             <div class="container-fluid ">
                 <div class="row">
-                    {{-- <div class="col-md-3" style="">
-                        <label for="supplier-invoice">Invoice Number: </label>
-                        <input required type="number" placeholder="Invoice Number" class="form-control"
-                            id="supplier-invoice" name="supplier-invoice" />
-                    </div> --}}
                     <div class="col-md-3">
                         <label for="invoice-date">Invoice Date: </label>
                         <input required type="date" value="{{ Date('Y-m-d') }}" class="form-control" id="invoice-date"
@@ -80,10 +75,13 @@
                     </div>
                     <div class="col-md-3">
                         <button class="btn btn-success mt-4" type="button" data-bs-toggle="modal"
-                            data-bs-target="#modal-saved-invoice">Saved
+                            data-bs-target="#saved-invoice">Saved
                             Invoices
                         </button>
                     </div>
+                </div>
+                <div class="my-2">
+                    <h5 class="fw-bold text-left text-uppercase mt-2 selected_worker"></h5>
                 </div>
             </div>
             <hr class="hr text-dark" />
@@ -95,14 +93,15 @@
             @endif
             @if (count($empty_p) == 0)
                 <div class="alert alert-danger mt-2 text-center">There are no products available, please <a
-                        href="{{ route('products') }}" class="btn btn-link text-lowercase">Add Products</a> </div>
+                        href="{{ route('supplier.create') }}" class="btn btn-link text-lowercase">Add Products</a> </div>
             @endif
-            <h6 class="h4">Create Invoice</h6>
+            <h6 class="h4">Create Order</h6>
             <div class="table-responsive text-nowrap">
                 <style>
                     #table-create-order> :not(caption)>*>* {
                         padding: 0;
                     }
+
                     table,
                     #table-create-order .form-control,
                     #table-create-order .form-select {
@@ -137,14 +136,14 @@
                             </td>
                             <td class="col-md-3">
                                 <div class="form-group">
-                                    <input readonly type="text" name="price[]" type="number"
-                                        step=".01" value="0.00" id="price" class="form-control" />
+                                    <input readonly type="text" name="price[]" type="number" step=".01"
+                                        value="0.00" id="price" class="form-control" />
                                 </div>
                             </td>
                             <td class="col-md-2">
                                 <div class="form-group">
-                                    <input type="number" name="quantity[]" onfocus="this.select()" required id="quantity"
-                                        class="form-control qty" />
+                                    <input type="number" name="quantity[]" onfocus="this.select()" required
+                                        id="quantity" class="form-control qty" />
                                 </div>
                             </td>
                             <td class="col-md-3">
@@ -186,6 +185,7 @@
             });
         </script>
     @endif
+    @include('modals.saved_invoice')
 @endsection
 @section('script')
     <script>
@@ -197,7 +197,7 @@
             $(document).on('select2:open', () => {
                 document.querySelector('.select2-search__field').focus();
             });
-            // retrieve selected supplier from database
+            // retrieve selected customer from database
             $('img#customer-img').hide();
             select.on('change', (e) => {
                 var gender = $('input[name="gender"]'),
@@ -215,6 +215,7 @@
                         phone.val(res.data.contact).addClass('active');
                         id.val(res.data.id);
                         image.src = res.data.image;
+                        $('.selected_worker').text(res.data.name);
                     },
                     error: function(err) {
                         console.log(err);
@@ -276,10 +277,10 @@
 
                             quantity = e.currentTarget.parentElement.parentElement.parentElement
                             .parentElement.parentElement.children[2].children[0].children[0];
-
+                        console.log(selectedValue);
                         $.ajax({
                             method: "GET",
-                            url: "/products/" + selectedValue,
+                            url: "/product/" + selectedValue,
                             success: function(res) {
                                 console.log(res);
                                 price.value = res.data[0].price;
@@ -305,7 +306,7 @@
             }
             // retrieve products info from database
             $(document).on('change', 'select[data-select-product]', function(e) {
-                console.log(e);
+
                 var selectedValue = e.currentTarget.value,
 
                     price = e.currentTarget.parentElement.parentElement.parentElement
@@ -319,9 +320,10 @@
                     quantity = e.currentTarget.parentElement.parentElement.parentElement
                     .parentElement.parentElement.children[1].children[0].children[2].children[0]
                     .children[0];
+                console.log(selectedValue);
                 $.ajax({
                     method: "GET",
-                    url: "/products/" + selectedValue,
+                    url: "/product/" + selectedValue,
                     success: function(res) {
                         console.log(res);
                         price.value = res.data[0].price;

@@ -46,12 +46,17 @@ Route::controller(SupplierOrdersController::class)->group(function () {
 });
 // all resource routes//
 Route::resource('/user/admin', UserController::class);
-Route::resource('/generate-invoice', InvoiceGeneratorController::class);
+Route::controller(InvoiceGeneratorController::class)->group(function () {
+    Route::get('/view-file/customer/token/{token}', 'invoice')->name('view-file.invoice');
+    Route::get('/view-file/supplier/token/{token}', 'invoice_supplier')->name('view-file.invoice.supplier');
+    Route::get('/view-file/returns/token/{token}', 'returns')->name('view-file.returns');
+    Route::get('/view-file/open-stock', 'open_stock')->name('view-file.open-stock');
+});
+Route::get('/product/{name}', [ProductsController::class, 'fetch']);
 Route::resource('/products', ProductsController::class);
 Route::resource('/customers', CustomersController::class);
 Route::resource('/suppliers', SuppliersController::class);
 Route::resource('/create-order/customer', createCustomerOrderController::class);
-// Route::resource('/create-order/customer', createCustomerOrderController::class);
 Route::resource('/create-order/supplier', CreateSupplierOrderController::class);
 Route::controller(CustomersInvoiceController::class)->group(function () {
     Route::get('/invoices/customers', 'index')->name('invoices.customers');

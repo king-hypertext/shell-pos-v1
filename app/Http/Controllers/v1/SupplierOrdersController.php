@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Controllers\Controller;
 use App\Models\Orders;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\SupplierOrders;
+use Yajra\DataTables\Facades\DataTables;
 
 class SupplierOrdersController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = "SUPPLIERS ORDERS";
+        if ($request->ajax()) {
+            $data = SupplierOrders::select('*')->where('quantity', '>=', 0);
+            if ($request->filled('from_date') && $request->filled('to_date')) {
+                $data = $data->whereBetween('created_at', [$request->from_date, $request->to_date])->latest();
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->make(true);
+            }
+        }
         return view('pages.order_suppliers', compact('title'));
     }
 

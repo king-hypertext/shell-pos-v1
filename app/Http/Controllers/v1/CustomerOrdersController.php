@@ -71,7 +71,7 @@ class CustomerOrdersController extends Controller
     }
 
     /**
-     * This method is been used to show the returns table in view.
+     * This method is been used to show the returns page.
      */
     public function show()
     {
@@ -101,6 +101,16 @@ class CustomerOrdersController extends Controller
             'returns' => $quantity_to_return,
             'updated_at' => now()->format('Y-m-d')
         ]);
+        OrderReturns::insert([
+            'order_id' => $order->id,
+            'customer_id' => $order->customer_id,
+            'customer' => $order->customer,
+            'product' => $order->product,
+            'quantity' => $quantity_to_return,
+            'price' => $order->price,
+            'amount' => (intval($order->price) * intval($quantity_to_return)),
+            'created_at' => now()->format('Y-m-d')
+        ]);
         Products::where('name', $order->product)->increment('quantity', $quantity_to_return);
         return response()->json(['success' => 'Return Success']);
     }
@@ -118,6 +128,7 @@ class CustomerOrdersController extends Controller
             'returns' => 0,
             'updated_at' => now()->format('Y-m-d')
         ]);
+        OrderReturns::where('order_id', $order->id)->delete();
         Products::where('name', $order->product)->decrement('quantity', $quantity_returned);
         return response()->json(['success' => 'Order Reset Ok']);
     }

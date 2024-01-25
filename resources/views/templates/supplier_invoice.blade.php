@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {{-- <link rel="stylesheet" href="{{ url('assets/plugins/mdb/mdb.min.css') }}" /> --}}
-    {{-- <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap/css/bootstrap.css') }}" /> --}}
-    <title>Document</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
+    <title>Invoice</title>
 </head>
 
 <body>
@@ -14,8 +14,8 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            font-size: 1rem;
+            font-family: 'Times New Roman', Times, serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 14pt;
             font-weight: 400;
             line-height: 1.5;
             color: #000;
@@ -37,6 +37,7 @@
             border-collapse: collapse;
             vertical-align: top;
             margin-bottom: 1rem;
+
         }
 
         table>tr {
@@ -98,12 +99,21 @@
             display: inline;
         }
 
+        h6 {
+            font-size: 14pt;
+            font-weight: 600;
+        }
+
         @media print {
 
             @page {
                 size: A4;
                 margin: 0.5in;
             }
+        }
+
+        .text-bold {
+            font-weight: 500;
         }
     </style>
     @php
@@ -121,7 +131,7 @@
             </li>
             <li>
                 <h6 class="d-inline">Invoice Number: </h6>
-                #{{ $invoice_number->invoice_number }}
+                #{{ $invoice_number }}
             </li>
         </ul>
         <table>
@@ -133,28 +143,28 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>{{ $customer->name }}</td>
+                    <td>{{ $supplier->name }}</td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>2</td>
-                    <td>{{ $customer->address }}</td>
+                    <td>{{ $supplier->address }}</td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>3</td>
-                    <td>{{ $customer->contact }}</td>
+                    <td>{{ $supplier->contact }}</td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
         <h3>Invoice summary</h3>
         <table class="table ">
             <thead>
-                <tr class="tr">
+                <tr class="tr" align="left">
                     <th class="th"><b>#</b></th>
                     <th class="th">Item</th>
-                    <th class="th" class="text-center">Price</th>
-                    <th class="th" class="text-center">Quantity</th>
-                    <th class="th" class="text-end">Total</th>
+                    <th class="th">Price</th>
+                    <th class="th">Quantity</th>
+                    <th class="th">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -162,43 +172,18 @@
                     <tr class="tr">
                         <td class="td">{{ $key + 1 }}</td>
                         <td class="td">{{ $invoice->product }}</td>
-                        <td class="td" class="text-center">{{ $invoice->price }}</td>
-                        <td class="td" class="text-center">{{ $invoice->quantity }}</td>
-                        <td class="td amount" class="text-end">{{ $invoice->amount }}</td>
+                        <td class="td">{{ $invoice->price }}</td>
+                        <td class="td">{{ $invoice->quantity }}</td>
+                        <td class="td amount">{{ $invoice->amount }}</td>
                     </tr>
                 @endforeach
-                <tr style="border: 0 #fff">
-                    <td class="td" style="border: 0 #fff" colspan="3"></td>
-                    <th class="th">SubTotal</th>
-                    <td class="td" style="font-weight: 500;">{{ 'GHS ' . $total }}</td>
+                <tr class="tr">
+                    <td class="td text-bold" colspan="4">SubTotal</td>
+                    <td class="td text-bold" style="font-weight: 500 !important;">{{ 'GHS ' . $total }}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <script>
-        window.onload = function() {
-            var link = document.createElement('a');
-            link.href = window.location.href;
-            link.download ='file.pdf';
-            link.click();
-            window.close();
-            window.open('file.pdf');
-            // window.print();
-            return true;
-        }
-        // window.onfocus = function() {
-        //     setTimeout(function() {
-        //         window.close();
-        //     }, 500);
-        // };
-        // window.onafterprint = function() {
-        //     var link = document.createElement('a');
-        //     link.href = window.location.href;
-        //     link.download ='file.pdf';
-        //     link.click();
-        //     window.close();
-        // };
-    </script> 
 </body>
 
 </html>

@@ -6,7 +6,7 @@
     <div class="container-fluid mt-4">
         <h2 class="h2 text-uppercase">All Products</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
-            <a target="_blank" href="{{ route('generate-invoice.index') }}" class="btn btn-success mx-2">Open Stock</a>
+            <a target="_blank" href="{{ route('view-file.open-stock') }}" class="btn btn-success mx-2">Open Stock</a>
             <a href="{{ route('products.create') }}" class="btn btn-primary">
                 Add Product
             </a>
@@ -70,46 +70,56 @@
                 </tbody>
             </table>
         </div>
-        {{-- modal edit --}}
         <div class="modal fade" id="modal-edit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
-            aria-labelledby="modal-addProduct" aria-hidden="true">
+            aria-labelledby="modal-edit" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="dialog">
                 <div class="modal-content rounded-3 shadow">
                     <div class="modal-body p-2">
                         <div class="row justify-content-center">
                             <div class="divider my-0">
                                 <div class="divider-text">
-                                    <h5 class="h3 text-capitalize" id="m-e-title"></h5>
+                                    <h5 class="h3 text-capitalize px-5 " id="m-e-title">Edit Product</h5>
                                 </div>
                             </div>
-                            <form class="px-5 py-2" action="#" method="POST" enctype="multipart/form-data">
+                            <form id="form-update-product" class="px-5 py-2" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="id" id="product_id">
                                 @csrf
                                 @method('PUT')
-                                <input type="hidden" name="id" id="product-id">
-                                <div class="form-outline mb-4">
-                                    <input required type="text" name="edit-product-name" id="productName"
-                                        class="form-control" />
-                                    <label class="form-label" for="productName">Product Name</label>
+                                <div class="form-group mb-4">
+                                    <label class="form-label" for="productName">Product Name <span
+                                            class="text-danger">*</span></label>
+                                    <input required type="text" name="product-name" placeholder="Product Name"
+                                        id="productName" class="form-control" />
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-6">
-                                        <div class="form-outline">
-                                            <input required type="number" name="edit-unit-price" id="unitPrice"
-                                                class="form-control" step=".01" />
-                                            <label class="form-label" for="unitPrice">Unit Price</label>
+                                        <div class="form-group">
+                                            <label class="form-label" for="unitPrice">Unit Price <span
+                                                    class="text-danger">*</span></label>
+                                            <input required type="number" name="price" placeholder="Unit Price"
+                                                id="unitPrice" class="form-control" step=".01" />
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="form-outline">
-                                            <input type="text" name="edit-batch-number" id="batchNumber"
-                                                class="form-control" />
+                                        <div class="form-group">
                                             <label class="form-label" for="batchNumber">Batch Number</label>
+                                            <input type="text" name="batch-number" placeholder="Batch Number"
+                                                id="batchNumber" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-outline mb-4">
-                                    <label for="supplier" class="form-label">Supplier</label>
-                                    <select required name="edit-supplier" id="supplier" class="form-select">
+                                <div class="form-group mb-4">
+                                    <label for="category" class="form-label">Category
+                                        <span class="text-danger">*</span></label>
+                                    <select required name="category" id="category" class="form-select">
+                                        <option value="SHELL">SHELL</option>
+                                        <option value="ALLIED">ALLIED</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label for="supplier" class="form-label">Supplier
+                                        <span class="text-danger">*</span></label>
+                                    <select required name="supplier" id="supplier" class="form-select">
                                         @php
                                             use App\Models\Suppliers;
                                             $suppliers = Suppliers::select('name')->get();
@@ -122,12 +132,13 @@
                                 <div class="row mb-4">
                                     <div class="col-6">
                                         <label class="form-label" for="productionDate">Manufacturing Date</label>
-                                        <input type="date" max="{{ Date('Y-m-d') }}" name="edit-prod-date"
+                                        <input type="date" max="{{ Date('Y-m-d') }}" name="prod_date"
                                             id="productionDate" class="form-control" />
                                     </div>
                                     <div class="col-6">
-                                        <label class="form-label" for="expiryDate">Expiry Date</label>
-                                        <input required type="date" min="{{ Date('Y-m-d') }}" name="edit-expiry-date"
+                                        <label class="form-label" for="expiryDate">Expiry Date <span
+                                                class="text-danger">*</span></label>
+                                        <input required type="date" min="{{ Date('Y-m-d') }}" name="expiry_date"
                                             id="expiryDate" class="form-control" />
                                     </div>
                                 </div>
@@ -137,7 +148,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_image">Product Image</label>
-                                    <input type="file" onchange="previewImageFromServer()" name="edit-product-image"
+                                    <input type="file" onchange="previewImageFromServer()" name="product-image"
                                         id="product_image" class="form-control" accept="image/*" />
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block">Update Product</button>
@@ -185,22 +196,21 @@
             filereader.readAsDataURL(file_preview);
         }
         $(document).ready(function() {
-
             $(document).on('click', 'button.btn_edit', function(e) {
+                var data_id = e.currentTarget.id;
                 $.ajax({
-                    url: "/product/edit/" + e.target.id,
+                    url: "/products/" + e.currentTarget.id,
                     success: function(data) {
                         console.log(data);
-                        $('input#product-id').val(data.id).addClass('active');
-                        $('#productName').val(data.name).addClass('active');
-                        $('#unitPrice').val(data.price).addClass('active');
-                        $('#batchNumber').val(data.batch_number).addClass('active');
-                        $('select[name="edit-supplier"]').val(data.supplier);
-                        $('#productionDate').val(data.prod_date).addClass('active');
-                        $('#expiryDate').val(data.expiry_date).addClass('active');
-                        $('img#server-preview')[0].src = "/assets/images/products/" + data
-                            .image;
-                        $('h5#m-e-title')[0].textContent = `Edit Product ${data.name}`;
+                        $('input[name="id"]').val(data.id);
+                        $('#productName').val(data.name);
+                        $('#unitPrice').val(data.price);
+                        $('#batchNumber').val(data.batch_number);
+                        $('select[name="category"]').val(data.category);
+                        $('select[name="supplier"]').val(data.supplied_by);
+                        $('#productionDate').val(data.prod_date);
+                        $('#expiryDate').val(data.expiry_date);
+                        $('img#server-preview')[0].src = data.image;
                     }
                 });
                 $('#modal-edit').modal('show');
@@ -208,11 +218,14 @@
                     $('#modal-edit').modal('hide');
                 });
             });
-
+            $('#form-update-product').on('submit', function(e) {
+                $(this).attr('action', '/products/' + e.currentTarget[0].value);
+                return true;
+            })
         });
         window.confirmDelete = function(e) {
             e.preventDefault();
-            var form = e.target.form;
+            var form = e.target.offsetParent.form;
             Swal.fire({
                 title: "Confirm Delete!",
                 text: "Are you sure you want to delete?",

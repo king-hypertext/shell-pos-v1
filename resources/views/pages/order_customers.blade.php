@@ -1,7 +1,7 @@
 @extends('app.index')
 @section('content')
-    <div class="container my-4"></div>
-    <div class="container-fluid">
+    <div class="container-fluid mt-4">
+        <h2 class="h2 text-uppercase">customer Orders</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
             <div class="mt-1">
                 Select date range:
@@ -245,7 +245,7 @@
                         text: 'Export Excel <i class="fas fa-file-excel"></i>',
                         className: 'btn btn-success text-capitalize',
                         footer: true,
-                        title: 'orders ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
+                        title: 'WORKER_ORDERS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                         }
@@ -255,7 +255,7 @@
                         text: 'Save <i class="fas fa-file-pdf"></i>',
                         className: 'btn btn-danger text-capitalize',
                         footer: true,
-                        title: 'orders ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
+                        title: 'WORKER_ORDERS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                         }
@@ -265,7 +265,7 @@
                         text: 'Print <i class="fas fa-print"></i>',
                         className: 'btn btn-primary text-capitalize',
                         footer: true,
-                        title: 'orders ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
+                        title: 'WORKER_ORDERS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                         }

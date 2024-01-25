@@ -1,45 +1,47 @@
 @extends('app.index')
 @section('content')
-    Invoice Customers
     @php
         use Carbon\Carbon;
     @endphp
-    <div class="table-responsive">
-        <table class="table table-hover" id="order_invoice">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>#Invoice Number</th>
-                    <th>Customer</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($invoices as $index => $invoice)
+    <div class="container-fluid mt-4">
+        <h2 class="h2 text-uppercase">customer invoices</h2>
+        <div class="table-responsive">
+            <table class="table table-hover" id="order_invoice">
+                <thead>
                     <tr>
-                        <td>{{ $index+1 }}</td>
-                        <td>{{ $invoice->invoice_number }}</td>
-                        <td>{{ $invoice->customer }}</td>
-                        <td>{{ $invoice->amount }}</td>
-                        <td>{{ Carbon::parse($invoice->created_at)->format('Y-M-d') }}</td>
-                        <td>
-                            <a href="{{ route('generate-invoice.show', [$invoice->token]) }}" title="view invoice"
-                                class="btn text-primary" target="_blank">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </a>
-                        </td>
+                        <th>#</th>
+                        <th>#INVOICE NUMBER</th>
+                        <th>WORKER</th>
+                        <th>AMOUNT</th>
+                        <th>DATE</th>
+                        <th>ACTIONS</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($invoices as $index => $invoice)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $invoice->invoice_number }}</td>
+                            <td>{{ $invoice->customer }}</td>
+                            <td>{{ $invoice->amount }}</td>
+                            <td>{{ Carbon::parse($invoice->created_at)->format('Y-M-d') }}</td>
+                            <td>
+                                <a href="{{ route('view-file.invoice', [$invoice->token]) }}" title="view invoice"
+                                    class="btn text-primary" target="_blank">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 @section('script')
     <script>
         $(document).ready(function() {
-           var table = new DataTable('#order_invoice', {
+            var table = new DataTable('#order_invoice', {
                 scrollY: false,
                 processing: true,
                 pageLength: 100,

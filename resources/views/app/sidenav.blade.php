@@ -1,6 +1,6 @@
 <div class="side-wrapper text-black shadow-1 text-white overflow-y-scroll ">
     <nav class="text-black">
-        <div class="container-fluid logo-content py-3 position-sticky top-0">
+        <div class="container-fluid logo-content pt-3 position-sticky top-0">
             <a href="{{ route('dashboard') }}" class="nav-link  my-1">
                 <span class="logo-text">
                     q-admin

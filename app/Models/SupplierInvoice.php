@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SupplierInvoice extends Model
 {
+    protected $table = "supplier_invoices";
     use HasFactory;
 }

@@ -18,20 +18,21 @@ class SuppliersController extends Controller
         return view('pages.suppliers', compact('title', 'suppliers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        Suppliers::insert([
+            "name" => $request->input("customer-name"),
+            "category" => $request->input("gender"),
+            "address" => $request->input("address"),
+            "contact" => $request->input("contact"),
+            "created_at" => now()->format('Y-m-d')
+        ]);
+
+        return back()->with("success", "New Supplier Added");
     }
 
     /**
@@ -39,15 +40,8 @@ class SuppliersController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $supplier = Suppliers::find($id);
+        return response()->json($supplier);
     }
 
     /**
@@ -55,7 +49,15 @@ class SuppliersController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $supplier = Suppliers::find($id);
+        Suppliers::where('id', $supplier->id)->update([
+            "name" => $request->input("edit-supplier"),
+            "category" => $request->input("edit-gender"),
+            "address" => $request->input("edit-address"),
+            "contact" => $request->input("edit-contact"),
+            "created_at" => now()->format('Y-m-d')
+        ]);
+        return back()->with("success", "Supplier Updated");
     }
 
     /**
@@ -63,6 +65,7 @@ class SuppliersController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Suppliers::destroy($id);
+        return back()->with("success", "Supplier Deleted");
     }
 }

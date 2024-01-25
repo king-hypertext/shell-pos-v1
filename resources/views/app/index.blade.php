@@ -25,21 +25,22 @@
     <script src="{{ url('assets/plugins/jquery-ui-1.13.2/external/jquery/jquery.js') }}"></script>
 </head>
 
-<body style="background-color: var(--bs-gray-200);height: 100vh;">
+<body style="background-color: var(--bs-gray-200);height: 100vh!important;">
     <div class="container-fluid px-0 text-black">
         {{-- sidenav --}}
         @include('app.sidenav')
         <div class="main-content">
             {{-- navbar --}}
             @include('app.navbar')
-            <div class="container-fluid">
+            {{-- <div class="mt-4 "></div> --}}
+            <div class="container-fluid mt-4">
                 @yield('content')
             </div>
         </div>
     </div>
+    @include('modals.logout')
     <div id="back-drop" class="back-drop"></div>
-    </div>
-    <script src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>
+    <script async type="application/javascript" src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>
     <script src="{{ url('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url('assets/plugins/moment/moment.js') }}"></script>
     <script src="{{ url('assets/plugins/select2/js/select2.min.js') }}"></script>
@@ -56,7 +57,7 @@
     <script src="{{ url('assets/plugins/datatables/vfs_fonts.js') }}"></script>
     <script src="{{ url('assets/plugins/datatables/buttons.html5.min.js') }}"></script>
     <script src="{{ url('assets/plugins/datatables/buttons.print.min.js') }}"></script>
-    <script>
+    <script type="text/javascript">
         (function() {
             console.log("js loaded");
             setInterval(() => {
@@ -91,13 +92,14 @@
                     e.toggle("fa-chevron-right");
                     e.toggle("fa-chevron-down");
                 });
-            document.querySelectorAll(".nav-item > a").forEach((target) => {
-                new mdb.Ripple(target, {
-                    rippleColor: "#fff",
-                    rippleDuration: "1000ms",
-                });
-            });
 
+
+        });
+        document.querySelectorAll(".nav-item > a").forEach((target) => {
+            new mdb.Ripple(target, {
+                rippleColor: "#fff",
+                rippleDuration: "1000ms",
+            });
         });
     </script>
     @yield('script')

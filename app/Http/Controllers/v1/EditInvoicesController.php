@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Invoice;
-use App\Models\SupplierInvoice;
 use Illuminate\Http\Request;
 
-class SuppliersInvoiceController extends Controller
+class EditInvoicesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = "INVOICE SUPPLIERS";
-        $data = SupplierInvoice::all();
-        return view('pages.invoices_supplier', compact('title', 'data'));
+        //
     }
 
     /**
@@ -38,7 +34,7 @@ class SuppliersInvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Invoice $invoice)
+    public function show(string $id)
     {
         //
     }
@@ -46,7 +42,7 @@ class SuppliersInvoiceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Invoice $invoice)
+    public function edit(string $id)
     {
         //
     }
@@ -54,7 +50,7 @@ class SuppliersInvoiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Invoice $invoice)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -62,7 +58,7 @@ class SuppliersInvoiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Invoice $invoice)
+    public function destroy(string $id)
     {
         //
     }

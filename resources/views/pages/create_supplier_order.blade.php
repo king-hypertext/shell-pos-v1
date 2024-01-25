@@ -1,6 +1,6 @@
 @extends('app.index')
 @section('content')
-    <h3 class="fw-bold text-center text-uppercase mt-2 ">create supplier order</h3>
+    <h3 class="fw-bold text-uppercase mt-2 ">create supplier order</h3>
     <hr class="hr text-dark" />
     <style>
         input[readonly] {
@@ -62,14 +62,16 @@
                         <input required type="date" value="{{ Date('Y-m-d') }}" class="form-control" id="invoice-date"
                             name="invoice-date" />
                     </div>
-                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        <button class="btn btn-success mt-4" type="button" data-bs-toggle="modal"
+                            data-bs-target="#saved-invoice">Saved
+                            Invoices
+                        </button>
+                    </div>
                     <div class="col-md-3"></div>
                 </div>
-                <div class="d-flex">
-                    <button class="btn btn-success mt-4" type="button" data-bs-toggle="modal"
-                        data-bs-target="#modal-saved-invoice">Saved
-                        Invoices
-                    </button>
+                <div class="mt-2">
+                    <h5 class="fw-bold text-left text-uppercase mt-2 selected_worker"></h5>
                 </div>
             </div>
             <hr class="hr text-dark" />
@@ -114,8 +116,8 @@
                             </td>
                             <td class="col-md-3">
                                 <div class="form-group">
-                                    <input readonly type="text" name="price[]" type="number" step=".01" value="0.00"
-                                        id="price" class="form-control" />
+                                    <input type="text" name="price[]" type="number" onfocus="this.select()" step=".01"
+                                        value="0.00" id="price" class="form-control" />
                                 </div>
                             </td>
                             <td class="col-md-2">
@@ -146,6 +148,7 @@
             </div>
         </form>
     </div>
+    @include('modals.saved_invoice')
 @endsection
 @section('script')
     <script>
@@ -169,6 +172,7 @@
                         cat.val(res.data[0].category).addClass('active');
                         address.val(res.data[0].address).addClass('active');
                         phone.val(res.data[0].contact).addClass('active');
+                        $('.selected_worker').text(res.data[0].name);
                     },
                     error: function(err) {
                         console.log(err);
@@ -195,7 +199,7 @@
                     </td>                          
                     <td class="col-md-3">
                         <div class="form-group">
-                            <input readonly required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
+                            <input required type="number" onfocus="this.select()" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
                         </div>
                     </td>                      
                     <td class="col-md-2">
@@ -233,7 +237,7 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/products/" + selectedValue,
+                            url: "/product/" + selectedValue,
                             success: function(res) {
                                 console.log(res);
                                 price.value = res.data[0].price;
@@ -275,7 +279,7 @@
                     .children[0];
                 $.ajax({
                     method: "GET",
-                    url: "/products/" + selectedValue,
+                    url: "/product/" + selectedValue,
                     success: function(res) {
                         console.log(res);
                         price.value = res.data[0].price;

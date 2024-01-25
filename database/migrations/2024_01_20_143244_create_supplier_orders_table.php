@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('supplier_orders', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('supplier_id');
+            $table->bigInteger('order_number');
+            $table->string('supplier');
+            $table->longText('token');
+            $table->string('product');
+            $table->decimal('price', 8, 2);
+            $table->integer('quantity');
+            $table->decimal('amount', 8, 2);
+            $table->string('day');
             $table->timestamps();
         });
     }

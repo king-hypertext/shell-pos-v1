@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('supplier_invoices', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('invoice_number');
+            $table->bigInteger('supplier_id');
+            $table->string('supplier');
+            $table->longText('token');
+            $table->decimal('amount', 8, 2);
             $table->timestamps();
         });
     }

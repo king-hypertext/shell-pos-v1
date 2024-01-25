@@ -1,8 +1,9 @@
 @extends('app.index')
 @section('content')
     <div class="container-fluid mt-4 ">
+        <h2 class="h2 text-uppercase">All suppliers</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
-            <a href="{{ route('supplier.index') }}" role="button" class="btn btn-success me-2">
+            <a href="{{ route('supplier.index') }}" target="_blank" role="button" class="btn btn-success me-2">
                 create invoice
             </a>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-addSupplier">Add
@@ -30,8 +31,8 @@
                         <th scope="col">CATEGORY</th>
                         <th scope="col">CONTACT</th>
                         <th scope="col">ADDRESS</th>
-                        <th>Date</th>
-                        <th scope="col">Actions</th>
+                        <th>DATE</th>
+                        <th scope="col">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,10 +76,10 @@
                                 <h5 class="h3 text-capitalize" id="modal-title"></h5>
                             </div>
                         </div>
-                        <form class="px-5 py-2" action="#" method="POST">
+                        <form class="px-5 py-2" id="form-edit-supplier" method="POST">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="id" id="supplier-id">
+                            <input type="hidden" name="id" id="supplier-id"/>
                             <div class="form-outline mb-3">
                                 <input type="text" name="edit-supplier" id="supplierName" class="form-control" />
                                 <label class="form-label" for="supplierName">Supplier Name</label>
@@ -157,7 +158,7 @@
     </div>
 
     @if (session('success'))
-        <script>
+        <script type="text/javascript">
             const showSuccessAlert = Swal.mixin({
                 position: 'top-end',
                 toast: true,
@@ -178,7 +179,7 @@
     <script>
         window.confirmDelete = function(e) {
             e.preventDefault();
-            var form = e.target.form;
+            var form = e.target.offsetParent.form;
             Swal.fire({
                 title: "Confirm Delete!",
                 text: "Are you sure you want to delete?",
