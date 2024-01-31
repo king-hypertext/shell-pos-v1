@@ -15,12 +15,14 @@ class EditInvoicesController extends Controller
     {
         $worker_name = $request->worker;
         $order_date = $request->date;
+        // dd($request->all());
+
         $data = Orders::where('customer', $worker_name)->where(function ($date) use ($order_date) {
             $date->where('created_at', $order_date);
         })->get();
         if ($request->ajax()) {
             // dd($worker_name, $order_date);
-            return count($data) > 0 ? response()->json(['data' => route('order.edit', [$worker_name, $order_date])]) : response()->json(['empty' => 'No Data Found']);
+            return count($data) > 0 ? response()->json(['data' => route('order.edit', ['worker' => $worker_name, 'order_date' => $order_date])]) : response()->json(['empty' => 'No Data Found']);
         } //  count($data) > 1 ? response()->json(['data' => $data]) : response()->json(['data' => $data]);
     }
 
@@ -53,8 +55,9 @@ class EditInvoicesController extends Controller
      */
     public function edit(Request $request)
     {
-        $worker_name = $request->name;
-        $order_date = $request->date;
+        $worker_name = $request->worker;
+        $order_date = $request->order_date;
+        // dd($request->all());
         $data = Orders::where('customer', $worker_name)->where(function ($date) use ($order_date) {
             $date->where('created_at', $order_date);
         })->get();
@@ -73,8 +76,10 @@ class EditInvoicesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        // dd($request->all());
+        // return Orders::destroy([77,78,79]);
+        return Orders::whereIn('id', $request->id)->toSql();
     }
 }

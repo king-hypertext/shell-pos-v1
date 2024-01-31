@@ -24,7 +24,9 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        //
+        $title = "CREATE NEW PRODUCT";
+        $products = Products::query()->latest('created_at')->get();
+        return view('pages.create_product', compact('title', 'products'));
     }
 
     /**
@@ -33,13 +35,14 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'customer-name' => 'required|string',
-            'contact' => 'required|numeric',
+            'product-name' => 'required|string|unique:products,name',
+            'supplier' => 'required|string|exists:suppliers,name',
             'product-image' => 'required|file|mimes:png,jpg,jpeg,webp',
         ]);
+        $request->dd();
 
         if ($request->hasFile("product-image")) {
-            $path = $request->file("product-image")->store('/public/customers');
+            $path = $request->file("product-image")->store('/public/products');
         }
         Products::insert([
             "name" => $request->input("customer-name"),
@@ -47,11 +50,11 @@ class ProductsController extends Controller
             "date_of_birth" => $request->input("dob"),
             "address" => $request->input("address"),
             "contact" => $request->input("contact"),
-            "image" => '/storage/customers/' . str_replace(['public/', 'customers/'], '', $path),
+            "image" => '/storage/products/' . str_replace(['public/', 'products/'], '', $path),
             "created_at" => now()->format('Y-m-d')
         ]);
 
-        return back()->with("success", "New Worker Added");
+        return back()->with("success", "New Product Added");
     }
 
     /**
@@ -117,12 +120,28 @@ class ProductsController extends Controller
      */
     public function destroy(Request $request, Products $products)
     {
+        $ids = $request->id;
+
+        // $request->dd();
+        return
+            $products = Products::whereIn('id', $ids)->get();
+        foreach ($products as $key => $product) {
+            return $product->image;
+            if (file_exists(public_path("$product->image"))) {
+                unlink(public_path("$product->image"));
+            }
+        }
+        return response()->json(['success' => 'Products Deleted']);
+        /* Products::destroy($ids);
         $product = $products->find($request->id);
         if (file_exists(public_path("$product->image"))) {
             unlink(public_path("$product->image"));
         }
         Products::destroy($product->id);
-        return back()->with('success', 'Product Deleted');
+        return back()->with('success', 'Product Deleted'); */
+    }
+    public function erase_data(Request $request)
+    {
     }
     public function fetch(string $name)
     {

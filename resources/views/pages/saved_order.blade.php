@@ -6,15 +6,25 @@
             <hr class="hr text-dark" />
 
             <h6 class="h4">Edit Order</h6>
+            <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
             <div class="table-responsive text-nowrap">
                 <style>
+                    .link-delete {
+                        text-decoration: none;
+                    }
+
+                    .link-delete:hover {
+                        text-decoration: underline;
+                    }
+
                     #table-create-order> :not(caption)>*>* {
                         padding: 0;
                     }
 
                     table,
                     #table-create-order .form-control,
-                    #table-create-order .form-select {
+                    #table-create-order .form-select,
+                    #table-create-order .form-check-box {
                         border-radius: 0 !important;
                         box-shadow: none;
                         border: 0 none;
@@ -23,8 +33,9 @@
                 <table id="table-create-order" class="table table-bordered mb-0">
                     <thead>
                         <tr class="p-3">
+                            <th class="col-md-1 py-3 px-0"></th>
                             <th class="col-md-4 p-3" scope="col">Product Name</th>
-                            <th class="col-md-3 p-3" scope="col" title="Price">Price (GHC)</th>
+                            <th class="col-md-2 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-2 p-3" scope="col">Quantity</th>
                             <th class="col-md-3 p-3" scope="col">Total (GHC)</th>
                         </tr>
@@ -38,23 +49,29 @@
                     <tbody id="td-parent">
                         @foreach ($data as $order)
                             <tr class="form_row">
+                                <td class="col-1 col-md-1">
+                                    <div class="row justify-content-center align-items-center mb-0 pt-3">
+                                        <input type="checkbox" name="check-box" id="{{ $order->id }}"
+                                            value="{{ $order->id }}" />
+                                    </div>
+                                </td>
                                 <td class="col-md-4">
                                     <div class="form-group">
-                                        <select @required(true) class="form-select" data-select-product name="product[]"
-                                            id="product">
+                                        <select @required(true) class="form-select" name="product[]" id="product">
                                             <option selected value="{{ $order->product }}">{{ $order->product }}</option>
-                                            @foreach ($products as $product)
+                                            {{-- @foreach ($products as $product)
                                                 <option value="{{ $product->name }}">
                                                     {{ $product->name }}
                                                 </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                     </div>
                                 </td>
-                                <td class="col-md-3">
+                                <td class="col-md-2">
                                     <div class="form-group">
-                                        <input readonly type="text" name="price[]" type="number" step=".01"
-                                            value="{{ $order->price }}" id="price" class="form-control" />
+                                        <input type="text" name="price[]" onfocus="this.select()" type="number"
+                                            step=".01" value="{{ $order->price }}" id="price"
+                                            class="form-control" />
                                     </div>
                                 </td>
                                 <td class="col-md-2">
@@ -81,11 +98,154 @@
                     </button>
                     <button type="reset" class="btn btn-outline-secondary" title="reset inputs">Reset</button>
                 </div>
-                <button type="submit" class="btn btn-primary text-capitalize" title="add invoice">Save</button>
+                <button type="submit" class="btn btn-primary text-capitalize" title="add invoice">Update</button>
             </div>
         </form>
     </div>
 @endsection
 @section('script')
-    
+    <script>
+        var ids = [];
+        $('input[name="check-box"]').on('change', function(e) {
+            if (e.currentTarget.checked) {
+                ids.push(e.currentTarget.value);
+                console.log(ids);
+            } else {
+                ids.pop(e.currentTarget.value)
+                console.log(ids);
+            }
+            if (ids.length != 0) {
+                $('.link-delete').removeClass('d-none')
+                console.log('not empty');
+            } else {
+                $('.link-delete').addClass('d-none')
+                console.log('empty');
+            }
+        });
+        window.confirmDelete = function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Delete All!",
+                text: "Are you sure you want to delete?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/invoices/edit/delete',
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: ids
+                        },
+                        success: function(res) {
+
+                        }
+                    });
+                }
+            })
+        }
+        $(document).on("click", "#removeRow", function(ev) {
+            ev.preventDefault();
+            var currentRow = $(this).parent().parent();
+            $(currentRow).remove();
+            row--;
+        });
+        // retrieve product info from database
+        var row = 1;
+        window.addNewRow = function() {
+            var newInvoiceRow = `<tr class="form_row_${row}">
+                    <td class="col-md-1">
+                        <div class="form-group">
+                        </div>
+                    </td>
+                    <td class="col-md-4">
+                        <div class="">
+                            <div class="">
+                                <div class="form-group">
+                                    <select @required(true) style="padding: 0.375rem 2.25rem 0.375rem 0.75rem !important;" required name="product[]" id="product_${row}"
+                                        class="form-select select-product">
+                                        <option value="" selected disabled> Select Product </option>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->name }}">
+                                                {{ $product->name }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>                          
+                    <td class="col-md-2">
+                        <div class="form-group">
+                            <input required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
+                        </div>
+                    </td>                      
+                    <td class="col-md-2">
+                        <div class="form-group">
+                            <input required type="number" name="quantity[]" onfocus="this.select()" id="quantity_${row}"
+                                class="form-control qty" />
+                        </div>
+                    </td>
+                    <td class="col-md-3">
+                        <div class="form-group">
+                            <input readonly type="text" value="0" name="total[]" id="total_${row}"
+                                class="form-control total" />
+                        </div>
+                    </td>
+                    <td>
+                        <button style="font-weight: 900;font-size: 20px; margin: 0;" type="button" class="btn btn-sm btn-danger" id="removeRow" title="Click to remove row"        >
+                            <span style="padding-top: 8px">&times;</span>
+                        </button>
+                    </td>
+                </tr>`;
+            if (row > 0) {
+                $("tbody#td-parent").append(newInvoiceRow);
+                row++;
+                $(document).on('change', 'select.select-product', function(e) {
+                    var selectedValue = e.currentTarget.value,
+
+                        price = e.currentTarget.parentElement.parentElement.parentElement
+                        .parentElement.parentElement.children[1].children[0].children[0],
+
+                        total = e.currentTarget.parentElement.parentElement.parentElement
+                        .parentElement.parentElement.children[3].children[0].children[0],
+
+                        quantity = e.currentTarget.parentElement.parentElement.parentElement
+                        .parentElement.parentElement.children[2].children[0].children[0];
+                    console.log(selectedValue);
+                    $.ajax({
+                        method: "GET",
+                        url: "/product/" + selectedValue,
+                        success: function(res) {
+                            console.log(res);
+                            price.value = res.data[0].price;
+                            quantity.max = res.data[0].quantity;
+                        }
+                    });
+                    $(document).on('keyup', quantity, function(e) {
+                        total.value =
+                            Number.parseInt(price.value) * Number.parseFloat(quantity
+                                .value);
+                        if (isNaN(total.value)) {
+                            total.value = 0;
+                        }
+                    });
+                });
+                $(function() {
+                    $("select.select-product").select2();
+                    $(document).on('select2:open', () => {
+                        document.querySelector('.select2-search__field').focus();
+                    });
+                })
+            }
+            $("select[data-select-product]").select2();
+        }
+
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+    </script>
 @endsection

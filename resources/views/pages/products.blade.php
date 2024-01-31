@@ -20,6 +20,13 @@
                 </ul>
             </div>
         @endif
+        <style type="text/css">
+            input[name="check-box"] {
+                cursor: pointer;
+                width: 20px;
+                height: 20px;
+            }
+        </style>
         <div class="table-responsive">
             <table class="table table-hover" id="product-table">
                 <thead>
@@ -33,7 +40,13 @@
                         <th scope="col" title="category">CAT.</th>
                         <th scope="col">PROD. DATE</th>
                         <th scope="col">EXPIRY DATE</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Edit</th>
+                        <th>
+                            <span class="action-header">Misc</span>
+                            <a href="#" role="button" class="link-delete text-danger d-none"
+                                onclick="DeleteProdructs(event)">Delete selected
+                            </a>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,19 +64,16 @@
                             <td>{{ Carbon::parse($product->prod_date)->format('Y-M-d') }}</td>
                             <td>{{ Carbon::parse($product->expiry_date)->format('Y-M-d') }}</td>
                             <td>
-                                <form action='{{ route('products.destroy', ["$product->id"]) }}' method="post">
-                                    @method('DELETE')
-                                    <button type="button" id="{{ $product->id }}" class="btn_edit btn text-primary my-1"
-                                        title="Edit {{ $product->name }}">
-                                        <i class="fa-regular fa-pen-to-square"></i>
-                                    </button>
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product->id }}" readonly>
-                                    <button onclick="confirmDelete(event)" type="button" class="btn text-danger my-1"
-                                        title="delete {{ $product->name }}">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
-                                </form>
+                                <button type="button" id="{{ $product->id }}" class="btn_edit btn text-primary my-1"
+                                    title="Edit {{ $product->name }}">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <div class="row justify-content-center align-items-center mb-0 pt-3">
+                                    <input type="checkbox" name="check-box" title="Select" id="{{ $product->id }}"
+                                        value="{{ $product->id }}" />
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -88,46 +98,50 @@
                                 <div class="form-group mb-4">
                                     <label class="form-label" for="productName">Product Name <span
                                             class="text-danger">*</span></label>
-                                    <input required type="text" name="product-name" placeholder="Product Name"
-                                        id="productName" class="form-control" />
+                                    <input required type="text" name="product-name" id="productName"
+                                        class="form-control" />
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label" for="unitPrice">Unit Price <span
                                                     class="text-danger">*</span></label>
-                                            <input required type="number" name="price" placeholder="Unit Price"
-                                                id="unitPrice" class="form-control" step=".01" />
+                                            <input required type="number" name="price" id="unitPrice"
+                                                class="form-control" step=".01" />
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label" for="batchNumber">Batch Number</label>
-                                            <input type="text" name="batch-number" placeholder="Batch Number"
-                                                id="batchNumber" class="form-control" />
+                                            <input type="text" name="batch-number" id="batchNumber"
+                                                class="form-control" />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group mb-4">
-                                    <label for="category" class="form-label">Category
-                                        <span class="text-danger">*</span></label>
-                                    <select required name="category" id="category" class="form-select">
-                                        <option value="SHELL">SHELL</option>
-                                        <option value="ALLIED">ALLIED</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-4">
-                                    <label for="supplier" class="form-label">Supplier
-                                        <span class="text-danger">*</span></label>
-                                    <select required name="supplier" id="supplier" class="form-select">
-                                        @php
-                                            use App\Models\Suppliers;
-                                            $suppliers = Suppliers::select('name')->get();
-                                        @endphp
-                                        @foreach ($suppliers as $supplier)
-                                            <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="row mb-4">
+                                    <div class="col-6">
+                                        <label for="category" class="form-label">Category
+                                            <span class="text-danger">*</span></label>
+                                        <select required name="category" id="category" class="form-select">
+                                            <option value="SHELL">SHELL</option>
+                                            <option value="ALLIED">ALLIED</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="supplier" class="form-label">Supplier
+                                                <span class="text-danger">*</span></label>
+                                            <select required name="supplier" id="supplier" class="form-select">
+                                                @php
+                                                    use App\Models\Suppliers;
+                                                    $suppliers = Suppliers::select('name')->get();
+                                                @endphp
+                                                @foreach ($suppliers as $supplier)
+                                                    <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-6">
@@ -142,14 +156,21 @@
                                             id="expiryDate" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="image-preview-wrapper-s">
-                                    <img src="" alt="" class="image-preview-s" id="server-preview"
-                                        style="width: 55px; height: 55px;">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="product_image">Product Image</label>
-                                    <input type="file" onchange="previewImageFromServer()" name="product-image"
-                                        id="product_image" class="form-control" accept="image/*" />
+                                <div class="row mb-2">
+                                    <div class="col-4">
+                                        <div class="image-preview-wrapper-s d-flex justify-content-center">
+                                            <img src="" alt="" class="image-preview-s"
+                                                id="server-preview" style="width: 55px; height: 55px;">
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="mb-4">
+                                            <label for="product_image">Product Image</label>
+                                            <input type="file" onchange="previewImageFromServer()"
+                                                name="product-image" id="product_image" class="form-control"
+                                                accept="image/*" />
+                                        </div>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block">Update Product</button>
                             </form>
@@ -182,6 +203,53 @@
 @endsection
 @section('script')
     <script>
+        var ids = [];
+        $('input[name="check-box"]').on('change', function(e) {
+            if (e.currentTarget.checked) {
+                ids.push(e.currentTarget.value);
+                console.log(ids);
+            } else {
+                ids.pop(e.currentTarget.value)
+                console.log(ids);
+            }
+            if (ids.length != 0) {
+                $('.link-delete').removeClass('d-none')
+                $('.action-header').addClass('d-none')
+                console.log('not empty');
+            } else {
+                $('.link-delete').addClass('d-none')
+                $('.action-header').removeClass('d-none')
+                console.log('empty');
+            }
+        });
+        window.DeleteProdructs = function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Delete All!",
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/products/delete',
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: ids
+                        },
+                        success: function(res) {
+                            if (res.delete) {
+                                
+                            }
+                        }
+                    });
+                }
+            })
+        }
         var image_wrapper = $('.image-preview-wrapper-s');
         image_wrapper.show();
 

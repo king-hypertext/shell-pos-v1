@@ -14,10 +14,17 @@
                     Dashboard
                 </a>
             </li>
-            <li class="nav-item my-1 {{ Request::segment(1) === 'products' ? 'active' : '' }}">
+            <li class="nav-item my-1 {{ Request::segment(1) === 'products' && !Request::segment(2) ? 'active' : '' }}">
                 <a href="{{ route('products.index') }}" class="nav-link">
                     <i class="fa-solid fa-warehouse"></i>
                     Inventories
+                </a>
+            </li>
+            <li
+                class="nav-item my-1 {{ Request::segment(1) === 'products' && Request::segment(2) === 'create' ? 'active' : '' }}">
+                <a href="{{ route('products.create') }}" class="nav-link">
+                    <i class="fa-regular fa-square-plus"></i>
+                    Add Product
                 </a>
             </li>
             <li class="nav-item my-1 {{ Request::segment(1) === 'customers' ? 'active' : '' }}">
@@ -35,7 +42,7 @@
             <li class="nav-item my-1 {{ Request::segment(1) === 'create-order' ? 'open' : '' }}">
                 <a href="#" class="nav-link dropdown" data-bs-toggle="collapse" data-bs-target="#create-order">
                     <span>
-                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-file-circle-plus"></i>
                         Create
                     </span>
                     <span class="float-right">

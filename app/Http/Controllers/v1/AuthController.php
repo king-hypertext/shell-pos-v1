@@ -54,7 +54,23 @@ class AuthController extends Controller
             $request->session()->regenerate();
             return response()->json(['data' => route('dashboard')]);
         }
+        // return redirect()->intended('/');
         // $request->session()->regenerate();
+
+        return response()->json(['error' => 'invalid credentials']);
+    }
+    public function verify_login(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|alpha_num'
+        ]);
+
+        if (Auth::attempt($request->only('username', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('/');
+        }
+
         return response()->json(['error' => 'invalid credentials']);
     }
     /**

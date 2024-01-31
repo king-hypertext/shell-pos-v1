@@ -12,12 +12,8 @@
                     <h3 class="text-center text-primary py-2">
                         Login to your account
                     </h3>
-                    @if (session('login'))
-                        <div class="alert alert-warning text-warning">{{ session('login') }}</div>
-                    @endif
-                    @if (session('error'))
-                        <h6 class="h6 text-danger text-center">{{ session('error') }}</h6>
-                    @endif
+                    {{-- <div class="alert alert-warning text-warning">{{ session('login') }}</div> --}}
+                    <div class="h6 alert alert-danger alert-dismissible text-danger text-center" id="login-error"></div>
                     <div class="form-outline mb-4">
                         <input required type="text" autofocus name="username" id="username"
                             class="form-control form-control-lg" />
@@ -47,6 +43,7 @@
     <script>
         $(function() {
             $('#btn-icon').hide();
+            $('#login-error').hide();
             $('#login').on('submit', function(e) {
                 e.preventDefault();
                 $('#btn-icon').show();
@@ -62,11 +59,19 @@
                     },
                     success: function(data) {
                         $('#btn-icon').hide();
+                        if (data.error) {
+                            $('#login-error').show();
+                            $('#login-error').text(data.error);
+                        }
                         console.log(data);
                         window.open(data.data, '_self');
                     },
                     error: function(error) {
                         $('#btn-icon').hide();
+                        if (error.error) {
+                            $('#login-error').show();
+                            $('#login-error').text(error.error);
+                        }
                         console.log(error);
                     }
                 })

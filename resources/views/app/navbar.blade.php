@@ -11,9 +11,9 @@
         <div class="dropdown me-2">
             <a href="javascript:void(0)" class="nav-link" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                username
+                {{ auth()->user()->fullname ?? 'username' }}
                 <i class="fas fa-chevron-down"></i>
-                <img src="" class="user-image rounded-circle" alt="" />
+                <img src="{{ auth()->user()->photo ?? '' }}" class="user-image rounded-circle" alt="" />
             </a>
             <ul class="dropdown-menu dropdown-menu-start shadow border-0">
                 <li>
@@ -26,7 +26,7 @@
                 </li>
                 <li>
                     <a type="button" class="dropdown-item" href="#logout" data-bs-toggle="modal">
-                        <i class="fas fa-arrow-left"></i> Logout
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
                     </a>
                 </li>
             </ul>
