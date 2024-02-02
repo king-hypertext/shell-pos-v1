@@ -1,21 +1,23 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\UserController;
+use App\Http\Controllers\v1\IndexController;
+use App\Http\Controllers\test\TestController;
+use App\Http\Controllers\v1\ProductsController;
+use App\Http\Controllers\v1\CustomersController;
+use App\Http\Controllers\v1\SuppliersController;
+use App\Http\Controllers\v1\EditInvoicesController;
+use App\Http\Controllers\v1\CustomerOrdersController;
+use App\Http\Controllers\v1\SupplierOrdersController;
+use App\Http\Controllers\v1\CustomersInvoiceController;
+use App\Http\Controllers\v1\InvoiceGeneratorController;
+use App\Http\Controllers\v1\SuppliersInvoiceController;
 use App\Http\Controllers\v1\createCustomerOrderController;
 use App\Http\Controllers\v1\CreateSupplierOrderController;
-use App\Http\Controllers\v1\CustomerOrdersController;
-use App\Http\Controllers\v1\CustomersController;
-use App\Http\Controllers\v1\CustomersInvoiceController;
-use App\Http\Controllers\v1\EditInvoicesController;
-use App\Http\Controllers\v1\IndexController;
-use App\Http\Controllers\v1\InvoiceGeneratorController;
-use App\Http\Controllers\v1\ProductsController;
-use App\Http\Controllers\v1\SupplierOrdersController;
-use App\Http\Controllers\v1\SuppliersController;
-use App\Http\Controllers\v1\SuppliersInvoiceController;
-use App\Http\Controllers\v1\UserController;
-use Illuminate\Support\Facades\Route;
 
+Route::get('/test', [TestController::class, 'test']);
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'login')->name('login');
     Route::post('/login', 'verify_user');

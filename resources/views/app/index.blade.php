@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}">
-    <title>SHELL POS | {{ $title ?? '' }}</title>
+    <title>SHELL POS | {{ $title ?? 'DASHBOARD' }}</title>
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-ui-1.13.2/jquery-ui.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-ui-1.13.2/jquery-ui.structure.min.css') }}" />

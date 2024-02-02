@@ -30,7 +30,30 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'username' => 'required|string',
+            'date_of_birth' => 'required|date',
+            'fullname' => 'required|string'
+        ]);
+
+        if ($request->hasFile("user-image")) {
+            $request->validate([
+                'user-image' => 'required|file|mimes:png,jpg,jpeg,webp',
+            ]);
+            $path = $request->file("user-image")->store('/public/user');
+        }
+        User::insert([
+            "username" => $request->input("username"),
+            "fullname" => $request->input("fullname"),
+            "gender" => $request->input("gender"),
+            "date_of_birth" => $request->input("dob"),
+            "address" => $request->input("address"),
+            "password" => $request->input("password"),
+            "photo" => '/storage/user/' . str_replace(['public/', 'user/'], '', $path),
+            "created_at" => now()->format('Y-m-d')
+        ]);
+
+        return back()->with("success", "User Updated");
     }
 
     /**

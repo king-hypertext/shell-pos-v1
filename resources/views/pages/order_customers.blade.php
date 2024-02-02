@@ -82,10 +82,18 @@
             timerProgressBar: false,
         });
         $(document).ready(function() {
-            $('input[name="order-daterange" ]').daterangepicker({
-                startDate: moment().subtract(1, 'M'),
-                endDate: moment()
-            });
+            var queryParam = new URLSearchParams(window.location.search).get('date');
+            if (queryParam && queryParam === 'today') {
+                $('input[name="order-daterange" ]').daterangepicker({
+                    startDate: moment(),
+                    endDate: moment().add(1, 'weeks')
+                });
+            } else {
+                $('input[name="order-daterange" ]').daterangepicker({
+                    startDate: moment().subtract('1', 'M'),
+                    endDate: moment()
+                });
+            }
 
             function addCell(tr, content, colSpan = 1) {
                 let td = document.createElement('th');
@@ -129,7 +137,7 @@
                         addCell(tr, '');
                         addCell(tr, '');
                         addCell(tr, '');
-                          
+
 
                         return tr;
                     },

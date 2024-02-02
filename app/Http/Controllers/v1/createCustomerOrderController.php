@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\v1;
 
 use App\Models\Products;
-use App\Models\Suppliers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Customers;
@@ -73,6 +72,7 @@ class createCustomerOrderController extends Controller
             "amount" => $amount,
             "created_at" => $date
         ]);
+        
         return back()->with('success', 'Order Saved');
     }
 
