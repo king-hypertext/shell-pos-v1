@@ -36,7 +36,7 @@ class createCustomerOrderController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->dd();'
+
         $request->validate([
             'product.*' => 'required|exists:products,name',
         ]);
@@ -72,11 +72,11 @@ class createCustomerOrderController extends Controller
             "amount" => $amount,
             "created_at" => $date
         ]);
-        
+
         return back()->with('success', 'Order Saved');
     }
 
-    /**
+    /** 
      * Display the specified resource.
      */
     public function show(string $id, Customers $customers)
@@ -96,9 +96,16 @@ class createCustomerOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $request->dd();
+        $request->validate([
+            'product.*' => 'required|exists:products,name',
+        ]);
+        $token = $request->order_token;
+
+
+        return back()->with('success', 'Order Saved');
     }
 
     /**

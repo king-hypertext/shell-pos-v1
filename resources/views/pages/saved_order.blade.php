@@ -1,14 +1,18 @@
 @extends('app.index')
 @section('content')
     <div class="container fluid">
-        <form autocomplete="off" id="form-invoice" action="{{ route('customer.store') }}" method="post">
+        <form autocomplete="off" id="form-invoice" action="{{ route('order.edit.save') }}" method="post">
             @csrf
+            <input type="hidden" name="customer_id" value="{{ $customer_id }}" />
+            <input type="hidden" name="invoice-date" value="{{ Date('Y-m-d') }}" />
+            <input type="hidden" name="order_token" value="{{ $order_token }}" />
+
             <hr class="hr text-dark" />
 
             <h6 class="h4">Edit Order</h6>
             <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
             <div class="table-responsive text-nowrap">
-                <style>
+                <style type="text/css">
                     .link-delete {
                         text-decoration: none;
                     }
@@ -59,17 +63,11 @@
                                     <div class="form-group">
                                         <select @required(true) class="form-select" name="product[]" id="product">
                                             <option selected value="{{ $order->product }}">{{ $order->product }}</option>
-                                            {{-- @foreach ($products as $product)
-                                                <option value="{{ $product->name }}">
-                                                    {{ $product->name }}
-                                                </option>
-                                            @endforeach --}}
-                                        </select>
                                     </div>
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input type="text" name="price[]" onfocus="this.select()" type="number"
+                                        <input readonly type="text" name="price[]" onfocus="this.select()" type="number"
                                             step=".01" value="{{ $order->price }}" id="price"
                                             class="form-control" />
                                     </div>
@@ -105,6 +103,13 @@
 @endsection
 @section('script')
     <script>
+        const showSuccessAlert = Swal.mixin({
+            position: 'top-end',
+            toast: true,
+            timer: 6500,
+            showConfirmButton: false,
+            timerProgressBar: false,
+        });
         var ids = [];
         $('input[name="check-box"]').on('change', function(e) {
             if (e.currentTarget.checked) {
@@ -125,7 +130,7 @@
         window.confirmDelete = function(e) {
             e.preventDefault();
             Swal.fire({
-                title: "Delete All!",
+                title: "Delete Selected!",
                 text: "Are you sure you want to delete?",
                 icon: 'warning',
                 showCancelButton: true,
@@ -135,14 +140,22 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/invoices/edit/delete',
+                        url: '/orders/edit/delete',
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}",
                             id: ids
                         },
                         success: function(res) {
-
+                            if (res.success) {
+                                showSuccessAlert.fire({
+                                    icon: 'success',
+                                    text: res.success,
+                                    padding: '10px',
+                                    width: 'auto'
+                                });
+                                window.location.reload();
+                            }
                         }
                     });
                 }
@@ -180,12 +193,12 @@
                     </td>                          
                     <td class="col-md-2">
                         <div class="form-group">
-                            <input required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
+                            <input readonly required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
                         </div>
                     </td>                      
                     <td class="col-md-2">
                         <div class="form-group">
-                            <input required type="number" name="quantity[]" onfocus="this.select()" id="quantity_${row}"
+                            <input required onfocus="this.select()" type="number" name="quantity[]" id="quantity_${row}"
                                 class="form-control qty" />
                         </div>
                     </td>
@@ -207,13 +220,13 @@
                 $(document).on('change', 'select.select-product', function(e) {
                     var selectedValue = e.currentTarget.value,
 
-                        price = e.currentTarget.parentElement.parentElement.parentElement
-                        .parentElement.parentElement.children[1].children[0].children[0],
-
                         total = e.currentTarget.parentElement.parentElement.parentElement
-                        .parentElement.parentElement.children[3].children[0].children[0],
+                        .parentElement.parentElement.children[4].children[0].children[0],
 
                         quantity = e.currentTarget.parentElement.parentElement.parentElement
+                        .parentElement.parentElement.children[3].children[0].children[0],
+
+                        price = e.currentTarget.parentElement.parentElement.parentElement
                         .parentElement.parentElement.children[2].children[0].children[0];
                     console.log(selectedValue);
                     $.ajax({
@@ -221,6 +234,7 @@
                         url: "/product/" + selectedValue,
                         success: function(res) {
                             console.log(res);
+                            console.log(price, total, quantity);
                             price.value = res.data[0].price;
                             quantity.max = res.data[0].quantity;
                         }

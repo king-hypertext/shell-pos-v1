@@ -11,12 +11,24 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $products = Products::all();
         $title = "ALL PRODUCTS";
-        $products = Products::all();
-        return view('pages.products', compact('title', 'products'));
+        $heading = $title;
+        if ($request && $request->query('query') === 'out-of-stock') {
+            $heading = "products out of stock";
+            $products = Products::query()->where('quantity', '<', 1)->get();
+        } elseif ($request && $request->query('query') === 'low-stock') {
+            $heading = "products low stock";
+            $products = Products::query()->where('quantity', '>', 1)->where('quantity', '<=', 5)->get();
+        } elseif ($request && $request->query('query') === 'expired') {
+            $heading = "Expired Products";
+            $products =  Products::query()->where('created_at', '>=', now()->addDays(5));
+        } else {
+            $products = Products::all();
+            // return $products;
+        }
+        return view('pages.products', compact('title', 'products', 'heading'));
     }
 
     /**
@@ -38,20 +50,24 @@ class ProductsController extends Controller
             'product-name' => 'required|string|unique:products,name',
             'supplier' => 'required|string|exists:suppliers,name',
             'product-image' => 'required|file|mimes:png,jpg,jpeg,webp',
+        ], [
+            'product-name.unique' => 'The Product Already Exists',
+            'supplier.exists' => 'The Supplier Does Not Exist'
         ]);
-        $request->dd();
 
         if ($request->hasFile("product-image")) {
             $path = $request->file("product-image")->store('/public/products');
         }
         Products::insert([
-            "name" => $request->input("customer-name"),
-            "gender" => $request->input("gender"),
-            "date_of_birth" => $request->input("dob"),
-            "address" => $request->input("address"),
-            "contact" => $request->input("contact"),
-            "image" => '/storage/products/' . str_replace(['public/', 'products/'], '', $path),
-            "created_at" => now()->format('Y-m-d')
+            'name' => $request->input('product-name'),
+            'price' => $request->price,
+            'batch_number' => $request->input('batch-number'),
+            'supplied_by' => $request->supplier,
+            'category' => $request->category,
+            'prod_date' => $request->prod_date,
+            'expiry_date' => $request->expiry_date,
+            'image' => '/storage/products/' . str_replace(['public/', 'products/'], '', $path),
+            'created_at' => now()->format('Y-m-d')
         ]);
 
         return back()->with("success", "New Product Added");
@@ -121,27 +137,14 @@ class ProductsController extends Controller
     public function destroy(Request $request, Products $products)
     {
         $ids = $request->id;
-
-        // $request->dd();
-        return
-            $products = Products::whereIn('id', $ids)->get();
-        foreach ($products as $key => $product) {
-            return $product->image;
+        $products = Products::whereIn('id', $ids)->get();
+        foreach ($products as $product) {
             if (file_exists(public_path("$product->image"))) {
                 unlink(public_path("$product->image"));
             }
         }
+        Products::destroy($ids);
         return response()->json(['success' => 'Products Deleted']);
-        /* Products::destroy($ids);
-        $product = $products->find($request->id);
-        if (file_exists(public_path("$product->image"))) {
-            unlink(public_path("$product->image"));
-        }
-        Products::destroy($product->id);
-        return back()->with('success', 'Product Deleted'); */
-    }
-    public function erase_data(Request $request)
-    {
     }
     public function fetch(string $name)
     {

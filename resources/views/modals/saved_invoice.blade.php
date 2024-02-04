@@ -55,7 +55,7 @@
             date = e.currentTarget[1].value;
         console.log(selected_worker, date);
         $.ajax({
-            url: '/invoices/edit',
+            url: '/orders/edit',
             data: {
                 _token: "{{ csrf_token() }}",
                 worker: selected_worker,
@@ -65,7 +65,7 @@
                 console.log(data);
                 if (data.data) {
                     var res = data.data;
-                    window.open(res, '_blank');
+                    window.open(res, '_self');
                 } else if (data.empty) {
                     alert(data.empty);
                 }

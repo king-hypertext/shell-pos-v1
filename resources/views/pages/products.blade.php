@@ -4,7 +4,7 @@
         use Carbon\Carbon;
     @endphp
     <div class="container-fluid mt-4">
-        <h2 class="h2 text-uppercase">All Products</h2>
+        <h2 class="h2 text-uppercase">{{ $heading ?? 'All Products' }}</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
             <a target="_blank" href="{{ route('view-file.open-stock') }}" class="btn btn-success mx-2">Open Stock</a>
             <a href="{{ route('products.create') }}" class="btn btn-primary">
@@ -12,10 +12,10 @@
             </a>
         </div>
         @if ($errors->any())
-            <div class="alert alert-danger my-2">
+            <div class="alert alert-danger my-2 alert-dismissible ">
                 <ul class="list-unstyled d-flex justify-content-center">
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <li class="lead ">{{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
@@ -31,6 +31,7 @@
             <table class="table table-hover" id="product-table">
                 <thead>
                     <tr>
+                        <th hidden></th>
                         <th scope="col">#</th>
                         <th scope="col">PRODUCT</th>
                         <th scope="col">IMAGE</th>
@@ -50,9 +51,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($products as $product)
+                    @foreach ($products as $index => $product)
                         <tr>
-                            <td scope="row">{{ $product->id }}</td>
+                            <td hidden>{{ $product->created_at }}</td>
+                            <td scope="row">{{ $index + 1 }}</td>
                             <td>{{ $product->name }}</td>
                             <td>
                                 <img src="{{ $product->image }}" alt="product-image" class="table-image" />
@@ -96,18 +98,20 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group mb-4">
-                                    <label class="form-label" for="productName">Product Name <span
-                                            class="text-danger">*</span></label>
-                                    <input required type="text" name="product-name" id="productName"
-                                        class="form-control" />
+                                    <label class="form-label" for="productName">Product Name
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input required type="text" onfocus="this.select()" name="product-name"
+                                        id="productName" class="form-control" />
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="form-label" for="unitPrice">Unit Price <span
-                                                    class="text-danger">*</span></label>
-                                            <input required type="number" name="price" id="unitPrice"
-                                                class="form-control" step=".01" />
+                                            <label class="form-label" for="unitPrice">Unit Price
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input required type="number" onfocus="this.select()" name="price"
+                                                id="unitPrice" class="form-control" step=".01" />
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -185,13 +189,6 @@
     </div>
     @if (session('success'))
         <script>
-            const showSuccessAlert = Swal.mixin({
-                position: 'top-end',
-                toast: true,
-                timer: 6500,
-                showConfirmButton: false,
-                timerProgressBar: false,
-            });
             showSuccessAlert.fire({
                 icon: 'success',
                 text: '{{ session('success') }}',
@@ -203,6 +200,13 @@
 @endsection
 @section('script')
     <script>
+        const showSuccessAlert = Swal.mixin({
+            position: 'top-end',
+            toast: true,
+            timer: 6500,
+            showConfirmButton: false,
+            timerProgressBar: false,
+        });
         var ids = [];
         $('input[name="check-box"]').on('change', function(e) {
             if (e.currentTarget.checked) {
@@ -215,17 +219,17 @@
             if (ids.length != 0) {
                 $('.link-delete').removeClass('d-none')
                 $('.action-header').addClass('d-none')
-                console.log('not empty');
+                // console.log('not empty');
             } else {
                 $('.link-delete').addClass('d-none')
                 $('.action-header').removeClass('d-none')
-                console.log('empty');
+                // console.log('empty');
             }
         });
         window.DeleteProdructs = function(e) {
             e.preventDefault();
             Swal.fire({
-                title: "Delete All!",
+                title: "Delete Selected!",
                 text: "This action cannot be undone!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -242,9 +246,16 @@
                             id: ids
                         },
                         success: function(res) {
-                            if (res.delete) {
-                                
+                            console.log(res);
+                            if (res.success) {
+                                showSuccessAlert.fire({
+                                    icon: 'success',
+                                    text: res.success,
+                                    padding: '10px',
+                                    width: 'auto'
+                                });
                             }
+                            location.reload();
                         }
                     });
                 }
@@ -313,6 +324,9 @@
             search: {
                 return: true,
             },
+            order: [
+                [0, 'desc']
+            ],
             pageLength: 200,
             dom: 'Bfrtip',
             buttons: [{

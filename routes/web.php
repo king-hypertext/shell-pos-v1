@@ -45,15 +45,15 @@ Route::controller(InvoiceGeneratorController::class)->prefix('view-file')->group
     Route::get('/returns/token/{token}', 'returns')->name('view-file.returns');
     Route::get('/open-stock', 'open_stock')->name('view-file.open-stock');
 });
-Route::controller(EditInvoicesController::class)->prefix('invoices')->group(function () {
+Route::controller(EditInvoicesController::class)->prefix('orders')->group(function () {
     Route::get('/edit/query', 'edit')->name('order.edit');
+    Route::post('/edit/query', 'store')->name('order.edit.save');
     Route::get('/edit', 'index');
     Route::delete('/edit/delete', 'destroy');
 });
 Route::controller(ProductsController::class)->group(function(){
     Route::delete('/products/delete', 'destroy');
     Route::get('/product/{name}', 'fetch');
-
 });
 Route::resource('/products', ProductsController::class);
 Route::resource('/customers', CustomersController::class);

@@ -16,13 +16,13 @@
                             </div>
                         </div>
                         @if ($errors->any())
-                            <div class="list-unstyled alert alert-danger my-2">
-                                <ul class="d-flex justify-content-center">
+                            <ul class="list-unstyled d-flex justify-content-center">
+                                <div class="alert alert-danger alert-dismissible">
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
-                                </ul>
-                            </div>
+                                </div>
+                            </ul>
                         @endif
                         <form action="{{ route('products.store') }}" class="px-5 py-2" method="POST"
                             enctype="multipart/form-data">
@@ -38,7 +38,7 @@
                                 <div class="col-6">
                                     <div class="form-outline">
                                         <input required type="number" value="{{ @old('unit-price') }}" step=".01"
-                                            placeholder="0.00" name="unit-price" id="unitPrice" class="form-control" />
+                                            placeholder="0.00" name="price" id="unitPrice" class="form-control" />
                                         <label class="form-label" for="unitPrice">Unit Price
                                             <span class="text-danger">*</span>
                                         </label>
@@ -87,14 +87,14 @@
                                 <div class="col-6">
                                     <label class="form-label" for="productionDate">Manufacturing Date</label>
                                     <input type="date" max="{{ Date('Y-m-d') }}" value="{{ @old('prod-date') }}"
-                                        name="prod-date" id="productionDate" class="form-control" />
+                                        name="prod_date" id="productionDate" class="form-control" />
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label" for="expiryDate">Expiry Date
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input required type="date" min="{{ Date('Y-m-d') }}"
-                                        value="{{ @old('expiry-date') }}" name="expiry-date" id="expiryDate"
+                                        value="{{ @old('expiry-date') }}" name="expiry_date" id="expiryDate"
                                         class="form-control" />
                                 </div>
                             </div>

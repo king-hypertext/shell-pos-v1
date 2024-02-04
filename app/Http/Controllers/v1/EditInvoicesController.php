@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Controllers\Controller;
 use App\Models\Orders;
+use App\Models\Invoice;
+use App\Models\Products;
+use App\Models\Customers;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
+use function PHPUnit\Framework\isEmpty;
+
+include_once '_token.php';
 class EditInvoicesController extends Controller
 {
     /**
@@ -15,15 +21,12 @@ class EditInvoicesController extends Controller
     {
         $worker_name = $request->worker;
         $order_date = $request->date;
-        // dd($request->all());
-
         $data = Orders::where('customer', $worker_name)->where(function ($date) use ($order_date) {
             $date->where('created_at', $order_date);
         })->get();
         if ($request->ajax()) {
-            // dd($worker_name, $order_date);
             return count($data) > 0 ? response()->json(['data' => route('order.edit', ['worker' => $worker_name, 'order_date' => $order_date])]) : response()->json(['empty' => 'No Data Found']);
-        } //  count($data) > 1 ? response()->json(['data' => $data]) : response()->json(['data' => $data]);
+        }
     }
 
     /**
@@ -39,7 +42,53 @@ class EditInvoicesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'product.*' => 'required|exists:products,name',
+        ]);
+        $customer = Customers::find($request->customer_id);
+        $products = $request->product;
+        $price = $request->price;
+        $quantity = $request->quantity;
+        $date = $request->input('invoice-date');
+        $days = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+        $day = now()->dayOfWeek;
+
+        if ($request->has('order_token')) {
+            $request->validate([
+                'order_token' => 'string|exists:customer_orders,order_token'
+            ]);
+            for ($i = 0; $i < count($products); $i++) {
+                Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
+            }
+            Orders::query()->where('order_token', $request->order_token)->delete();
+            Invoice::query()->where('token', $request->order_token)->delete();
+        }
+        for ($i = 0; $i < count($products); $i++) {
+            $order = [
+                'order_number' => mt_rand(000011, 990099),
+                'customer_id' => $customer->id,
+                'order_token' => _token,
+                'customer' => $customer->name,
+                'product' => $products[$i],
+                'price' => $price[$i],
+                'quantity' => $quantity[$i],
+                'day' => $days[$day],
+                'amount' => ($price[$i] * $quantity[$i]),
+                'created_at' => $date
+            ];
+            Orders::insert($order);
+            Products::where('name', $products[$i])->decrement('quantity', $quantity[$i]);
+        }
+        $amount = Orders::where('order_token', _token)->sum('amount');
+        Invoice::insert([
+            "invoice_number" => mt_rand(1110001, 9990999),
+            "token" => _token,
+            "customer" => $customer->name,
+            "amount" => $amount,
+            "created_at" => $date
+        ]);
+
+        return redirect()->route('orders.customers')->with('success', 'Order Saved');
     }
 
     /**
@@ -57,12 +106,18 @@ class EditInvoicesController extends Controller
     {
         $worker_name = $request->worker;
         $order_date = $request->order_date;
-        // dd($request->all());
         $data = Orders::where('customer', $worker_name)->where(function ($date) use ($order_date) {
             $date->where('created_at', $order_date);
         })->get();
-
-        return view("pages.saved_order", ['data' => $data]);
+        if ($data->count() == 0) {
+            return "Empty data " . "<a href='/dashboard'>Go to dashboard</a>";
+        }
+        foreach ($data as $order) {
+            $token = $order->order_token;
+            $id = $order->customer_id;
+            $customer = $order->customer;
+        }
+        return view("pages.saved_order", ['data' => $data, 'order_token' => $token, 'customer_id' => $id, 'customer' => $customer]);
     }
 
     /**
@@ -78,8 +133,12 @@ class EditInvoicesController extends Controller
      */
     public function destroy(Request $request)
     {
-        // dd($request->all());
-        // return Orders::destroy([77,78,79]);
-        return Orders::whereIn('id', $request->id)->toSql();
+        $ids = $request->id;
+        for ($i = 0; $i < count($ids); $i++) {
+           return $qty = Orders::where('id', $ids[$i])->first()->value('quantity');
+            Products::where('id', $ids[$i])->increment('quantity', $qty);
+        }
+        Orders::destroy($ids);
+        return response()->json(['success' => 'Deleted']);
     }
 }

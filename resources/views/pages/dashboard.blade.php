@@ -124,7 +124,8 @@
                             </h2>
                         </div>
                         <div class="col-4 text-right me-1">
-                            <span><a href="#" class="btn btn-light" title="Go to">View</a></span>
+                            <span><a href="{{ route('products.index', ['query' => 'out-of-stock']) }}" class="btn btn-light"
+                                    title="Go to">View</a></span>
                         </div>
                     </div>
                 </div>
@@ -144,7 +145,7 @@
                             </h2>
                         </div>
                         <div class="col-4 text-right me-1">
-                            <span><a href="#" class="btn btn-light" title="Go to">View</a></span>
+                            <span><a href="{{ route('products.index', ['query' => 'low-stock']) }}" class="btn btn-light" title="Go to">View</a></span>
                         </div>
                     </div>
                 </div>
@@ -164,7 +165,7 @@
                             </h2>
                         </div>
                         <div class="col-4 text-right me-1">
-                            <span><a href="#" class="btn btn-light" title="Go to">View</a></span>
+                            <span><a href="{{ route('products.index', ['query' => 'expired']) }}" class="btn btn-light" title="Go to">View</a></span>
                         </div>
                     </div>
                 </div>
