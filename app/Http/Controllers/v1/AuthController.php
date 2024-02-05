@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -61,6 +62,8 @@ class AuthController extends Controller
      */
     public function login()
     {
+        DB::connection()->getPdo();
+        // return $c;
         $title = "LOGIN";
         return view('auth.login', compact('title'));
     }
