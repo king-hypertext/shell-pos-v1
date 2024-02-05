@@ -21,7 +21,6 @@ class isAppInstalledSuccessfully
             return $next($request);
         } catch (\Throwable $th) {
             return redirect()->to('/install');
-            // return response()->view('install.error', ['error'=>$th]);
             //throw $th;
         }
     }

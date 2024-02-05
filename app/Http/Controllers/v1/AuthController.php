@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -98,6 +99,13 @@ class AuthController extends Controller
         }
 
         return response()->json(['error' => 'invalid credentials']);
+    }
+    public function user_logout()
+    {
+        session()->regenerate();
+        session()->invalidate();
+        Auth::guard('web')->logout();
+        return redirect('login');
     }
     /**
      * Show the form for editing the specified resource.

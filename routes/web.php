@@ -21,13 +21,19 @@ use App\Http\Controllers\v1\CreateSupplierOrderController;
 Route::get('/test', [TestController::class, 'test']);
 Route::controller(InstallerController::class)->group(function () {
     Route::redirect('/install', '/install/step-1');
-    Route::get('/install/step-1', 'stepOne')->name('installer.step1');
+    Route::view('/install/step-1', 'install.step_one', ['title' =>  'INSTALLER-STEP 1'])->name('installer.step1');
+    Route::post('/install/step-1', 'stepOne');
+    Route::view('/install/step-2', 'install.step_two', ['title' =>  'INSTALLER-STEP 2'])->name('installer.step2');
+    Route::post('/install/step-2', 'stepTwo');
+    Route::view('/install/final', 'install.final', ['title' =>  'INSTALLER-STEP 3'])->name('installer.step3');
+    Route::post('/install/final', 'stepThree');
 });
 Route::middleware(['web', 'app'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/login', 'login')->name('login');
         Route::post('/login', 'verify_user');
         Route::post('/auth/login', 'verify_login');
+        Route::post('/logout', 'user_logout')->name('logout');
     })->middleware('guest');
     // only authorize users can access these routes--admin
     Route::middleware(['auth', 'admin'])->group(function () {

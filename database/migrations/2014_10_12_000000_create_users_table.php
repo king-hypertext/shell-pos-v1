@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('admin')->default(0);
             $table->dateTime('login_at')->nullable();
             $table->dateTime('logout_at')->nullable();
-            $table->integer('secret_code')->default(321456)->nullable();
+            $table->string('secret_code')->default(321456)->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

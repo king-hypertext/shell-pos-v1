@@ -2,12 +2,106 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class InstallerController extends Controller
 {
-    public function stepOne()
+    /**  Datebase configuration */
+    public function stepOne(Request $request)
     {
-        return view('install.step_one');
+
+        // $request->dd();
+        $db_name = $request->db_name;
+        $db_username = $request->db_username;
+        $db_password = $request->db_password;
+        $url = $request->app_url;
+        $env = base_path('.env');
+        // Get the content of the .env file
+        $content = file_get_contents($env);
+        // Replace the APP_NAME value with the new value
+        $content = str_replace(
+            [
+                'DB_DATABASE=' . $_ENV['DB_DATABASE'],
+                'DB_USERNAME=' . $_ENV['DB_USERNAME'],
+                'DB_PASSWORD=' . $_ENV['DB_PASSWORD'],
+                'APP_ENV=' . $_ENV['APP_ENV'],
+                'APP_DEBUG=' . $_ENV['APP_DEBUG'],
+                'APP_URL=' . $_ENV['APP_URL']
+            ],
+            [
+                'DB_DATABASE=' . $db_name,
+                'DB_USERNAME=' . $db_username ?? 'root',
+                'DB_PASSWORD=' . $db_password ?? '',
+                'APP_ENV=' . 'production',
+                'APP_DEBUG=' . 'false',
+                'APP_URL=' . $url
+            ],
+            $content
+        );
+        file_put_contents($env, $content);
+
+        // call migration command to save database configuration
+        Artisan::call('migrate:fresh', ['--force' => true]);
+        // Save the content back to the .env file
+
+        return response()->json(['next' => route('installer.step2')]);
+    }
+    public function stepTwo(Request $request)
+    {
+        // $request->dd();
+        $request->validate([
+            'username' => 'required|string',
+            'fullname' => 'required|string',
+            'date_of_birth' => 'required|date|date_format:Y-m-d',
+            'secret_code' => 'required|numeric',
+        ], [
+            'secret_code.numeric' => 'The secret code must be numeric only',
+        ]);
+        try {
+            DB::connection()->getPdo();
+            $insert =  User::insert([
+                'username' => $request->username,
+                'fullname' => $request->fullname,
+                'date_of_birth' => $request->date_of_birth,
+                'photo' => 'null',
+                'gender' => $request->gender,
+                'admin' => 1,
+                'secret_code' => Hash::make($request->secret_code),
+                'password' => Hash::make($request->password),
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ]);
+            $id = User::first()->id;
+            if ($insert) {
+                return redirect()->to('/install/final')->withInput(['id' => $id]);
+            }
+        } catch (\Throwable $th) {
+            return $th;
+            return redirect()->route('installer.step1');
+        }
+    }
+    public function stepThree(Request $request)
+    {
+        // $request->dd();
+        $request->validate(
+            [
+                'image' => 'required|file|mimes:png,jpg,jpeg,webp'
+            ],
+            [
+                'image.mimes' => 'The uploaded file is not an image file'
+            ]
+        );
+        if ($request->hasFile('image')) {
+
+            $path =  $request->file('image')->store('/public/users');
+        }
+        User::where('id', $request->id)->update([
+            'photo' => '/storage/users/' . str_replace(['public/', 'users/'], '', $path)
+        ]);
+        return redirect()->to('/login');
+        // return $request;
     }
 }

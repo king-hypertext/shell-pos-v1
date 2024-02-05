@@ -19,7 +19,6 @@ class Admin
         if (Auth::user() && Auth::user()->admin === 1) {
             return $next($request);
         }
-        return response()->view('install.error');
         abort(403, 'Unauthorized! You Are Not an Administrator.');
     }
 }

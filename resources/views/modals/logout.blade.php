@@ -6,7 +6,7 @@
                 <h5 class="mb-0">LOGOUT</h5>
                 <p class="mb-0">Are you sure you want to logout?</p>
             </div>
-            <form action="#" method="post">
+            <form action="/logout" method="post">
                 <div class="modal-footer flex-nowrap p-0">
                     @csrf
                     <button type="submit"
