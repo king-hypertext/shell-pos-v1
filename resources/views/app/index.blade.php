@@ -26,7 +26,7 @@
 </head>
 
 <body style="background-color: var(--bs-gray-200);height: 100vh!important;">
-    <div class="container-fluid px-0 text-black">
+    <div class="container-fluid px-0 text-black mb-3 ">
         {{-- sidenav --}}
         @include('app.sidenav')
         <div class="main-content">
@@ -38,6 +38,7 @@
             </div>
         </div>
     </div>
+    @include('app.footer')
     @include('modals.logout')
     <div id="back-drop" class="back-drop"></div>
     <script async type="application/javascript" src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>

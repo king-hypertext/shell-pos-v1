@@ -12,7 +12,10 @@
                     <h3 class="text-center text-primary py-2">
                         Login to your account
                     </h3>
-                    {{-- <div class="alert alert-warning text-warning">{{ session('login') }}</div> --}}
+                    
+                    @if (session('new_password'))
+                        <div class="alert alert-info  text-center  text-info">{{ session('new_password') }}</div>
+                    @endif
                     <div class="h6 alert alert-danger alert-dismissible text-danger text-center" id="login-error"></div>
                     <div class="form-outline mb-4">
                         <input required type="text" autofocus name="username" id="username"
@@ -32,7 +35,7 @@
                     </div>
                 </form>
                 <div class="form-text">
-                    Forgotten Password? <a href="{{ url('/auth/reset-password') }}" title="Click to reset your password"
+                    Forgotten Password? <a href="{{ route('forgot.password') }}" title="Click to reset your password"
                         class="btn-link">Reset</a>
                 </div>
             </div>
@@ -79,5 +82,3 @@
         });
     </script>
 @endsection
-
-</html>

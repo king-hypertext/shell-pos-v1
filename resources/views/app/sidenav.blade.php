@@ -14,7 +14,8 @@
                     Dashboard
                 </a>
             </li>
-            <li class="nav-item my-1 {{ Request::segment(1) === 'products' && !Request::segment(2) ? 'active' : '' }}">
+            <li
+                class="nav-item my-1 {{ (Request::segment(1) === 'products' && !Request::segment(2)) || (Request::segment(1) === 'stats' && Request::segment(2) === 'product') ? 'active' : '' }}">
                 <a href="{{ route('products.index') }}" class="nav-link">
                     <i class="fa-solid fa-warehouse"></i>
                     Inventories
@@ -133,8 +134,8 @@
                     Returns
                 </a>
             </li>
-            <li class="nav-item my-1">
-                <a href="#" class="nav-link">
+            <li class="nav-item my-1 {{ Request::segment(1) === 'settings' ? 'active' : '' }}">
+                <a href="{{ route('settings') }}" class="nav-link">
                     <i class="fas fa-gear"></i>
                     Settings
                 </a>

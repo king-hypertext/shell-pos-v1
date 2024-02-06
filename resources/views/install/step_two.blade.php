@@ -35,6 +35,11 @@
                             class="form-control form-control-lg" />
                         <label class="form-label" for="fullname">Fullname <span class="text-danger">*</span></label>
                     </div>
+                    <div class="form-outline mb-4">
+                        <input required type="text" autofocus name="phone" id="phone"
+                            class="form-control form-control-lg" />
+                        <label class="form-label" for="phone">Phone Number <span class="text-danger">*</span></label>
+                    </div>
                     <div class="form-group mb-4">
                         <label class="form-label" for="fullname">Gender <span class="text-danger">*</span></label>
                         <select required name="gender" id="gender" class="form-select">

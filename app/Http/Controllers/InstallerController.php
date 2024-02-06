@@ -67,6 +67,7 @@ class InstallerController extends Controller
                 'username' => $request->username,
                 'fullname' => $request->fullname,
                 'date_of_birth' => $request->date_of_birth,
+                'phone' => $request->phone,
                 'photo' => 'null',
                 'gender' => $request->gender,
                 'admin' => 1,
@@ -91,7 +92,8 @@ class InstallerController extends Controller
                 'image' => 'required|file|mimes:png,jpg,jpeg,webp'
             ],
             [
-                'image.mimes' => 'The uploaded file is not an image file'
+                'image.mimes' => 'The uploaded file type is not allowed',
+                'image.file' => 'The uploaded file is not an image file'
             ]
         );
         if ($request->hasFile('image')) {

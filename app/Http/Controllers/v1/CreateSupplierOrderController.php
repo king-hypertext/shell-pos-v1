@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Controllers\Controller;
 use App\Models\Products;
-use App\Models\SupplierInvoice;
-use App\Models\SupplierOrders;
 use App\Models\Suppliers;
+use App\Models\ProductStats;
 use Illuminate\Http\Request;
+use App\Models\SupplierOrders;
+use App\Models\SupplierInvoice;
+use App\Http\Controllers\Controller;
 
 include_once '_token.php';
 class CreateSupplierOrderController extends Controller
@@ -60,9 +61,20 @@ class CreateSupplierOrderController extends Controller
                 'day' => $days[$day],
                 'created_at' => $date
             ];
+            $before_qty = Products::where('name', $products[$i])->value('quantity');
+            ProductStats::insert([
+                'product' => $products[$i],
+                'product_id' => Products::where('name', $products[$i])->value('id'),
+                'supplied' => $quantity[$i],
+                'to' => $supplier->name,
+                'before_qty' => $before_qty,
+                'after_qty' => $before_qty - $quantity[$i],
+                'qty' => $quantity[$i],
+                'date' => now()->format('Y-m-d H:i:s')
+            ]);
             SupplierOrders::insert($order);
             Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
-            // update the price of the products when price is changed
+            /* update the price of the products when price is changed */
             Products::where('name', $products[$i])->update([
                 'price' => $price[$i],
             ]);

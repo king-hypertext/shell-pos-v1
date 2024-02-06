@@ -32,16 +32,16 @@
                 <thead>
                     <tr>
                         <th hidden></th>
-                        <th scope="col">#</th>
-                        <th scope="col">PRODUCT</th>
-                        <th scope="col">IMAGE</th>
-                        <th scope="col">PRICE(GHS)</th>
-                        <th scope="col" title="available quantity">AVAIL. QTY</th>
-                        <th scope="col">SUPPLIED BY</th>
-                        <th scope="col" title="category">CAT.</th>
-                        <th scope="col">PROD. DATE</th>
-                        <th scope="col">EXPIRY DATE</th>
-                        <th scope="col">Edit</th>
+                        <th scope="col" class="text-start ">#</th>
+                        <th scope="col" class="text-start ">PRODUCT</th>
+                        <th scope="col" class="text-start ">IMAGE</th>
+                        <th scope="col" class="text-start ">PRICE(GHS)</th>
+                        <th scope="col" class="text-start " title="available quantity">QTY</th>
+                        <th scope="col" class="text-start " title="supplier">SUP.</th>
+                        <th scope="col" class="text-start " title="category">CAT.</th>
+                        <th scope="col" class="text-start ">PROD. DATE</th>
+                        <th scope="col" class="text-start ">EXP. DATE</th>
+                        <th scope="col" class="text-start ">ACTION</th>
                         <th>
                             <span class="action-header">Misc</span>
                             <a href="#" role="button" class="link-delete text-danger d-none"
@@ -70,6 +70,11 @@
                                     title="Edit {{ $product->name }}">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
+                                <a href="{{ route('product.show', [$product->id]) }}" type="button"
+                                    id="{{ $product->id }}" class="btn text-success my-1"
+                                    title="Show {{ $product->name }} Stats">
+                                    <i class="fa-regular fa-eye"></i>
+                                </a>
                             </td>
                             <td>
                                 <div class="row justify-content-center align-items-center mb-0 pt-3">
@@ -211,10 +216,10 @@
         $('input[name="check-box"]').on('change', function(e) {
             if (e.currentTarget.checked) {
                 ids.push(e.currentTarget.value);
-                console.log(ids);
+                // console.log(ids);
             } else {
                 ids.pop(e.currentTarget.value)
-                console.log(ids);
+                // console.log(ids);
             }
             if (ids.length != 0) {
                 $('.link-delete').removeClass('d-none')

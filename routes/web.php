@@ -17,6 +17,8 @@ use App\Http\Controllers\v1\InvoiceGeneratorController;
 use App\Http\Controllers\v1\SuppliersInvoiceController;
 use App\Http\Controllers\v1\createCustomerOrderController;
 use App\Http\Controllers\v1\CreateSupplierOrderController;
+use App\Http\Controllers\v1\ProductStatsController;
+use App\Http\Controllers\v1\SettingsController;
 
 Route::get('/test', [TestController::class, 'test']);
 Route::controller(InstallerController::class)->group(function () {
@@ -32,11 +34,18 @@ Route::middleware(['web', 'app'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/login', 'login')->name('login');
         Route::post('/login', 'verify_user');
-        Route::post('/auth/login', 'verify_login');
+        Route::view('/auth/forgot-password', 'auth.forgot_password', ['title' => 'FORGOT PASSWORD'])->name('forgot.password');
+        Route::view('/auth/new-password', 'auth.new_password', ['title' => 'RESET PASSWORD'])->name('new.password');
+        Route::post('/auth/forgot-password', 'forgotPassword');
+        Route::post('/auth/new-password', 'ResetPassword');
         Route::post('/logout', 'user_logout')->name('logout');
     })->middleware('guest');
+
     // only authorize users can access these routes--admin
     Route::middleware(['auth', 'admin'])->group(function () {
+        Route::controller(AuthController::class)->group(function () {
+            Route::post('/update-profile', 'store');
+        });
         Route::controller(IndexController::class)->group(function () {
             Route::redirect('/', '/dashboard');
             Route::get('/dashboard', 'index')->name('dashboard');
@@ -70,6 +79,7 @@ Route::middleware(['web', 'app'])->group(function () {
             Route::get('/product/{name}', 'fetch');
         });
         Route::resource('/products', ProductsController::class);
+        Route::resource('/stats/product', ProductStatsController::class);
         Route::resource('/customers', CustomersController::class);
         Route::resource('/suppliers', SuppliersController::class);
         Route::resource('/create-order/customer', createCustomerOrderController::class);
@@ -79,6 +89,9 @@ Route::middleware(['web', 'app'])->group(function () {
         });
         Route::controller(SuppliersInvoiceController::class)->group(function () {
             Route::get('/invoices/suppliers', 'index')->name('invoices.suppliers');
+        });
+        Route::controller(SettingsController::class)->group(function () {
+            Route::get('/settings', 'index')->name('settings');
         });
     });
 });

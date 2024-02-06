@@ -14,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family:'Times New Roman', Times, serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: 'Times New Roman', Times, serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-size: 14pt;
             font-weight: 400;
             line-height: 1.5;
@@ -37,7 +37,7 @@
             border-collapse: collapse;
             vertical-align: top;
             margin-bottom: 1rem;
-            
+
         }
 
         table>tr {
@@ -98,10 +98,12 @@
         .d-inline {
             display: inline;
         }
-        h6{
+
+        h6 {
             font-size: 14pt;
             font-weight: 600;
         }
+
         @media print {
 
             @page {
@@ -109,7 +111,8 @@
                 margin: 0.5in;
             }
         }
-        .text-bold{
+
+        .text-bold {
             font-weight: 500;
         }
     </style>
@@ -140,17 +143,18 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
+                    <td>{{ auth()->user()->fullname }}</td>
                     <td>{{ $customer->name }}</td>
                 </tr>
                 <tr>
-                    <td>2</td>
-                    <td>{{ $customer->address }}</td>
-                </tr>
-                <tr>
-                    <td>3</td>
+                    <td>{{ auth()->user()->phone }}</td>
                     <td>{{ $customer->contact }}</td>
                 </tr>
+                <tr>
+                    <td></td>
+                    <td>{{ $customer->address }}</td>
+                </tr>
+
             </tbody>
         </table>
         <h3>Invoice summary</h3>

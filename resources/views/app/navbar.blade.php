@@ -8,7 +8,7 @@
         <form action="" method="get" class="py-2 m-0 d-none d-md-block">
             <input class="form-control" type="search" name="q" placeholder="Search..." aria-label="Search" />
         </form>
-        <div class="dropdown pe-3 ">
+        <div class="dropdown me-2">
             <a href="javascript:void(0)" class="nav-link" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 {{ auth()->user()->username ?? 'username' }}
@@ -20,7 +20,7 @@
                     <h6 class="dropdown-header h6 text-uppercase ">{{ auth()->user()->fullname }}</h6>
                 </li>
                 <li><a class="dropdown-item" href="#">Notifications</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="{{ route('settings') }}">Settings</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>

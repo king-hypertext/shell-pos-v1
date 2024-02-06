@@ -13,14 +13,14 @@
                         <div class="col-5">
                             <div class="form-group">
                                 @php
-                                    use App\Models\Customers;
-                                    $customers = Customers::select('name')->get();
+                                    use App\Models\Suppliers;
+                                    $suppliers = Suppliers::select('name')->get();
                                 @endphp
                                 <select @required(true) class="form-select" name="worker" id="worker">
-                                    <option selected value=""> Select Customer </option>
-                                    @foreach ($customers as $customer)
-                                        <option value="{{ $customer->name }}">
-                                            {{ $customer->name }}
+                                    <option selected value=""> Select Supplier </option>
+                                    @foreach ($suppliers as $supplier)
+                                        <option value="{{ $supplier->name }}">
+                                            {{ $supplier->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -42,7 +42,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary ripple-surface" data-bs-dismiss="modal">Close</button>
-
             </div>
         </div>
     </div>

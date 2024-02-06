@@ -144,14 +144,14 @@
             <tbody>
                 <tr>
                     <td>{{ $supplier->name }}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>{{ $supplier->address }}</td>
-                    <td></td>
+                    <td>{{ auth()->user()->fullname }}</td>
                 </tr>
                 <tr>
                     <td>{{ $supplier->contact }}</td>
+                    <td>{{ auth()->user()->phone }}</td>
+                </tr>
+                <tr>
+                    <td>{{ $supplier->address }}</td>
                     <td></td>
                 </tr>
             </tbody>

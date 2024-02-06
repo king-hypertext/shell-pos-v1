@@ -116,8 +116,8 @@
                             </td>
                             <td class="col-md-3">
                                 <div class="form-group">
-                                    <input type="text" name="price[]" type="number" onfocus="this.select()" step=".01"
-                                        value="0.00" id="price" class="form-control" />
+                                    <input type="text" name="price[]" type="number" onfocus="this.select()"
+                                        step=".01" value="0.00" id="price" class="form-control" />
                                 </div>
                             </td>
                             <td class="col-md-2">
@@ -148,7 +148,24 @@
             </div>
         </form>
     </div>
-    @include('modals.saved_invoice')
+    @if (session('success'))
+        <script>
+            const showSuccessAlert = Swal.mixin({
+                position: 'top-end',
+                toast: true,
+                timer: 6500,
+                showConfirmButton: false,
+                timerProgressBar: false,
+            });
+            showSuccessAlert.fire({
+                icon: 'success',
+                text: '{{ session('success') }}',
+                padding: '10px',
+                width: 'auto'
+            });
+        </script>
+    @endif
+    @include('modals.saved_invoice_supplier')
 @endsection
 @section('script')
     <script>

@@ -7,29 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -38,33 +19,28 @@ class AuthController extends Controller
             'fullname' => 'required|string'
         ]);
 
-        if ($request->hasFile("user-image")) {
+        if ($request->hasFile("image")) {
             $request->validate([
-                'user-image' => 'required|file|mimes:png,jpg,jpeg,webp',
+                'image' => 'required|file|mimes:png,jpg,jpeg,webp',
             ]);
-            $path = $request->file("user-image")->store('/public/user');
+            $path = $request->file("image")->store('/public/user');
         }
-        User::insert([
+        User::where('id', auth()->user()->id)->update([
             "username" => $request->input("username"),
             "fullname" => $request->input("fullname"),
             "gender" => $request->input("gender"),
-            "date_of_birth" => $request->input("dob"),
-            "address" => $request->input("address"),
-            "password" => $request->input("password"),
+            "phone" => $request->input("phone"),
+            "date_of_birth" => $request->input("date_of_birth"),
+            "secret_code" => Hash::make($request->secret_code),
+            "password" => Hash::make($request->password),
             "photo" => '/storage/user/' . str_replace(['public/', 'user/'], '', $path),
-            "created_at" => now()->format('Y-m-d')
+            "updated_at" => now()->format('Y-m-d H:i:s')
         ]);
 
         return back()->with("success", "User Updated");
     }
-
-    /**
-     * Display the specified resource.
-     */
     public function login()
     {
-        DB::connection()->getPdo();
-        // return $c;
         $title = "LOGIN";
         return view('auth.login', compact('title'));
     }
@@ -78,56 +54,43 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('username', 'password'))) {
+            DB::table('users')->where('id', auth()->user()->id)->update(['login_at' => now()->format('Y-m-d H:i:s')]);
             $request->session()->regenerate();
-            return response()->json(['data' => route('dashboard')]);
+            return response()->json(['data' => route('dashboard'), 'id' => auth()->user()->id]);
         }
-        // return redirect()->intended('/');
-        // $request->session()->regenerate();
-
-        return response()->json(['error' => 'invalid credentials']);
-    }
-    public function verify_login(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|alpha_num'
-        ]);
-
-        if (Auth::attempt($request->only('username', 'password'))) {
-            $request->session()->regenerate();
-            return redirect()->intended('/');
-        }
-
         return response()->json(['error' => 'invalid credentials']);
     }
     public function user_logout()
     {
+        DB::table('users')->where('id', auth()->user()->id)->update(['logout_at' => now()->format('Y-m-d H:i:s')]);
         session()->regenerate();
         session()->invalidate();
         Auth::guard('web')->logout();
         return redirect('login');
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
+    public function forgotPassword(Request $request)
     {
-        //
+        $request->validate([
+            'secret_code' => 'required',
+            'date_of_birth' => 'required|exists:users,date_of_birth'
+        ]);
+        $secret_code = Hash::check($request->secret_code, DB::table('users')->first()->secret_code);
+        if ($secret_code && User::first()->date_of_birth === $request->date_of_birth) {
+            return redirect()->route('new.password');
+        }
+        return back()->withErrors(['secret_code' => 'Secret Code is Invalid', 'date_of_birth' => 'Date of Birth is Invalid']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
+    public function ResetPassword(Request $request, User $user)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
+        $request->validate([
+            'password' => 'required|confirmed',
+        ], [
+            'password.confirmed' => 'Password and Confirm password mismatched'
+        ]);
+        User::first()->update([
+            'password' => Hash::make($request->password)
+        ]);
+        return redirect()->route('login')->with('new_password', 'Password was changed');
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('username');
             $table->string('fullname')->default('super admin');
+            $table->string('phone')->default('N/A');
             $table->date('date_of_birth');
             $table->boolean('gender');
             $table->string('photo')->nullable()->default('');
