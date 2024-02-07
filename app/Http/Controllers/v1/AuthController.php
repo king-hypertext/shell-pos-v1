@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Providers\RouteServiceProvider;
 
 class AuthController extends Controller
 {
@@ -74,13 +75,13 @@ class AuthController extends Controller
             'username' => 'required|string',
             'password' => 'required|alpha_num'
         ]);
-
         if (Auth::attempt($request->only('username', 'password'))) {
             DB::table('users')->where('id', auth()->user()->id)->update(['login_at' => now()->format('Y-m-d H:i:s')]);
             $request->session()->regenerate();
-            return response()->json(['data' => route('dashboard'), 'id' => auth()->user()->id]);
+            return  redirect()->intended(RouteServiceProvider::HOME);
         }
-        return response()->json(['error' => 'invalid credentials']);
+        return back()->with('error', 'invalid credentials');
+        //  response()->json(['error' => 'invalid credentials']);
     }
 
     public function user_logout()

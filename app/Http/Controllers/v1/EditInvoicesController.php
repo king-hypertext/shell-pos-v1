@@ -42,6 +42,7 @@ class EditInvoicesController extends Controller
      */
     public function store(Request $request)
     {
+        // $request->dd();
         $request->validate([
             'product.*' => 'required|exists:products,name',
         ]);
@@ -54,9 +55,14 @@ class EditInvoicesController extends Controller
         $day = now()->dayOfWeek;
 
         if ($request->has('order_token')) {
-            $request->validate([
-                'order_token' => 'string|exists:customer_orders,order_token'
-            ]);
+            $request->validate(
+                [
+                    'order_token' => 'string|exists:customer_orders,order_token'
+                ],
+                [
+                    'order_token.exists' => 'Token mismatched'
+                ]
+            );
             for ($i = 0; $i < count($products); $i++) {
                 Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
             }
@@ -74,7 +80,8 @@ class EditInvoicesController extends Controller
                 'quantity' => $quantity[$i],
                 'day' => $days[$day],
                 'amount' => ($price[$i] * $quantity[$i]),
-                'created_at' => $date
+                'created_at' => $date,
+                'updated_at' => now()->format('Y-m-d')
             ];
             Orders::insert($order);
             Products::where('name', $products[$i])->decrement('quantity', $quantity[$i]);
@@ -85,9 +92,10 @@ class EditInvoicesController extends Controller
             "token" => _token,
             "customer" => $customer->name,
             "amount" => $amount,
-            "created_at" => $date
+            "created_at" => $date,
+            "updated_at" => now()->format('Y-m-d')
         ]);
-
+        return redirect()->route('order.edit', ['worker' => $customer->name, 'order_date' => $date])->with('success', 'Order Updated');
         return redirect()->route('orders.customers')->with('success', 'Order Saved');
     }
 
@@ -116,8 +124,9 @@ class EditInvoicesController extends Controller
             $token = $order->order_token;
             $id = $order->customer_id;
             $customer = $order->customer;
+            $date = $order->created_at;
         }
-        return view("pages.saved_order", ['data' => $data, 'order_token' => $token, 'customer_id' => $id, 'customer' => $customer]);
+        return view("pages.saved_order", ['data' => $data, 'order_token' => $token, 'customer_id' => $id, 'customer' => $customer, 'date' => $date]);
     }
 
     /**
@@ -135,7 +144,7 @@ class EditInvoicesController extends Controller
     {
         $ids = $request->id;
         for ($i = 0; $i < count($ids); $i++) {
-           return $qty = Orders::where('id', $ids[$i])->first()->value('quantity');
+            return $qty = Orders::where('id', $ids[$i])->first()->value('quantity');
             Products::where('id', $ids[$i])->increment('quantity', $qty);
         }
         Orders::destroy($ids);

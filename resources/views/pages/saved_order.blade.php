@@ -1,10 +1,13 @@
 @extends('app.index')
 @section('content')
+    @php
+        use Carbon\Carbon;
+    @endphp
     <div class="container fluid">
         <form autocomplete="off" id="form-invoice" action="{{ route('order.edit.save') }}" method="post">
             @csrf
             <input type="hidden" name="customer_id" value="{{ $customer_id }}" />
-            <input type="hidden" name="invoice-date" value="{{ Date('Y-m-d') }}" />
+            <input type="hidden" name="invoice-date" value="{{ Carbon::parse($date)->format('Y-m-d') }}" />
             <input type="hidden" name="order_token" value="{{ $order_token }}" />
 
             <hr class="hr text-dark" />
@@ -100,16 +103,26 @@
             </div>
         </form>
     </div>
+    @if (session('success'))
+        <script>
+            const showSuccessAlert = Swal.mixin({
+                position: 'top-end',
+                toast: true,
+                timer: 6500,
+                showConfirmButton: false,
+                timerProgressBar: false,
+            });
+            showSuccessAlert.fire({
+                icon: 'success',
+                text: '{{ session('success') }}',
+                padding: '10px',
+                width: 'auto'
+            });
+        </script>
+    @endif
 @endsection
 @section('script')
     <script>
-        const showSuccessAlert = Swal.mixin({
-            position: 'top-end',
-            toast: true,
-            timer: 6500,
-            showConfirmButton: false,
-            timerProgressBar: false,
-        });
         var ids = [];
         $('input[name="check-box"]').on('change', function(e) {
             if (e.currentTarget.checked) {

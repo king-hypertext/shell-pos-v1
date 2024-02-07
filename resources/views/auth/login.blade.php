@@ -12,14 +12,20 @@
                     <h3 class="text-center text-primary py-2">
                         Login to your account
                     </h3>
-                    
+
                     @if (session('new_password'))
                         <div class="alert alert-info  text-center  text-info">{{ session('new_password') }}</div>
                     @endif
-                    <div class="h6 alert alert-danger alert-dismissible text-danger text-center" id="login-error"></div>
+                    @if (session('error'))
+                        <div class="h6 alert alert-danger alert-dismissible text-danger text-center">
+                            <ul class="list-unstyled text-center">
+                                <li>{{ session('error') }}</li>
+                            </ul>
+                        </div>
+                    @endif
                     <div class="form-outline mb-4">
                         <input required type="text" autofocus name="username" id="username"
-                            class="form-control form-control-lg" />
+                            class="form-control form-control-lg" value="{{ @old('username') }}"/>
                         <label class="form-label" for="username">Username</label>
                     </div>
                     <div class="form-outline mb-4">
@@ -46,38 +52,39 @@
     <script>
         $(function() {
             $('#btn-icon').hide();
-            $('#login-error').hide();
+            // $('#login-error').hide();
             $('#login').on('submit', function(e) {
-                e.preventDefault();
+                // e.preventDefault();
                 $('#btn-icon').show();
+                return true;
                 var username = e.currentTarget[1].value,
                     password = e.currentTarget[2].value;
-                $.ajax({
-                    url: "/login",
-                    type: "POST",
-                    data: {
-                        _token: e.currentTarget[0].value,
-                        username: username,
-                        password: password
-                    },
-                    success: function(data) {
-                        $('#btn-icon').hide();
-                        if (data.error) {
-                            $('#login-error').show();
-                            $('#login-error').text(data.error);
-                        }
-                        console.log(data);
-                        window.open(data.data, '_self');
-                    },
-                    error: function(error) {
-                        $('#btn-icon').hide();
-                        if (error.error) {
-                            $('#login-error').show();
-                            $('#login-error').text(error.error);
-                        }
-                        console.log(error);
-                    }
-                })
+                // $.ajax({
+                //     url: "/login",
+                //     type: "POST",
+                //     data: {
+                //         _token: e.currentTarget[0].value,
+                //         username: username,
+                //         password: password
+                //     },
+                //     success: function(data) {
+                //         $('#btn-icon').hide();
+                //         if (data.error) {
+                //             $('#login-error').show();
+                //             $('#login-error').text(data.error);
+                //         }
+                //         console.log(data);
+                //         window.open(data.data, '_self');
+                //     },
+                //     error: function(error) {
+                //         $('#btn-icon').hide();
+                //         if (error.error) {
+                //             $('#login-error').show();
+                //             $('#login-error').text(error.error);
+                //         }
+                //         console.log(error);
+                //     }
+                // })
             });
         });
     </script>
