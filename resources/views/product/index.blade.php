@@ -1,30 +1,59 @@
 @extends('app.index')
 @section('content')
-    <h4 class="h4 fw-semibold text-capitalize ">
-        product ({{ $data->name }}) stats
-    </h4>
-    <ul class="list-inline">
-        <li class="list-inline-item"><span class="h6">Price: </span>{{ $data->price }}</li>
-        <li class="list-inline-item"><span class="h6">Quantity: </span>{{ $data->quantity }}</li>
-        <li class="list-inline-item"><span class="h6">Supplier: </span>{{ $data->supplied_by }}</li>
-        <li class="list-inline-item"><span class="h6">Category: </span>{{ $data->category }}</li>
-    </ul>
+    @php
+        use App\Models\Products;
+        use Carbon\Carbon;
+        $products = Products::get(['name', 'id']);
+    @endphp
+    <div class="row d-flex justify-content-between">
+        <div class="col-md-8">
+            <h4 class="h4 fw-semibold text-capitalize ">
+                product ({{ $data->name }}) stats
+            </h4>
+            <ul class="list-inline">
+                <li class="list-inline-item"><span class="h6">Price: </span>{{ $data->price }}</li>
+                <li class="list-inline-item"><span class="h6">Quantity: </span>{{ $data->quantity }}</li>
+                <li class="list-inline-item"><span class="h6">Supplier: </span>{{ $data->supplied_by }}</li>
+                <li class="list-inline-item"><span class="h6">Category: </span>{{ $data->category }}</li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <div class="mt-3">
+                <div class="form-group">
+                    <label for="products">Change Product</label>
+                    <select name="product" id="product">
+                        <option value="" selected>Select Product</option>
+                        @foreach ($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover " id="stats">
             <thead>
                 <tr>
-                    <th role="columnheader" scope="col" class="user-select-none">#</th>
-                    <th role="columnheader" scope="col" class="user-select-none">date</th>
-                    <th role="columnheader" scope="col" class="user-select-none"
-                        title="Recieved (how much were received)">rcvd</th>
-                    <th role="columnheader" scope="col" class="user-select-none">from</th>
-                    <th role="columnheader" scope="col" class="user-select-none" title="(How much were given out)">supply
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase">#</th>
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase">date</th>
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase"
+                        title="Recieved (how much were received)">received</th>
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase">from</th>
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase"
+                        title="(How much were given out)">qty supply
                     </th>
-                    <th role="columnheader" scope="col" class="user-select-none" title="(who was it given out to?)">to
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase"
+                        title="(who was it given out to?)">to
                     </th>
-                    <th role="columnheader" scope="col" class="user-select-none" title="Before Quanity">bf qty
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase" title="Before Quanity">
+                        before qty
                     </th>
-                    <th role="columnheader" scope="col" class="user-select-none" title="After Quantity">af qty
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase" title="After Quantity">
+                        after qty
+                    </th>
+                    <th role="columnheader" scope="col" class="user-select-none text-uppercase" title="After Quantity">
+                        aval. qty
                     </th>
                 </tr>
             </thead>
@@ -32,14 +61,14 @@
                 @foreach ($stats as $stat)
                     <tr>
                         <td>{{ $stat->id }}</td>
-                        <td>{{ $stat->date }}</td>
+                        <td>{{ Carbon::parse($stat->date)->format('Y-M-d H:i') }}</td>
                         <td>{{ $stat->qty_received }}</td>
                         <td>{{ $stat->from }}</td>
                         <td>{{ $stat->supplied }}</td>
                         <td>{{ $stat->to }}</td>
                         <td>{{ $stat->before_qty }}</td>
                         <td>{{ $stat->after_qty }}</td>
-                        {{-- <td>{{ $stat }}</td> --}}
+                        <td>{{ $stat->qty }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -49,6 +78,22 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            var select = $('select#product')
+            select.select2();
+            $(document).on('select2:open', () => {
+                document.querySelector('.select2-search__field').focus();
+            });
+            var path = location.pathname.replace(/\/[^\/]*$/, '/');
+            $(document).on('change', '[name="product"]', function(e) {
+                var selectedValue = e.currentTarget.value;
+                $.ajax({
+                    method: "GET",
+                    url: "/products/" + selectedValue,
+                    success: function(res) {
+                        window.location.href = path + res.id;
+                    },
+                });
+            });
             var table = new DataTable('#stats', {
                 processing: true,
                 search: {

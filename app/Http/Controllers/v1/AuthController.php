@@ -11,6 +11,22 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function update(Request $request)
+    {
+        // return $request->all();
+        $request->validate([
+            'password' => 'required|string',
+            'secret_code' => 'required|numeric'
+        ], [
+            'secret_code.numeric' => 'The secret code must be numeric only'
+        ]);
+        User::where('id', auth()->user()->id)->update([
+            "secret_code" => Hash::make($request->secret_code),
+            "password" => Hash::make($request->password),
+            "updated_at" => now()->format('Y-m-d H:i:s')
+        ]);
+        return response()->json(['success' => 'Password Changed Successfully']);
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -24,19 +40,25 @@ class AuthController extends Controller
                 'image' => 'required|file|mimes:png,jpg,jpeg,webp',
             ]);
             $path = $request->file("image")->store('/public/user');
+            User::where('id', auth()->user()->id)->update([
+                "username" => $request->input("username"),
+                "fullname" => $request->input("fullname"),
+                "gender" => $request->input("gender"),
+                "phone" => $request->input("phone"),
+                "date_of_birth" => $request->input("date_of_birth"),
+                "photo" => '/storage/user/' . str_replace(['public/', 'user/'], '', $path),
+                "updated_at" => now()->format('Y-m-d H:i:s')
+            ]);
+        } else {
+            User::where('id', auth()->user()->id)->update([
+                "username" => $request->input("username"),
+                "fullname" => $request->input("fullname"),
+                "gender" => $request->input("gender"),
+                "phone" => $request->input("phone"),
+                "date_of_birth" => $request->input("date_of_birth"),
+                "updated_at" => now()->format('Y-m-d H:i:s')
+            ]);
         }
-        User::where('id', auth()->user()->id)->update([
-            "username" => $request->input("username"),
-            "fullname" => $request->input("fullname"),
-            "gender" => $request->input("gender"),
-            "phone" => $request->input("phone"),
-            "date_of_birth" => $request->input("date_of_birth"),
-            "secret_code" => Hash::make($request->secret_code),
-            "password" => Hash::make($request->password),
-            "photo" => '/storage/user/' . str_replace(['public/', 'user/'], '', $path),
-            "updated_at" => now()->format('Y-m-d H:i:s')
-        ]);
-
         return back()->with("success", "User Updated");
     }
     public function login()
@@ -60,6 +82,7 @@ class AuthController extends Controller
         }
         return response()->json(['error' => 'invalid credentials']);
     }
+
     public function user_logout()
     {
         DB::table('users')->where('id', auth()->user()->id)->update(['logout_at' => now()->format('Y-m-d H:i:s')]);
@@ -68,6 +91,7 @@ class AuthController extends Controller
         Auth::guard('web')->logout();
         return redirect('login');
     }
+
     public function forgotPassword(Request $request)
     {
         $request->validate([

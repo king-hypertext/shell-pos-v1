@@ -25,6 +25,8 @@
                 cursor: pointer;
                 width: 20px;
                 height: 20px;
+                margin: 0 !important;
+                padding: 0 !important;
             }
         </style>
         <div class="table-responsive">
@@ -73,7 +75,7 @@
                                 <a href="{{ route('product.show', [$product->id]) }}" type="button"
                                     id="{{ $product->id }}" class="btn text-success my-1"
                                     title="Show {{ $product->name }} Stats">
-                                    <i class="fa-regular fa-eye"></i>
+                                    <i class="fa-solid fa-chart-simple"></i>
                                 </a>
                             </td>
                             <td>
@@ -214,15 +216,9 @@
         });
         var ids = [];
         $('input[name="check-box"]').on('change', function(e) {
-            if (e.currentTarget.checked) {
-                ids.push(e.currentTarget.value);
-                // console.log(ids);
-            } else {
-                ids.pop(e.currentTarget.value)
-                // console.log(ids);
-            }
+            e.currentTarget.checked ? ids.push(e.currentTarget.value) : ids.pop(e.currentTarget.value);
             if (ids.length != 0) {
-                $('.link-delete').removeClass('d-none')
+                $('.link-delete').removeClass('d-none');
                 $('.action-header').addClass('d-none')
                 // console.log('not empty');
             } else {
@@ -341,7 +337,7 @@
                     title: 'All Products',
                     filename: 'products',
                     exportOptions: {
-                        columns: [0, 1, 3, 4, 5, 6, 7, 8]
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9]
                     }
                 },
                 {
@@ -351,7 +347,7 @@
                     extend: 'pdf',
                     filename: 'products',
                     exportOptions: {
-                        columns: [0, 1, 3, 4, 5, 6, 7, 8]
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9]
                     }
                 },
                 {
@@ -361,7 +357,7 @@
                     extend: 'print',
                     filename: 'products',
                     exportOptions: {
-                        columns: [0, 1, 3, 4, 5, 6, 7, 8]
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9]
                     }
                 },
             ]

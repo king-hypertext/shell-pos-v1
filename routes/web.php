@@ -45,6 +45,7 @@ Route::middleware(['web', 'app'])->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::controller(AuthController::class)->group(function () {
             Route::post('/update-profile', 'store');
+            Route::post('/auth/change-password', 'update');
         });
         Route::controller(IndexController::class)->group(function () {
             Route::redirect('/', '/dashboard');

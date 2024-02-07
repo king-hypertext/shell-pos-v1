@@ -7,21 +7,21 @@
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}">
     <title>SHELL POS | {{ $title ?? 'DASHBOARD' }}</title>
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-ui-1.13.2/jquery-ui.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-ui-1.13.2/jquery-ui.structure.min.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.structure.min.css') }}" />
     <link rel="stylesheet"
-        href="{{ asset('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2-bootstrap-5-theme.css') }}" />
+        href="{{ url('assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/plugins/select2/css/select2.min.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/plugins/select2/css/select2-bootstrap-5-theme.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/datatables/dataTables.bootstrap5.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap-datepicker/css/bootstrap-datetimepicker.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap-daterangepicker/daterangepicker.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/plugins/alert/sweetalert2.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/plugins/alert/sweetalert2.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/mdb/mdb.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap/css/bootstrap.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/index.css') }}" />
-    <link rel="stylesheet" href="{{ url('assets/plugins/animate.css/animate.min.css') }}">
-    <script src="{{ asset('assets/plugins/alert/sweetalert2.all.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url('assets/plugins/animate.css/animate.min.css') }}" />
+    <script src="{{ url('assets/plugins/alert/sweetalert2.all.min.js') }}"></script>
     <script src="{{ url('assets/plugins/jquery-ui-1.13.2/external/jquery/jquery.js') }}"></script>
 </head>
 
@@ -32,12 +32,12 @@
         <div class="main-content">
             {{-- navbar --}}
             @include('app.navbar')
-            {{-- <div class="mt-4 "></div> --}}
             <div class="container-fluid mt-4">
                 @yield('content')
             </div>
         </div>
     </div>
+    @include('app.back_to_top')
     @include('app.footer')
     @include('modals.logout')
     <div id="back-drop" class="back-drop"></div>
@@ -61,6 +61,16 @@
     <script type="text/javascript">
         (function() {
             console.log("js loaded");
+            $(window).scroll(() => {
+                $(window).scrollTop() > 100 ? $('.scrollTop').fadeIn() : $('.scrollTop').fadeOut()
+            })
+            $('.scrollTop').click(e => {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 0)
+                return 0;
+            });
             setInterval(() => {
                 document.querySelector("[data-date-time]").innerHTML =
                     new Date().toUTCString();

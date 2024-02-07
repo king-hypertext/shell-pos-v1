@@ -58,10 +58,12 @@
                             </tbody>
                         </table>
                     </div>
+                    <a type="button" class="btn btn-outline-success mt-3" href="#" data-bs-toggle="modal" data-bs-target="#change-password">change password</a>
+
                 </div>
             </div>
             <div class=" col-md-6 col-sm-6">
-                <div class="card bg-none shadow m-2" style="max-width: 520px">
+                <div class="card bg-none shadow m-2 border-0 " style="max-width: 520px">
                     <h4 class="card-header text-center text-uppercase text-primary  ">update user profile</h4>
                     <div class="card-body">
                         <form id="user-update" method="POST" autocomplete="off" enctype="multipart/form-data">
@@ -86,7 +88,7 @@
                                 <label class="form-label" for="fullname">Fullname <span class="text-danger">*</span></label>
                             </div>
                             <div class="form-outline mb-4">
-                                <input required type="text" autofocus name="phone" id="phone" class="form-control"
+                                <input type="text" autofocus name="phone" id="phone" class="form-control"
                                     value="{{ $user->phone }}" />
                                 <label class="form-label" for="phone">Phone <span class="text-danger">*</span></label>
                             </div>
@@ -107,18 +109,7 @@
                                         class="text-danger">*</span></label>
                                 <input required type="date" autofocus name="date_of_birth" id="date_of_birth"
                                     class="form-control" value="{{ $user->date_of_birth }}" />
-                            </div>
-                            <div class="form-outline mb-4">
-                                <input type="text" autofocus name="secret_code" id="secret_code"
-                                    class="form-control" />
-                                <label class="form-label" for="secret_code">Secret Code <span
-                                        class="text-danger">*</span></label>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <input type="password" autofocus name="password" id="password"
-                                    class="form-control" />
-                                <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-                            </div>
+                            </div>                            
                             <div class="row mb-4">
                                 <div class="col-4">
                                     <div class="image-preview-wrapper">
@@ -131,7 +122,7 @@
                                 </div>
                                 <div class="col-8">
                                     <label for="customerImage">Upload Image</label>
-                                    <input required type="file" onchange="preview()" name="image"
+                                    <input type="file" onchange="preview()" name="image"
                                         id="customerImage" accept="image/*" class="form-control" />
                                 </div>
                             </div>
@@ -147,6 +138,7 @@
             </div>
         </div>
     </div>
+    @include('modals.change_password_modal')
 @endsection
 @section('script')
     <script>
