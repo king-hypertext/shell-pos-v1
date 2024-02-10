@@ -42,27 +42,29 @@ class InstallerController extends Controller
             ],
             $content
         );
-        file_put_contents($env, $content);
-
-        // call migration command to save database configuration
-        Artisan::call('migrate:fresh', ['--force' => true]);
+        $success = file_put_contents($env, $content);
+        if ($success) {
+            // call migration command to save database configuration
+            Artisan::call('migrate:fresh', ['--force' => true]);
+        }
         // Save the content back to the .env file
 
         return response()->json(['next' => route('installer.step2')]);
     }
     public function stepTwo(Request $request)
     {
-        // $request->dd();
-        $request->validate([
-            'username' => 'required|string',
-            'fullname' => 'required|string',
-            'date_of_birth' => 'required|date|date_format:Y-m-d',
-            'secret_code' => 'required|numeric',
-        ], [
-            'secret_code.numeric' => 'The secret code must be numeric only',
-        ]);
+
         try {
             DB::connection()->getPdo();
+            // $request->dd();
+            $request->validate([
+                'username' => 'required|string',
+                'fullname' => 'required|string',
+                'date_of_birth' => 'required|date|date_format:Y-m-d',
+                'secret_code' => 'required|numeric',
+            ], [
+                'secret_code.numeric' => 'The secret code must be numeric only',
+            ]);
             $insert =  User::insert([
                 'username' => $request->username,
                 'fullname' => $request->fullname,
@@ -76,34 +78,52 @@ class InstallerController extends Controller
                 'created_at' => now()->format('Y-m-d H:i:s')
             ]);
             $id = User::first()->id;
+            $env = base_path('.env');
+            // Get the content of the .env file
+            $content = file_get_contents($env);
+            // Replace the APP_NAME value with the new value
+            $content = str_replace(
+                [
+                    'APP_ENV=' . $_ENV['APP_ENV'],
+                    'APP_DEBUG=' . $_ENV['APP_DEBUG']
+                ],
+                [
+                    'APP_ENV=' . 'production',
+                    'APP_DEBUG=' . 'false'
+                ],
+                $content
+            );
+            file_put_contents($env, $content);
             if ($insert) {
                 return redirect()->to('/install/final')->withInput(['id' => $id]);
             }
         } catch (\Throwable $th) {
-            return $th;
-            return redirect()->route('installer.step1');
+            // return $th;
+            return redirect()->route('installer.step1')->with('error', 'Step one is not completed');
         }
     }
     public function stepThree(Request $request)
     {
-        // $request->dd();
-        $request->validate(
-            [
-                'image' => 'required|file|mimes:png,jpg,jpeg,webp'
-            ],
-            [
-                'image.mimes' => 'The uploaded file type is not allowed',
-                'image.file' => 'The uploaded file is not an image file'
-            ]
-        );
-        if ($request->hasFile('image')) {
-
-            $path =  $request->file('image')->store('/public/users');
+        if ($request->has('skip')) {
+            return redirect()->to('/login');
+        } else {
+            $request->validate(
+                [
+                    'image' => 'required|file|mimes:png,jpg,jpeg,webp'
+                ],
+                [
+                    'image.mimes' => 'The uploaded file type is not allowed',
+                    'image.file' => 'The uploaded file is not an image file'
+                ]
+            );
+            if ($request->hasFile('image')) {
+                $path =  $request->file('image')->store('/public/users');
+            }
+            User::where('id', $request->id)->update([
+                'photo' => '/storage/users/' . str_replace(['public/', 'users/'], '', $path)
+            ]);
+            return redirect()->to('/login');
+            // return $request;
         }
-        User::where('id', $request->id)->update([
-            'photo' => '/storage/users/' . str_replace(['public/', 'users/'], '', $path)
-        ]);
-        return redirect()->to('/login');
-        // return $request;
     }
 }

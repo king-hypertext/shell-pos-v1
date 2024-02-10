@@ -38,11 +38,12 @@
                         <th scope="col" class="text-start ">PRODUCT</th>
                         <th scope="col" class="text-start ">IMAGE</th>
                         <th scope="col" class="text-start ">PRICE(GHS)</th>
+                        <th scope="col" class="text-start ">TOTAL(GHS)</th>
                         <th scope="col" class="text-start " title="available quantity">QTY</th>
                         <th scope="col" class="text-start " title="supplier">SUP.</th>
                         <th scope="col" class="text-start " title="category">CAT.</th>
-                        <th scope="col" class="text-start ">PROD. DATE</th>
-                        <th scope="col" class="text-start ">EXP. DATE</th>
+                        <th scope="col" class="text-start ">PROD.</th>
+                        <th scope="col" class="text-start ">EXPIRY</th>
                         <th scope="col" class="text-start ">ACTION</th>
                         <th>
                             <span class="action-header">Misc</span>
@@ -62,6 +63,7 @@
                                 <img src="{{ $product->image }}" alt="product-image" class="table-image" />
                             </td>
                             <td>{{ $product->price }}</td>
+                            <td>{{ floatval($product->price) * floatval($product->quantity) }}</td>
                             <td>{{ $product->quantity }}</td>
                             <td>{{ $product->supplied_by }}</td>
                             <td>{{ $product->category }}</td>

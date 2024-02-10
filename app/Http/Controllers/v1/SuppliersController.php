@@ -25,11 +25,11 @@ class SuppliersController extends Controller
     public function store(Request $request)
     {
         Suppliers::insert([
-            "name" => $request->input("customer-name"),
-            "category" => $request->input("gender"),
+            "name" => $request->input("supplier-name"),
+            "category" => $request->input("category"),
             "address" => $request->input("address"),
             "contact" => $request->input("contact"),
-            "created_at" => now()->format('Y-m-d')
+            "created_at" => now()->format('Y-m-d H:i:s')
         ]);
 
         return back()->with("success", "New Supplier Added");

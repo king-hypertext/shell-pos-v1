@@ -63,12 +63,12 @@ class CreateSupplierOrderController extends Controller
             ];
             $before_qty = Products::where('name', $products[$i])->value('quantity');
             ProductStats::insert([
+                'qty_received' => $quantity[$i],
                 'product' => $products[$i],
                 'product_id' => Products::where('name', $products[$i])->value('id'),
-                'supplied' => $quantity[$i],
-                'to' => $supplier->name,
+                'from' => $supplier->name,
                 'before_qty' => $before_qty,
-                'after_qty' => $before_qty - $quantity[$i],
+                'after_qty' => $before_qty + $quantity[$i],
                 'qty' => $quantity[$i],
                 'date' => now()->format('Y-m-d H:i:s')
             ]);

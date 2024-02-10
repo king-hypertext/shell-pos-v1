@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}">
     <title>Q POS | {{ $title ?? 'DASHBOARD' }}</title>
+    <link rel="manifest" href="{{ url('manifest.json') }}" />
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.structure.min.css') }}" />
@@ -58,6 +59,7 @@
     <script src="{{ url('assets/plugins/datatables/vfs_fonts.js') }}"></script>
     <script src="{{ url('assets/plugins/datatables/buttons.html5.min.js') }}"></script>
     <script src="{{ url('assets/plugins/datatables/buttons.print.min.js') }}"></script>
+    <script src="{{ url('sw.js') }}"></script>
     <script type="text/javascript">
         (function() {
             console.log("js loaded");

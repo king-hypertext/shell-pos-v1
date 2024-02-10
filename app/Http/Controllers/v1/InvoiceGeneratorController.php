@@ -68,6 +68,7 @@ class InvoiceGeneratorController extends Controller
 
     public function open_stock()
     {
+        
         $products = Products::all();
         $file = now()->format('Y-M-d') . '_open_stock' . '.pdf';
         $date = now()->format('Y M d D');

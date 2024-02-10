@@ -1,0 +1,18 @@
+{
+    "name": "Q_OMS",
+    "lang": "en-us",
+    "short_name": "Q_OMS",
+    "description": "Q Stock Management System",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "theme_color": "#fff",
+    "background_color": "#fff",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "sizes": "5000x4632"
+        }
+    ]
+}

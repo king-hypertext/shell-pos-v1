@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}" />
+    <link rel="manifest" href="{{ url('manifest.json') }}" />
     <title>SHELL POS | {{ $title ?? '' }}</title>
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/mdb/mdb.min.css') }}" />
@@ -18,6 +19,7 @@
     @yield('content')
     <script src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>
     @yield('script')
+    <script src="{{ url('sw.js') }}"></script>
 </body>
 
 </html>

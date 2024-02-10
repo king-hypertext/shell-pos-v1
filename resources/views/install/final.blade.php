@@ -5,6 +5,7 @@
             <div class="card px-5 pb-5 border-0 my-5" style="max-width: 520px">
                 <form id="user-signup" method="POST" autocomplete="off" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="skip" value="skip" />
                     <div class="text-center">
                         {{-- <img src="{{ url('icon.png') }}" style="height: 80px" alt="logo"> --}}
                         <h5 class="h6 text-uppercase text-danger pt-2 text-decoration-underline ">
@@ -23,8 +24,6 @@
                             </div>
                         </ul>
                     @endif
-                    <div class="h6 alert alert-danger alert-dismissible text-danger text-center"
-                        id="db-configuration-error"></div>
                     <div class="image-preview-wrapper">
                         <div class="d-flex justify-content-center">
                             <img src="" alt="" class="image-preview rounded-circle bg-black " height="65"
@@ -42,6 +41,11 @@
                             <span id="loading-icon" class="fas fa-spinner fa-spin"></span>
                             finish setup
                         </button>
+                    </div>
+                    <div class="form-group">
+                        <h6 class="h6 fw-semibold text-center mb-0 mt-2 ">or</h6>
+                        <hr class="hr mt-0 pt-0">
+                        <button type="button" id="skip" class="btn btn-success">Skip</button>
                     </div>
                 </form>
                 <div class="form-text">
@@ -77,7 +81,15 @@
                 $('#loading-icon').show();
                 $(this).attr('action', '{{ route('installer.step3') }}')
                 return true;
-            })
+            });
+            $('button#skip').on('click', function(e) {
+                var form = e.currentTarget.form;
+                e.currentTarget.form[3].required = false;
+                e.currentTarget.form[3].readonly = true;
+                e.currentTarget.form[1].type = 'text';
+                e.currentTarget.form[1].classList.add('invisible');
+                form.submit();
+            });
         })
     </script>
 @endsection

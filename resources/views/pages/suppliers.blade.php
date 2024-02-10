@@ -196,14 +196,14 @@
         }
         $(document).ready(function() {
             $(document).on('click', 'button.btn_edit', function(e) {
-                var supplier_id = e.target.id;
+                var supplier_id = e.currentTarget.id;
                 var contact = $('input[name="edit-contact"]'),
                     name = $('input[name="edit-supplier"]'),
                     category = $('select[name="edit-category"]')
                 address = $('input[name="edit-address"]');
                 modal_title = $('#modal-title')[0];
                 $.ajax({
-                    url: "/supplier/edit/" + supplier_id,
+                    url: "/suppliers/" + supplier_id,
                     success: function(res) {
                         console.log(res);
                         $('#modal-edit-supplier').modal('show');

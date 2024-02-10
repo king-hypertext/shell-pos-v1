@@ -14,6 +14,9 @@
                     <h3 class="h4 text-center text-uppercase  text-primary py-4">
                         app & database configuration
                     </h3>
+                    @session('error')
+                        {{ $error }}
+                    @endsession
                     @if ($errors->any())
                         <ul class="list-unstyled d-flex justify-content-center">
                             <div class="alert alert-danger alert-dismissible">
@@ -23,10 +26,8 @@
                             </div>
                         </ul>
                     @endif
-                    <div class="h6 alert alert-danger alert-dismissible text-danger text-center"
-                        id="db-configuration-error"></div>
                     <div class="form-outline mb-4">
-                        <input required type="url" autofocus name="app_url" id="app_url"
+                        <input required type="url" value="http://" autofocus name="app_url" id="app_url"
                             class="form-control form-control-lg" />
                         <label class="form-label" for="app_url">App URL <span class="text-danger">*</span> </label>
                     </div>

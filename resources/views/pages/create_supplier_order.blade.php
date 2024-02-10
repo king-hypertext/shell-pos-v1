@@ -247,10 +247,7 @@
                             .parentElement.parentElement.children[1].children[0].children[0],
 
                             total = e.currentTarget.parentElement.parentElement.parentElement
-                            .parentElement.parentElement.children[3].children[0].children[0],
-
-                            quantity = e.currentTarget.parentElement.parentElement.parentElement
-                            .parentElement.parentElement.children[2].children[0].children[0];
+                            .parentElement.parentElement.children[3].children[0].children[0];
 
                         $.ajax({
                             method: "GET",
@@ -258,7 +255,6 @@
                             success: function(res) {
                                 console.log(res);
                                 price.value = res.data[0].price;
-                                quantity.max = res.data[0].quantity;
                             }
                         });
                         $(document).on('keyup', quantity, function(e) {
@@ -289,10 +285,6 @@
 
                     total = e.currentTarget.parentElement.parentElement.parentElement
                     .parentElement.parentElement.children[1].children[0].children[3].children[0]
-                    .children[0],
-
-                    quantity = e.currentTarget.parentElement.parentElement.parentElement
-                    .parentElement.parentElement.children[1].children[0].children[2].children[0]
                     .children[0];
                 $.ajax({
                     method: "GET",
@@ -300,7 +292,6 @@
                     success: function(res) {
                         console.log(res);
                         price.value = res.data[0].price;
-                        quantity.max = res.data[0].quantity;
                     },
                 });
                 $(document).on('keyup', quantity, function(e) {
