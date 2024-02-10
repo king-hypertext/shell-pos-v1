@@ -70,7 +70,7 @@ class createCustomerOrderController extends Controller
                 'to' => $customer->name,
                 'before_qty' => $before_qty,
                 'after_qty' => $before_qty - $quantity[$i],
-                'qty' => $quantity[$i],
+                'qty' => $before_qty + $quantity[$i],
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             Orders::insert($order);

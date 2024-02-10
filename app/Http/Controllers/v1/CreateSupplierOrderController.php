@@ -69,7 +69,7 @@ class CreateSupplierOrderController extends Controller
                 'from' => $supplier->name,
                 'before_qty' => $before_qty,
                 'after_qty' => $before_qty + $quantity[$i],
-                'qty' => $quantity[$i],
+                'qty' => $quantity[$i] + $before_qty,
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             SupplierOrders::insert($order);

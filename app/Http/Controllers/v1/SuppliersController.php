@@ -24,15 +24,23 @@ class SuppliersController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate(
+            [
+                'name' => 'required|unique:suppliers,name'
+            ],
+            [
+                'name.unique' => 'supplier already exist'
+            ]
+        );
         Suppliers::insert([
-            "name" => $request->input("supplier-name"),
-            "category" => $request->input("category"),
-            "address" => $request->input("address"),
-            "contact" => $request->input("contact"),
+            "name" => $request->name,
+            "category" => $request->category,
+            "address" => $request->address,
+            "contact" => $request->contact,
             "created_at" => now()->format('Y-m-d H:i:s')
         ]);
-
-        return back()->with("success", "New Supplier Added");
+        return response()->json(['success' => 'Success, Supplier Added']);
+        // return back()->with("success", "New Supplier Added");
     }
 
     /**
@@ -49,13 +57,12 @@ class SuppliersController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $supplier = Suppliers::find($id);
-        Suppliers::where('id', $supplier->id)->update([
+        Suppliers::where('id', $id)->update([
             "name" => $request->input("edit-supplier"),
-            "category" => $request->input("edit-gender"),
+            "category" => $request->input("edit-category"),
             "address" => $request->input("edit-address"),
             "contact" => $request->input("edit-contact"),
-            "created_at" => now()->format('Y-m-d')
+            "created_at" => now()->format('Y-m-d H:i:s')
         ]);
         return back()->with("success", "Supplier Updated");
     }

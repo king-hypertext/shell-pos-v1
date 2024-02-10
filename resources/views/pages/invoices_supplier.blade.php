@@ -23,7 +23,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $invoice->invoice_number }}</td>
-                            <td>{{ $invoice->customer }}</td>
+                            <td>{{ $invoice->supplier }}</td>
                             <td>{{ $invoice->amount }}</td>
                             <td>{{ Carbon::parse($invoice->created_at)->format('Y-M-d') }}</td>
                             <td>

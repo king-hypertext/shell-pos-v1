@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\v1;
 
 use App\Models\Orders;
+use App\Models\Products;
+use App\Models\OrderReturns;
+use App\Models\ProductStats;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\OrderReturns;
-use App\Models\Products;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerOrdersController extends Controller
@@ -34,7 +35,7 @@ class CustomerOrdersController extends Controller
                     </form>";
                         $div1 = "<form id='form-return' method='post'>
                         <div class='form-group d-flex mb-1'>
-                            <input style='min-width: 45px;' required type='text' min='0' id='$row->quantity' class='return_input form-control form-control-sm me-1' placeholder='quantity' />
+                            <input style='min-width: 45px;' required type='text' min='0' data-order_id='$row->id' id='$row->quantity' class='return_input form-control form-control-sm me-1' placeholder='quantity' />
                         </div>
                         <div class='form-group d-flex justify-content-start'>
                             $rtn
@@ -91,15 +92,26 @@ class CustomerOrdersController extends Controller
     /**
      * This method is been used to return an order
      */
-    public function update(int $order_id, Request $request, Orders $orders)
+    public function update(string $order_id, Request $request, Orders $orders)
     {
         $order = $orders->find($order_id);
         $quantity_to_return = $request->quantity_to_return;
+        $before_qty = Products::where('name', $order->product)->value('quantity');
+        ProductStats::insert([
+            'qty_received' => $quantity_to_return,
+            'product' => $order->product,
+            'product_id' => Products::where('name', $order->product)->value('id'),
+            'from' => $order->customer,
+            'before_qty' => $before_qty,
+            'after_qty' => $before_qty + $quantity_to_return,
+            'qty' => $quantity_to_return + $before_qty,
+            'date' => now()->format('Y-m-d H:i')
+        ]);
         Orders::where('id', $order_id)->update([
             'quantity' => (intval($order->quantity) - intval($quantity_to_return)),
             'amount' => (intval($order->price) * (intval($order->quantity) - intval($quantity_to_return))),
             'returns' => $quantity_to_return,
-            'updated_at' => now()->format('Y-m-d')
+            'updated_at' => now()->format('Y-m-d H:i:s')
         ]);
         OrderReturns::insert([
             'order_id' => $order->id,
@@ -109,8 +121,9 @@ class CustomerOrdersController extends Controller
             'quantity' => $quantity_to_return,
             'price' => $order->price,
             'amount' => (intval($order->price) * intval($quantity_to_return)),
-            'created_at' => now()->format('Y-m-d')
+            'created_at' => now()->format('Y-m-d H:i:s')
         ]);
+
         Products::where('name', $order->product)->increment('quantity', $quantity_to_return);
         return response()->json(['success' => 'Return Success']);
     }

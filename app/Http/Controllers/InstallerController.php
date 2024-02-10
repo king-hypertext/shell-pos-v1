@@ -70,7 +70,7 @@ class InstallerController extends Controller
                 'fullname' => $request->fullname,
                 'date_of_birth' => $request->date_of_birth,
                 'phone' => $request->phone,
-                'photo' => 'null',
+                'photo' => null,
                 'gender' => $request->gender,
                 'admin' => 1,
                 'secret_code' => Hash::make($request->secret_code),

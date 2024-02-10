@@ -45,14 +45,15 @@
                             <td>{{ $supplier->address }}</td>
                             <td>{{ Carbon::parse($supplier->created_at)->format('Y-M-d') }}</td>
                             <td>
-                                <form action='{{ route('supplier.destroy', ["$supplier->id"]) }}' method="post">
+                                <form action='{{ route('suppliers.destroy', ["$supplier->id"]) }}' method="post">
+                                    @method('DELETE')
                                     <button type="button" id="{{ $supplier->id }}" class="btn text-primary btn_edit"
                                         title="Edit supplier {{ $supplier->name }}">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $supplier->id }}" readonly>
-                                    <button onclick="confirmDelete(event)" class="btn text-danger"
+                                    <button type="button" id="delete_supplier" class="btn text-danger"
                                         title="delete {{ $supplier->name }}">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
@@ -79,7 +80,7 @@
                         <form class="px-5 py-2" id="form-edit-supplier" method="POST">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="id" id="supplier-id"/>
+                            <input type="hidden" name="id" id="supplier-id" />
                             <div class="form-outline mb-3">
                                 <input type="text" name="edit-supplier" id="supplierName" class="form-control" />
                                 <label class="form-label" for="supplierName">Supplier Name</label>
@@ -115,35 +116,37 @@
                     <div class="row justify-content-center">
                         <div class="divider my-0">
                             <div class="divider-text">
-                                <h5 class="h3 text-capitalize">Add New Supplier</h5>
+                                <h5 class="h3 text-capitalize text-center ">Add New Supplier</h5>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center">
-                            <img src="" alt="Product Image"
-                                class="d-none rounded-circle product-image bg-light" />
-                        </div>
-                        <form class="px-5 py-2" action="#" method="POST">
+                        <form class="px-5 py-2" id="addSupplier" method="POST" autocomplete="off">
+                            <div class="h6 alert alert-danger alert-dismissible text-center error-msg">
+                                error
+                            </div>
+                            <div class="h6 alert alert-success alert-dismissible text-center success-msg">
+                                success
+                            </div>
                             @csrf
                             <div class="form-outline mb-3">
-                                <input required type="text" value="{{ @old('supplier-name') }}" name="supplier-name"
-                                    id="supplierName" class="form-control" />
+                                <input required type="text" name="supplier-name" id="supplierName"
+                                    class="form-control" />
                                 <label class="form-label" for="supplierName">Supplier Name</label>
                             </div>
                             <div class="form-outline mb-3">
-                                <select name="category" id="category" class="form-select">
+                                <select required name="category" id="category" class="form-select">
                                     <option value="" selected>Select Category</option>
                                     <option value="allied">ALLIED</option>
                                     <option value="shell">SHELL</option>
                                 </select>
                             </div>
                             <div class="form-outline mb-4">
-                                <input required type="text" value="{{ @old('contact') }}" name="contact"
-                                    id="contact" class="form-control" />
+                                <input required type="text" {{-- pattern="/^[0-9]+$/" --}} name="contact" id="contact"
+                                    class="form-control" />
                                 <label class="form-label" for="contact">Supplier's Contact</label>
                             </div>
                             <div class="form-outline mb-4">
-                                <input required type="text" value="{{ @old('address') }}" name="address"
-                                    id="supplierAddress" class="form-control" />
+                                <input required type="text" name="address" id="supplierAddress"
+                                    class="form-control" />
                                 <label class="form-label" for="supplierAddress">Supplier's Address</label>
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Add Supplier</button>
@@ -151,7 +154,8 @@
                     </div>
                 </div>
                 <div class="d-flex my-0 pb-2 pe-2 justify-content-end">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Discard</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"
+                        onclick="location.reload()">Discard</button>
                 </div>
             </div>
         </div>
@@ -177,9 +181,10 @@
 @endsection
 @section('script')
     <script>
-        window.confirmDelete = function(e) {
-            e.preventDefault();
-            var form = e.target.offsetParent.form;
+        $('.error-msg').hide();
+        $('.success-msg').hide();
+        $('button#delete_supplier').on('click', e => {
+            var form = e.currentTarget.form;
             Swal.fire({
                 title: "Confirm Delete!",
                 text: "Are you sure you want to delete?",
@@ -193,8 +198,46 @@
                     form.submit();
                 }
             })
-        }
+            console.log(e.currentTarget.form);
+        });
         $(document).ready(function() {
+            $('form#form-edit-supplier').on('submit', (e) => {
+                e.target.action = '/suppliers/' + e.currentTarget[2].value;
+                return true;
+            })
+            $('form#addSupplier').on('submit', (e) => {
+                e.preventDefault();
+                console.log(e);
+                // break;
+                $.ajax({
+                    url: '/suppliers',
+                    type: 'POST',
+                    data: {
+                        _token: e.currentTarget[0].value,
+                        name: e.currentTarget[1].value,
+                        category: e.currentTarget[2].value,
+                        address: e.currentTarget[3].value,
+                        contact: e.currentTarget[4].value,
+                    },
+                    success: (res) => {
+                        if (res.success) {
+                            $('.success-msg').text(res.success);
+                            $('.success-msg').show();
+                            e.target.reset();
+                            setTimeout(() => {
+                                $('.success-msg').hide();
+                            }, 3000);
+                        }
+                    },
+                    error: (error) => {
+                        $('.error-msg').text(error.responseJSON.message);
+                        $('.error-msg').show();
+                        setTimeout(() => {
+                            $('.error-msg').hide();
+                        }, 3000);
+                    }
+                })
+            })
             $(document).on('click', 'button.btn_edit', function(e) {
                 var supplier_id = e.currentTarget.id;
                 var contact = $('input[name="edit-contact"]'),

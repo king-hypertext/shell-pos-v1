@@ -105,12 +105,12 @@
                             <div class="row mb-4">
                                 <div class="col-6">
                                     <label class="form-label" for="dob">Date of Birth</label>
-                                    <input type="date" max="{{ Date('Y-m-d') }}" name="dob" id="dob"
+                                    <input  type="date" max="{{ Date('Y-m-d') }}" name="dob" id="dob"
                                         class="form-control" />
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label" for="gender">Gender</label>
-                                    <select name="gender" id="cust-gender" class="form-select">
+                                    <select required name="gender" id="cust-gender" class="form-select">
                                         <option disabled>Select Gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -132,7 +132,7 @@
                             </div>
                             <div class="mb-4">
                                 <label for="customerImage">Worker Image</label>
-                                <input required type="file" onchange="previewImageFromServer()" name="customer-image"
+                                <input type="file" onchange="previewImageFromServer()" name="customer-image"
                                     accept="image/*" id="customer_image" class="form-control" />
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Update Worker</button>
@@ -160,7 +160,7 @@
                             method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-outline mb-4">
-                                <input required type="text" oninput="this.value.toUpperCase()" name="customer-name"
+                                <input required type="text" name="customer-name"
                                     id="cusName" placeholder="Enter worker name" class="form-control autofocus"
                                     autofocus />
                                 <label class="form-label" for="cusName">Worker Name</label>
@@ -173,7 +173,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label" for="gender">Gender</label>
-                                    <select name="gender" id="worker-gender" class="form-select">
+                                    <select required name="gender" id="worker-gender" class="form-select">
                                         <option selected disabled>Select Gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>

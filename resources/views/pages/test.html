@@ -201,6 +201,16 @@
         // };
        v =  new URLSearchParams(window.location.search).get('date');
        v.get('date')
+       setTimeout(() => {
+        
+       }, 1000);
+       document.querySelectorAll('a[target="_blank"]').forEach((a) => {
+            console.log(a.href);
+            a.setAttribute('onclick', 'popup()')
+            a.addEventListener('click', (e)=>{
+                
+            })
+        });
     </script> 
 </body>
 

@@ -114,6 +114,19 @@
                 rippleDuration: "1000ms",
             });
         });
+        document.querySelectorAll('a[target="_blank"]').forEach((a) => {
+            a.setAttribute('rel', 'noopener noreferrer');
+        });
+
+        function openPopup(href) {
+            var screenWidth = window.screen.width,
+                screenHeight = window.screen.height;
+            var popupWidth = (screenWidth - 55),
+                popupHeight = (screenHeight - 45);
+            var popupLeft = 10, popupTop = 10;
+            window.open(href, "Popup Window", "width=" + popupWidth + ",height=" + popupHeight +
+                ",left=" + popupLeft + ",top=" + popupTop);
+        }
     </script>
     @yield('script')
 </body>
