@@ -46,7 +46,7 @@ class createCustomerOrderController extends Controller
         $price = $request->price;
         $quantity = $request->quantity;
         $date = $request->input('invoice-date');
-        $days = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+        $days = array('sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         $day = now()->dayOfWeek;
 
         for ($i = 0; $i < count($products); $i++) {
@@ -70,7 +70,6 @@ class createCustomerOrderController extends Controller
                 'to' => $customer->name,
                 'before_qty' => $before_qty,
                 'after_qty' => $before_qty - $quantity[$i],
-                'qty' => $before_qty + $quantity[$i],
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             Orders::insert($order);

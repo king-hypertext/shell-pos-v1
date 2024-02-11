@@ -10,9 +10,6 @@
 </head>
 
 <body>
-    @php
-        use Illuminate\Support\Number;
-    @endphp
     <style type="text/css">
         body {
             margin: 0;
@@ -72,7 +69,7 @@
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->price }}</td>
                     <td>{{ $product->quantity }}</td>
-                    <td style="font-weight: 600;">{{ Number::format($product->price * $product->quantity, 2, 8) }}</td>
+                    <td style="font-weight: 600;">{{ ($product->price * $product->quantity) }}</td>
                 </tr>
             @endforeach
         </tbody>

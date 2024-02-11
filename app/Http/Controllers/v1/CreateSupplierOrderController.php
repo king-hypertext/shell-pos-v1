@@ -46,7 +46,7 @@ class CreateSupplierOrderController extends Controller
         $quantity = $request->quantity;
         $invoice_number = $request->input('supplier-invoice');
         $date = $request->input('invoice-date');
-        $days = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+        $days = array('sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         $day = now()->dayOfWeek;
         for ($i = 0; $i < count($products); $i++) {
             $order = [
@@ -69,7 +69,6 @@ class CreateSupplierOrderController extends Controller
                 'from' => $supplier->name,
                 'before_qty' => $before_qty,
                 'after_qty' => $before_qty + $quantity[$i],
-                'qty' => $quantity[$i] + $before_qty,
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             SupplierOrders::insert($order);

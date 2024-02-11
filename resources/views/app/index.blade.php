@@ -83,7 +83,6 @@
                 var setScroll = $('.side-wrapper').scrollTop();
                 setScroll >= 45 ? $('.logo-content').addClass('scroll') : $('.logo-content').removeClass(
                     'scroll');
-                // $('.side-wrapper').scrollTop() > 10 ? $('.logo-content').addClass('scroll') : $('logo-content').removeClass('scroll');
             });
             $(document).on('click', 'button#nav-toggler', () => {
                 $(".side-wrapper").toggleClass("show");
@@ -101,12 +100,9 @@
             $('.nav-item > a.dropdown[data-bs-toggle="collapse"]')
                 .on("click", (e) => {
                     e = e.currentTarget.children[1].children[0].classList;
-                    // e.add("")
                     e.toggle("fa-chevron-right");
                     e.toggle("fa-chevron-down");
                 });
-
-
         });
         document.querySelectorAll(".nav-item > a").forEach((target) => {
             new mdb.Ripple(target, {

@@ -68,7 +68,7 @@
                         <td>{{ $stat->to }}</td>
                         <td>{{ $stat->before_qty }}</td>
                         <td>{{ $stat->after_qty }}</td>
-                        <td>{{ $stat->qty }}</td>
+                        <td>{{ $stat->after_qty }}</td>
                     </tr>
                 @endforeach
             </tbody>

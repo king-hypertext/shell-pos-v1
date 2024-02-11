@@ -84,14 +84,14 @@
                     id="orders">
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'orders' && Request::segment(2) === 'customers' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.href)" href="{{ route('orders.customers') }}" class="nav-link">
+                        <a onclick="openPopup(this.id)" id="{{ route('orders.customers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Customers
                         </a>
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'orders' && Request::segment(2) === 'suppliers' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.href)" href="{{ route('orders.suppliers') }}" class="nav-link">
+                        <a onclick="openPopup(this.id)" id="{{ route('orders.suppliers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Suppliers
                         </a>
@@ -113,14 +113,14 @@
                     id="invoices">
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'invoices' && Request::segment(2) === 'customers' ? 'active' : '' }}">
-                        <a href="{{ route('invoices.customers') }}" class="nav-link">
+                        <a onclick="openPopup(this.id)" id="{{ route('invoices.customers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Customers
                         </a>
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'invoices' && Request::segment(2) === 'suppliers' ? 'active' : '' }}">
-                        <a href="{{ route('invoices.suppliers') }}" class="nav-link">
+                        <a onclick="openPopup(this.id)" id="{{ route('invoices.suppliers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Suppliers
                         </a>

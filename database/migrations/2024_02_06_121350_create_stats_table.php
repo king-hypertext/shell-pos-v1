@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('to')->nullable()->default('N/A');
             $table->integer('before_qty')->default(0);
             $table->integer('after_qty')->default(0);
-            $table->integer('qty')->default(0);
             $table->dateTime('date');
         });
     }

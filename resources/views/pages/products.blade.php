@@ -74,7 +74,7 @@
                                     title="Edit {{ $product->name }}">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                                <a href="{{ route('product.show', [$product->id]) }}" type="button"
+                                <a onclick="openPopup(this.id)" id="{{ route('product.show', [$product->id]) }}" type="button"
                                     id="{{ $product->id }}" class="btn text-success my-1"
                                     title="Show {{ $product->name }} Stats">
                                     <i class="fa-solid fa-chart-simple"></i>
