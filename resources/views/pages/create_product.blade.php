@@ -59,7 +59,7 @@
                                             <span class="text-danger">*</span>
                                         </label>
                                         <select required name="supplier" id="supplier" class="form-select">
-                                            <option selected disabled>Select Supplier</option>
+                                            <option selected value="">Select Supplier</option>
                                             @php
                                                 use App\Models\Suppliers;
                                                 $suppliers = Suppliers::select('name')->get();
@@ -71,16 +71,9 @@
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="form-outline">
-                                        <label for="category" class="form-label">
-                                            Category <span class="text-danger">*</span>
-                                        </label>
-                                        <select required name="category" id="category" class="form-select">
-                                            <option selected disabled>Select Category</option>
-                                            <option value="SHELL">SHELL</option>
-                                            <option value="ALLIED">ALLIED</option>
-                                        </select>
-                                    </div>
+                                    <label for="category">Category</label>
+                                    <input type="text" name="category" id="category" class="form-control mt-2"
+                                        readonly />
                                 </div>
                             </div>
                             <div class="row mb-4">
@@ -93,7 +86,7 @@
                                     <label class="form-label" for="expiryDate">Expiry Date
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input required type="date" min="{{ Date('Y-m-d') }}"
+                                    <input type="date" min="{{ Date('Y-m-d') }}"
                                         value="{{ @old('expiry-date') }}" name="expiry_date" id="expiryDate"
                                         class="form-control" />
                                 </div>
@@ -116,7 +109,6 @@
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Add Product</button>
                             </div>
-                            {{-- <button type="submit" class="btn btn-primary btn-block">Save And Close</button> --}}
                         </form>
                     </div>
                 </div>
@@ -168,6 +160,23 @@
 @endsection
 @section('script')
     <script>
+        $('select[name="supplier"]').on('change', function(e) {
+            let name = e.currentTarget.value;
+            if (!name) {
+                return 0;
+            } else {
+                $.ajax({
+                    url: '/supplier-category/' + e.currentTarget.value,
+                    success: (res) => {
+                        console.log(res);
+                        $('input[name="category"]').val(res[0].category);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    }
+                })
+            }
+        })
         var table = new DataTable('#products-list', {
             processing: true,
             search: {

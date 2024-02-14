@@ -49,14 +49,13 @@
 <script type="text/javascript">
     $('#filter-order').on('submit', function(e) {
         e.preventDefault();
-        var selected_worker = e.currentTarget[0].value,
+        var selected_supplier = e.currentTarget[0].value,
             date = e.currentTarget[1].value;
-        console.log(selected_worker, date);
         $.ajax({
-            url: '/orders/edit',
+            url: '/orders/suppliers/edit',
             data: {
                 _token: "{{ csrf_token() }}",
-                worker: selected_worker,
+                supplier: selected_supplier,
                 date: date
             },
             success: function(data) {

@@ -44,7 +44,7 @@
                 <a href="#" class="nav-link dropdown" data-bs-toggle="collapse" data-bs-target="#create-order">
                     <span>
                         <i class="fa-solid fa-file-circle-plus"></i>
-                        Create
+                        Create Order
                     </span>
                     <span class="float-right">
                         <i
@@ -55,16 +55,16 @@
                     id="create-order">
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'create-order' && Request::segment(2) === 'customer' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.href)" href="{{ route('customer.index') }}" target="_blank" class="nav-link">
+                        <a href="{{ route('customer.index') }}" target="_blank" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
-                            Customer Order
+                            Worker
                         </a>
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'create-order' && Request::segment(2) === 'supplier' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.href)" href="{{ route('supplier.index') }}" target="_blank" class="nav-link">
+                        <a href="{{ route('supplier.index') }}" target="_blank" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
-                            Supplier Order
+                            Supplier
                         </a>
                     </li>
                 </ul>
@@ -84,14 +84,14 @@
                     id="orders">
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'orders' && Request::segment(2) === 'customers' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.id)" id="{{ route('orders.customers') }}" class="nav-link">
+                        <a href="{{ route('orders.customers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
-                            Customers
+                            Workers
                         </a>
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'orders' && Request::segment(2) === 'suppliers' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.id)" id="{{ route('orders.suppliers') }}" class="nav-link">
+                        <a href="{{ route('orders.suppliers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Suppliers
                         </a>
@@ -113,14 +113,14 @@
                     id="invoices">
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'invoices' && Request::segment(2) === 'customers' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.id)" id="{{ route('invoices.customers') }}" class="nav-link">
+                        <a href="{{ route('invoices.customers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Customers
                         </a>
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'invoices' && Request::segment(2) === 'suppliers' ? 'active' : '' }}">
-                        <a onclick="openPopup(this.id)" id="{{ route('invoices.suppliers') }}" class="nav-link">
+                        <a href="{{ route('invoices.suppliers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Suppliers
                         </a>

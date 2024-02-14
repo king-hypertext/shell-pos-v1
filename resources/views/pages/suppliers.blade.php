@@ -270,23 +270,26 @@
             dom: 'Bfrtip',
             buttons: [{
                     extend: 'excel',
-                    className: 'btn btn-success',
+                    text: 'Export Excel <i class="fas fa-file-excel" ></i>',
+                    className: 'btn btn-success text-capitalize',
                     exportOptions: {
-                        columns: [1, 2, 3, 4]
+                        columns: [0, 1, 2, 3, 4, 5]
                     }
                 },
                 {
                     extend: 'pdf',
-                    className: 'btn btn-danger',
+                    text: 'Save <i class="fas fa-file-pdf"></i>',
+                    className: 'btn btn-danger text-capitalize',
                     exportOptions: {
-                        columns: [1, 2, 3, 4]
+                        columns: [0, 1, 2, 3, 4, 5]
                     }
                 },
                 {
                     extend: 'print',
-                    className: 'btn btn-primary',
+                    text: 'Print <i class="fas fa-print"></i>',
+                    className: 'btn btn-primary text-capitalize',
                     exportOptions: {
-                        columns: [1, 2, 3, 4]
+                        columns: [0, 1, 2, 3, 4, 5]
                     }
                 },
             ]

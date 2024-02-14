@@ -7,9 +7,7 @@
         $products = DB::table('products')
             ->where('quantity', '>', 0)
             ->get(['name']);
-        $empty_q = DB::table('products')
-            ->where('quantity', '<', 1)
-            ->count('name');
+        $empty_q = DB::table('products')->where('quantity', '<', 1)->count('name');
         $empty_p = DB::table('products')->get(['*']);
     @endphp
     <style>
@@ -114,8 +112,8 @@
                     <thead>
                         <tr class="p-3">
                             <th class="col-md-4 p-3" scope="col">Product Name</th>
-                            <th class="col-md-3 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-2 p-3" scope="col">Quantity</th>
+                            <th class="col-md-3 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-3 p-3" scope="col">Total (GHC)</th>
                         </tr>
                     </thead>
@@ -134,16 +132,16 @@
                                     </select>
                                 </div>
                             </td>
+                            <td class="col-md-2">
+                                <div class="form-group">
+                                    <input type="number" name="quantity[]" onfocus="this.select()" required id="quantity"
+                                        class="form-control qty" />
+                                </div>
+                            </td>
                             <td class="col-md-3">
                                 <div class="form-group">
                                     <input readonly type="text" name="price[]" type="number" step=".01"
                                         value="0.00" id="price" class="form-control" />
-                                </div>
-                            </td>
-                            <td class="col-md-2">
-                                <div class="form-group">
-                                    <input type="number" name="quantity[]" onfocus="this.select()" required
-                                        id="quantity" class="form-control qty" />
                                 </div>
                             </td>
                             <td class="col-md-3">
@@ -239,16 +237,16 @@
                                 </div>
                             </div>
                         </div>
-                    </td>                          
-                    <td class="col-md-3">
-                        <div class="form-group">
-                            <input required type="number" readonly name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
-                        </div>
-                    </td>                      
+                    </td>                                 
                     <td class="col-md-2">
                         <div class="form-group">
                             <input required type="number" name="quantity[]" onfocus="this.select()" id="quantity_${row}"
                                 class="form-control qty" />
+                        </div>
+                    </td>               
+                    <td class="col-md-3">
+                        <div class="form-group">
+                            <input required type="number" readonly name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
                         </div>
                     </td>
                     <td class="col-md-3">
@@ -270,14 +268,13 @@
                         var selectedValue = e.currentTarget.value,
 
                             price = e.currentTarget.parentElement.parentElement.parentElement
-                            .parentElement.parentElement.children[1].children[0].children[0],
+                            .parentElement.parentElement.children[2].children[0].children[0],
 
                             total = e.currentTarget.parentElement.parentElement.parentElement
                             .parentElement.parentElement.children[3].children[0].children[0],
 
                             quantity = e.currentTarget.parentElement.parentElement.parentElement
-                            .parentElement.parentElement.children[2].children[0].children[0];
-                        console.log(selectedValue);
+                            .parentElement.parentElement.children[1].children[0].children[0];
                         $.ajax({
                             method: "GET",
                             url: "/product/" + selectedValue,
@@ -310,7 +307,7 @@
                 var selectedValue = e.currentTarget.value,
 
                     price = e.currentTarget.parentElement.parentElement.parentElement
-                    .parentElement.parentElement.children[1].children[0].children[1].children[0]
+                    .parentElement.parentElement.children[1].children[0].children[2].children[0]
                     .children[0],
 
                     total = e.currentTarget.parentElement.parentElement.parentElement
@@ -318,7 +315,7 @@
                     .children[0],
 
                     quantity = e.currentTarget.parentElement.parentElement.parentElement
-                    .parentElement.parentElement.children[1].children[0].children[2].children[0]
+                    .parentElement.parentElement.children[1].children[0].children[1].children[0]
                     .children[0];
                 console.log(selectedValue);
                 $.ajax({
@@ -345,9 +342,6 @@
                 $(currentRow).remove();
                 row--;
             });
-            // retrieve product info from database
-
-
             $("select[data-select-product]").select2();
             $(document).on('select2:open', () => {
                 document.querySelector('.select2-search__field').focus();

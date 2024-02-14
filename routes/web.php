@@ -19,6 +19,7 @@ use App\Http\Controllers\v1\createCustomerOrderController;
 use App\Http\Controllers\v1\CreateSupplierOrderController;
 use App\Http\Controllers\v1\ProductStatsController;
 use App\Http\Controllers\v1\SettingsController;
+use App\Models\Suppliers;
 
 Route::get('/test', [TestController::class, 'test']);
 Route::controller(InstallerController::class)->group(function () {
@@ -70,9 +71,13 @@ Route::middleware(['web', 'app'])->group(function () {
             Route::get('/open-stock', 'open_stock')->name('view-file.open-stock');
         });
         Route::controller(EditInvoicesController::class)->prefix('orders')->group(function () {
+            Route::get('/suppliers/edit/query', 'editSupplier')->name('order.supplier.edit');
+            Route::post('/suppliers/edit/query', 'storeSupplier')->name('order.supplier.save');
             Route::get('/edit/query', 'edit')->name('order.edit');
             Route::post('/edit/query', 'store')->name('order.edit.save');
             Route::get('/edit', 'index');
+            Route::get('/suppliers/edit', 'indexSupplier');
+            Route::delete('/supplier/edit/delete', 'destroySupplier');
             Route::delete('/edit/delete', 'destroy');
         });
         Route::controller(ProductsController::class)->group(function () {
@@ -93,6 +98,10 @@ Route::middleware(['web', 'app'])->group(function () {
         });
         Route::controller(SettingsController::class)->group(function () {
             Route::get('/settings', 'index')->name('settings');
+        });
+        Route::get('/supplier-category/{name}', function ($name) {
+            $cat = Suppliers::query()->where('name', $name)->get(['category']);
+            return $cat;
         });
     });
 });

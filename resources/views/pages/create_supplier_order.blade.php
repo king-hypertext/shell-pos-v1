@@ -94,8 +94,8 @@
                     <thead>
                         <tr class="p-3">
                             <th class="col-md-4 p-3" scope="col">Product Name</th>
-                            <th class="col-md-3 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-2 p-3" scope="col">Quantity</th>
+                            <th class="col-md-3 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-3 p-3" scope="col">Total (GHC)</th>
                         </tr>
                     </thead>
@@ -114,16 +114,16 @@
                                     </select>
                                 </div>
                             </td>
-                            <td class="col-md-3">
-                                <div class="form-group">
-                                    <input type="text" name="price[]" type="number" onfocus="this.select()"
-                                        step=".01" value="0.00" id="price" class="form-control" />
-                                </div>
-                            </td>
                             <td class="col-md-2">
                                 <div class="form-group">
                                     <input type="number" name="quantity[]" onfocus="this.select()" id="quantity"
                                         class="form-control qty" />
+                                </div>
+                            </td>
+                            <td class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" name="price[]" type="number" onfocus="this.select()"
+                                        step=".01" value="0.00" id="price" class="form-control" />
                                 </div>
                             </td>
                             <td class="col-md-3">
@@ -213,18 +213,18 @@
                                 </div>
                             </div>
                         </div>
-                    </td>                          
-                    <td class="col-md-3">
-                        <div class="form-group">
-                            <input required type="number" onfocus="this.select()" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
-                        </div>
-                    </td>                      
+                    </td>                           
                     <td class="col-md-2">
                         <div class="form-group">
                             <input required type="number" name="quantity[]" onfocus="this.select()" id="quantity_${row}"
                                 class="form-control qty" />
                         </div>
-                    </td>
+                    </td>                   
+                    <td class="col-md-3">
+                        <div class="form-group">
+                            <input required type="number" onfocus="this.select()" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
+                        </div>
+                    </td>  
                     <td class="col-md-3">
                         <div class="form-group">
                             <input readonly type="text" value="0" name="total[]" id="total_${row}"
@@ -244,11 +244,13 @@
                         var selectedValue = e.currentTarget.value,
 
                             price = e.currentTarget.parentElement.parentElement.parentElement
-                            .parentElement.parentElement.children[1].children[0].children[0],
+                            .parentElement.parentElement.children[2].children[0].children[0],
 
                             total = e.currentTarget.parentElement.parentElement.parentElement
-                            .parentElement.parentElement.children[3].children[0].children[0];
+                            .parentElement.parentElement.children[3].children[0].children[0],
 
+                            quantity = e.currentTarget.parentElement.parentElement.parentElement
+                            .parentElement.parentElement.children[1].children[0].children[0];
                         $.ajax({
                             method: "GET",
                             url: "/product/" + selectedValue,
@@ -258,9 +260,9 @@
                             }
                         });
                         $(document).on('keyup', quantity, function(e) {
-                            total.value =
-                                Number.parseInt(price.value) * Number.parseFloat(quantity
-                                    .value);
+
+                            total.value = Number.parseInt(price.value) *
+                                Number.parseFloat(quantity.value);
                             if (isNaN(total.value)) {
                                 total.value = 0;
                             }
@@ -280,11 +282,15 @@
                 var selectedValue = e.currentTarget.value,
 
                     price = e.currentTarget.parentElement.parentElement.parentElement
-                    .parentElement.parentElement.children[1].children[0].children[1].children[0]
+                    .parentElement.parentElement.children[1].children[0].children[2].children[0]
                     .children[0],
 
                     total = e.currentTarget.parentElement.parentElement.parentElement
                     .parentElement.parentElement.children[1].children[0].children[3].children[0]
+                    .children[0],
+
+                    quantity = e.currentTarget.parentElement.parentElement.parentElement
+                    .parentElement.parentElement.children[1].children[0].children[1].children[0]
                     .children[0];
                 $.ajax({
                     method: "GET",

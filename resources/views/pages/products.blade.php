@@ -37,9 +37,9 @@
                         <th scope="col" class="text-start ">#</th>
                         <th scope="col" class="text-start ">PRODUCT</th>
                         <th scope="col" class="text-start ">IMAGE</th>
+                        <th scope="col" class="text-start " title="available quantity">QTY</th>
                         <th scope="col" class="text-start ">PRICE(GHS)</th>
                         <th scope="col" class="text-start ">TOTAL(GHS)</th>
-                        <th scope="col" class="text-start " title="available quantity">QTY</th>
                         <th scope="col" class="text-start " title="supplier">SUP.</th>
                         <th scope="col" class="text-start " title="category">CAT.</th>
                         <th scope="col" class="text-start ">PROD.</th>
@@ -62,9 +62,9 @@
                             <td>
                                 <img src="{{ $product->image }}" alt="product-image" class="table-image" />
                             </td>
+                            <td>{{ $product->quantity }}</td>
                             <td>{{ $product->price }}</td>
                             <td>{{ floatval($product->price) * floatval($product->quantity) }}</td>
-                            <td>{{ $product->quantity }}</td>
                             <td>{{ $product->supplied_by }}</td>
                             <td>{{ $product->category }}</td>
                             <td>{{ Carbon::parse($product->prod_date)->format('Y-M-d') }}</td>
@@ -74,7 +74,7 @@
                                     title="Edit {{ $product->name }}">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                                <a onclick="openPopup(this.id)" id="{{ route('product.show', [$product->id]) }}" type="button"
+                                <a href="{{ route('product.show', [$product->id]) }}" type="button"
                                     id="{{ $product->id }}" class="btn text-success my-1"
                                     title="Show {{ $product->name }} Stats">
                                     <i class="fa-solid fa-chart-simple"></i>

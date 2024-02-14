@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}" />
     <link rel="manifest" href="{{ url('manifest.json') }}" />
-    <title>SHELL POS | {{ $title ?? '' }}</title>
+    <title>SHELL IMS | {{ $title ?? '' }}</title>
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/mdb/mdb.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap/css/bootstrap.css') }}" />

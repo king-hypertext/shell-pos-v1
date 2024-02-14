@@ -6,7 +6,7 @@
     <div class="container fluid">
         <form autocomplete="off" id="form-invoice" action="{{ route('order.edit.save') }}" method="post">
             @csrf
-            <input type="hidden" name="customer_id" value="{{ $customer_id }}" />
+            <input type="hidden" name="customer_id" value="{{ $supplier_id }}" />
             <input type="hidden" name="invoice-date" value="{{ Carbon::parse($date)->format('Y-m-d') }}" />
             <input type="hidden" name="order_token" value="{{ $order_token }}" />
 
@@ -42,14 +42,15 @@
                         <tr class="p-3">
                             <th class="col-md-1 py-3 px-0"></th>
                             <th class="col-md-4 p-3" scope="col">Product Name</th>
-                            <th class="col-md-2 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-2 p-3" scope="col">Quantity</th>
+                            <th class="col-md-2 p-3" scope="col" title="Price">Price (GHC)</th>
                             <th class="col-md-3 p-3" scope="col">Total (GHC)</th>
                         </tr>
                     </thead>
                     @php
                         use Illuminate\Support\Facades\DB;
                         $products = DB::table('products')
+                            ->where('supplied_by', $supplier)
                             ->where('quantity', '>', 0)
                             ->get(['name']);
                     @endphp
@@ -70,15 +71,15 @@
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input readonly type="text" name="price[]" onfocus="this.select()" type="number"
-                                            step=".01" value="{{ $order->price }}" id="price"
-                                            class="form-control" />
+                                        <input type="number" name="quantity[]" value="{{ $order->quantity }}"
+                                            onfocus="this.select()" required id="quantity" class="form-control qty" />
                                     </div>
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input type="number" name="quantity[]" value="{{ $order->quantity }}"
-                                            onfocus="this.select()" required id="quantity" class="form-control qty" />
+                                        <input readonly type="text" name="price[]" onfocus="this.select()" type="number"
+                                            step=".01" value="{{ $order->price }}" id="price"
+                                            class="form-control" />
                                     </div>
                                 </td>
                                 <td class="col-md-3">
@@ -160,7 +161,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/orders/edit/delete',
+                        url: '/orders/supplier/edit/delete',
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}",
@@ -210,18 +211,18 @@
                                 </div>
                             </div>
                         </div>
-                    </td>                          
-                    <td class="col-md-2">
-                        <div class="form-group">
-                            <input readonly required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
-                        </div>
-                    </td>                      
+                    </td>                       
                     <td class="col-md-2">
                         <div class="form-group">
                             <input required onfocus="this.select()" type="number" name="quantity[]" id="quantity_${row}"
                                 class="form-control qty" />
                         </div>
-                    </td>
+                    </td>                       
+                    <td class="col-md-2">
+                        <div class="form-group">
+                            <input readonly required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
+                        </div>
+                    </td>  
                     <td class="col-md-3">
                         <div class="form-group">
                             <input readonly type="text" value="0" name="total[]" id="total_${row}"
@@ -244,10 +245,10 @@
                         .parentElement.parentElement.children[4].children[0].children[0],
 
                         quantity = e.currentTarget.parentElement.parentElement.parentElement
-                        .parentElement.parentElement.children[3].children[0].children[0],
+                        .parentElement.parentElement.children[2].children[0].children[0],
 
                         price = e.currentTarget.parentElement.parentElement.parentElement
-                        .parentElement.parentElement.children[2].children[0].children[0];
+                        .parentElement.parentElement.children[3].children[0].children[0];
                     console.log(selectedValue);
                     $.ajax({
                         method: "GET",

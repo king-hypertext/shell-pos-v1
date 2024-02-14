@@ -84,13 +84,13 @@
         $(document).ready(function() {
             var queryParam = new URLSearchParams(window.location.search).get('date');
             if (queryParam && queryParam === 'today') {
-                $('input[name="order-daterange" ]').daterangepicker({
+                $('input[name="order-daterange"]').daterangepicker({
                     startDate: moment(),
                     endDate: moment().add(1, 'weeks')
                 });
             } else {
-                $('input[name="order-daterange" ]').daterangepicker({
-                    startDate: moment().subtract('1', 'M'),
+                $('input[name="order-daterange"]').daterangepicker({
+                    startDate: moment().subtract('1', 'weeks'),
                     endDate: moment()
                 });
             }

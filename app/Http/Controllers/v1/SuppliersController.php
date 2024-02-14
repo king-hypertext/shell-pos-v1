@@ -29,7 +29,7 @@ class SuppliersController extends Controller
                 'name' => 'required|unique:suppliers,name'
             ],
             [
-                'name.unique' => 'supplier already exist'
+                'name.unique' => 'Supplier already exist'
             ]
         );
         Suppliers::insert([

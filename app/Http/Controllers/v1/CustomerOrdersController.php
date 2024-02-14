@@ -19,7 +19,7 @@ class CustomerOrdersController extends Controller
     {
         $title = "CUSTOMER ORDERS";
         if ($request->ajax()) {
-            $data = Orders::select('*')->where('quantity', '>=', 0);
+            $data = Orders::query()->where('quantity', '>=', 0)->latest();
             if ($request->filled('from_date') && $request->filled('to_date')) {
                 $data = $data->whereBetween('created_at', [$request->from_date, $request->to_date])->latest();
                 return DataTables::of($data)
@@ -29,17 +29,17 @@ class CustomerOrdersController extends Controller
 
                         $div = "<form id='form-return' method='post'>
                         <div class='form-group d-flex mb-1'>
-                            <input style='min-width: 45px;' required type='text' min='0' id='$row->quantity' class='return_input form-control form-control-sm me-1' placeholder='quantity' />
+                            <input style='min-width: 45px;' required type='number' min='0' id='$row->quantity' class='return_input form-control form-control-sm me-1' placeholder='quantity' />
                             <button type='submit' class='btn btn-sm btn-primary btn-return text-capitalize ms-1' data-order_id='$row->id'>Return</button>
                         </div>
                     </form>";
                         $div1 = "<form id='form-return' method='post'>
                         <div class='form-group d-flex mb-1'>
-                            <input style='min-width: 45px;' required type='text' min='0' data-order_id='$row->id' id='$row->quantity' class='return_input form-control form-control-sm me-1' placeholder='quantity' />
+                            <input style='min-width: 45px;' required type='number' min='0' data-order_id='$row->id' id='$row->quantity' class='return_input form-control form-control-sm me-1' placeholder='quantity' />
                         </div>
                         <div class='form-group d-flex justify-content-start'>
                             $rtn
-                            <button type='submit' class='btn btn-sm btn-primary btn-return text-capitalize ms-1'>Return</button>
+                            <button type='submit' class='btn btn-sm btn-primary btn-return text-capitalize ms-1' data-order_id='$row->id'>Return</button>
                         </div>
                     </form>";
                         if ($row->returns !== 0) {
@@ -92,7 +92,7 @@ class CustomerOrdersController extends Controller
     /**
      * This method is been used to return an order
      */
-    public function update(string $order_id, Request $request, Orders $orders)
+    public function update(int $order_id, Request $request, Orders $orders)
     {
         $order = $orders->find($order_id);
         $quantity_to_return = $request->quantity_to_return;
@@ -104,7 +104,6 @@ class CustomerOrdersController extends Controller
             'from' => $order->customer,
             'before_qty' => $before_qty,
             'after_qty' => $before_qty + $quantity_to_return,
-            'qty' => $quantity_to_return + $before_qty,
             'date' => now()->format('Y-m-d H:i')
         ]);
         Orders::where('id', $order_id)->update([
@@ -143,6 +142,6 @@ class CustomerOrdersController extends Controller
         ]);
         OrderReturns::where('order_id', $order->id)->delete();
         Products::where('name', $order->product)->decrement('quantity', $quantity_returned);
-        return response()->json(['success' => 'Order Reset Ok']);
+        return response()->json(['success' => 'Order Reset Success']);
     }
 }

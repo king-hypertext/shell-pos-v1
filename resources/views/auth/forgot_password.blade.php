@@ -6,7 +6,6 @@
                 <form id="forgot-password" method="POST" autocomplete="off">
                     @csrf
                     <div class="text-center">
-                        {{-- <img src="{{ url('icon.png') }}" style="height: 80px" alt="logo"> --}}
                         <h5 class="h4 text-uppercase text-danger">forgot password</h5>
                     </div>
                     <div class="text-center text-primary py-2 fw-normal ">
@@ -19,7 +18,6 @@
                             @endforeach
                         </ul>
                     @endif
-                    {{-- <div class="h6 alert alert-danger alert-dismissible text-danger text-center" id="login-error"></div> --}}
                     <div class="form-outline mb-4">
                         <input required type="date" autofocus name="date_of_birth" id="date_of_birth"
                             class="form-control form-control-lg" />
@@ -27,7 +25,7 @@
                                 class="text-danger">*</span></label>
                     </div>
                     <div class="form-outline mb-4">
-                        <input required type="number" name="secret_code" id="secret_code"
+                        <input required type="number" oninput(this.type='password') name="secret_code" id="secret_code"
                             class="form-control form-control-lg" />
                         <label class="form-label" for="secret_code">Secret Code <span class="text-danger">*</span></label>
                     </div>
