@@ -58,9 +58,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($stats as $stat)
+                @foreach ($stats as $key => $stat)
                     <tr>
-                        <td>{{ $stat->id }}</td>
+                        <td>{{ $key + 1 }}</td>
                         <td>{{ Carbon::parse($stat->date)->format('Y-M-d H:i') }}</td>
                         <td>{{ $stat->qty_received }}</td>
                         <td>{{ $stat->from }}</td>

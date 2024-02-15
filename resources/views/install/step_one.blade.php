@@ -8,24 +8,23 @@
                     <div class="text-center">
                         {{-- <img src="{{ url('icon.png') }}" style="height: 80px" alt="logo"> --}}
                         <h5 class="h6 text-uppercase text-danger pt-2 text-decoration-underline ">
-                            q-pos installation wizard -Step 1
+                            Q-IMS installation Pannel - Step 1
                         </h5>
                     </div>
                     <h3 class="h4 text-center text-uppercase  text-primary py-4">
                         app & database configuration
                     </h3>
-                    @session('error')
-                        {{ $error }}
-                    @endsession
                     @if ($errors->any())
                         <ul class="list-unstyled d-flex justify-content-center">
                             <div class="alert alert-danger alert-dismissible">
                                 @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
+                                    <li class="text-truncate">{{ $error }}</li>
                                 @endforeach
                             </div>
                         </ul>
                     @endif
+                    <div class="alert alert-danger text-center" id="db-configuration-error"></div>
+                    <div class="alert alert-info text-center" id="db-configuration-error-1">Please submit the form again</div>
                     <div class="form-outline mb-4">
                         <input required type="url" value="http://" autofocus name="app_url" id="app_url"
                             class="form-control form-control-lg" />
@@ -67,6 +66,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#db-configuration-error').hide();
+            $('#db-configuration-error-1').hide();
             $('#loading-icon').hide();
             $('#database-configuration').on('submit', function(e) {
                 e.preventDefault();
@@ -77,32 +77,35 @@
                     db_name = e.currentTarget[2].value,
                     db_username = e.currentTarget[3].value,
                     db_password = e.currentTarget[4].value;
-                $.ajax({
-                    url: '/install/step-1',
-                    type: 'POST',
-                    data: {
-                        _token: _token,
-                        app_url: app_url,
-                        db_name: db_name,
-                        db_username: db_username,
-                        db_password: db_password
-                    },
-                    success: function(res) {
-                        console.log(res);
+                async function stepOneAjaxPost() {
+                    let response = await $.ajax({
+                        url: '/install/step-1',
+                        type: 'POST',
+                        data: {
+                            _token: _token,
+                            app_url: app_url,
+                            db_name: db_name,
+                            db_username: db_username,
+                            db_password: db_password
+                        },
+                    });
+                    return response;
+                }
+                stepOneAjaxPost().then(res => {
+                    console.log(res);
+                    $('#loading-icon').hide();
+                    if (res.next) {
+                        window.open(res.next, "_self");
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    $('#db-configuration-error-1').show();
+                    if (error) {
                         $('#loading-icon').hide();
-                        if (res.next) {
-                            window.open(res.next, "_self");
-                        }
-                    },
-                    error: function(error) {
-                        console.log(error);
-                        if (error) {
-                            $('#loading-icon').hide();
-                            $('#db-configuration-error').show();
-                            $('#db-configuration-error').
-                            text(error.responseJSON.message +
-                                "\n: Unknown Database \"" + db_name + "\"")
-                        }
+                        $('#db-configuration-error').show();
+                        $('#db-configuration-error').
+                        text(error.responseJSON.message +
+                            "\n: Unknown Database \"" + db_name + "\"")
                     }
                 });
             })

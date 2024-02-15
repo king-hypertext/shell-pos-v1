@@ -14,7 +14,7 @@ class SuppliersController extends Controller
     public function index()
     {
         $title = "WORKERS VAN";
-        $suppliers = Suppliers::all();
+        $suppliers = Suppliers::orderBy('created_at', 'DESC')->get();
         return view('pages.suppliers', compact('title', 'suppliers'));
     }
 

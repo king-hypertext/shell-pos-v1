@@ -38,6 +38,23 @@
             </table>
         </div>
     </div>
+    @if (session('error'))
+        <script type="text/javascript">
+            const showSuccessAlert = Swal.mixin({
+                position: 'top',
+                toast: true,
+                timer: 14000,
+                showConfirmButton: false,
+                timerProgressBar: false,
+            });
+            showSuccessAlert.fire({
+                icon: 'error',
+                text: '{{ session('error') }}',
+                padding: '20px',
+                width: 'auto'
+            });
+        </script>
+    @endif
 @endsection
 @section('script')
     <script>

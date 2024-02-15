@@ -34,7 +34,7 @@
             <table class="table table-hover" id="customer-table">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
+                        <th scope="col">#</th>
                         <th scope="col">WORKER</th>
                         <th scope="col">IMAGE</th>
                         <th scope="col">CONTACT</th>
@@ -45,9 +45,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($customers as $customer)
+                    @foreach ($customers as $index => $customer)
                         <tr class="text-uppercase ">
-                            <td id="col_id" scope="row">{{ $customer->id }}</td>
+                            <td id="col_id" scope="col">{{ $index + 1 }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>
                                 <img class="table-image" src="{{ $customer->image }}" alt="product-image" />
@@ -105,7 +105,7 @@
                             <div class="row mb-4">
                                 <div class="col-6">
                                     <label class="form-label" for="dob">Date of Birth</label>
-                                    <input  type="date" max="{{ Date('Y-m-d') }}" name="dob" id="dob"
+                                    <input type="date" max="{{ Date('Y-m-d') }}" name="dob" id="dob"
                                         class="form-control" />
                                 </div>
                                 <div class="col-6">
@@ -160,9 +160,8 @@
                             method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-outline mb-4">
-                                <input required type="text" name="customer-name"
-                                    id="cusName" placeholder="Enter worker name" class="form-control autofocus"
-                                    autofocus />
+                                <input required type="text" name="customer-name" id="cusName"
+                                    placeholder="Enter worker name" class="form-control autofocus" autofocus />
                                 <label class="form-label" for="cusName">Worker Name</label>
                             </div>
                             <div class="row mb-4">
@@ -253,7 +252,6 @@
         $(document).ready(function() {
             $("#form_edit_worker").submit(function(event) {
                 $(this).attr("action", "/customers/" + event.currentTarget[1].value);
-                // Continue with the form submission
                 return true;
             });
 

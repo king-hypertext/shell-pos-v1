@@ -2174,7 +2174,7 @@ progress {
   --bs-table-hover-bg: rgba(var(--bs-emphasis-color-rgb), 0.075);
   width: 100%;
   /* margin-bottom: 1rem; */
-  vertical-align: top;
+  vertical-align: bottom;
   border-color: var(--bs-table-border-color);
 }
 

@@ -169,9 +169,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $key => $invoice)
+                @foreach ($invoices as $key => $invoice)
                     <tr class="tr">
-                        <td class="td">{{ $key + 1 }}</td>
+                        <td class="td">{{ intval($key) + 1 }}</td>
                         <td class="td">{{ $invoice->product }}</td>
                         <td class="td">{{ $invoice->price }}</td>
                         <td class="td">{{ $invoice->quantity }}</td>

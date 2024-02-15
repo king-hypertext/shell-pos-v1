@@ -140,7 +140,7 @@
                                 </select>
                             </div>
                             <div class="form-outline mb-4">
-                                <input required type="text" {{-- pattern="/^[0-9]+$/" --}} name="contact" id="contact"
+                                <input required type="text" name="contact" id="contact"
                                     class="form-control" />
                                 <label class="form-label" for="contact">Supplier's Contact</label>
                             </div>
@@ -216,8 +216,8 @@
                         _token: e.currentTarget[0].value,
                         name: e.currentTarget[1].value,
                         category: e.currentTarget[2].value,
-                        address: e.currentTarget[3].value,
-                        contact: e.currentTarget[4].value,
+                        address: e.currentTarget[4].value,
+                        contact: e.currentTarget[3].value,
                     },
                     success: (res) => {
                         if (res.success) {
@@ -254,7 +254,7 @@
                         name.val(res.name).addClass('active');
                         contact.val(res.contact).addClass('active');
                         address.val(res.address).addClass('active');
-                        category.selected = res.category;
+                        category.val(res.category).addClass('active');
                         modal_title.textContent = `Edit Supplier ${res.name}`;
                     }
                 })

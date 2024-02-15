@@ -71,7 +71,7 @@
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input type="number" name="quantity[]" value="{{ $order->quantity }}"
+                                        <input readonly type="number" name="quantity[]" value="{{ $order->quantity }}"
                                             onfocus="this.select()" required id="quantity" class="form-control qty" />
                                     </div>
                                 </td>

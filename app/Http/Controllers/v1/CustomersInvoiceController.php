@@ -14,7 +14,7 @@ class CustomersInvoiceController extends Controller
     public function index()
     {
         $title = "CUSTOMER INVOICES";
-        $invoices = Invoice::all();
+        $invoices = Invoice::orderBy('created_at', 'DESC')->get();
         return view('pages.invoices_customer', compact('title', 'invoices'));
     }
 

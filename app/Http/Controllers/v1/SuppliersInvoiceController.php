@@ -15,7 +15,7 @@ class SuppliersInvoiceController extends Controller
     public function index()
     {
         $title = "INVOICE SUPPLIERS";
-        $data = SupplierInvoice::all();
+        $data = SupplierInvoice::orderBy('created_at', 'DESC')->get();
         return view('pages.invoices_supplier', compact('title', 'data'));
     }
 

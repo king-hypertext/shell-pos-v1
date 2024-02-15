@@ -14,7 +14,7 @@ class ProductStatsController extends Controller
      */
     public function index()
     {
-        $stats = ProductStats::all();
+        $stats = ProductStats::orderBy('created_at', 'DESC')->get();
         return view('product.index', ['title' => 'PRODUCT STATS', 'stats' => $stats]);
     }
 

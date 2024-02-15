@@ -21,7 +21,6 @@ use App\Http\Controllers\v1\ProductStatsController;
 use App\Http\Controllers\v1\SettingsController;
 use App\Models\Suppliers;
 
-Route::get('/test', [TestController::class, 'test']);
 Route::controller(InstallerController::class)->group(function () {
     Route::redirect('/install', '/install/step-1');
     Route::view('/install/step-1', 'install.step_one', ['title' =>  'INSTALLER-STEP 1'])->name('installer.step1');
@@ -43,7 +42,7 @@ Route::middleware(['web', 'app'])->group(function () {
     })->middleware('guest');
 
     // only authorize users can access these routes--admin
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::middleware(['auth', 'admin', 'app'])->group(function () {
         Route::controller(AuthController::class)->group(function () {
             Route::post('/update-profile', 'store');
             Route::post('/auth/change-password', 'update');
@@ -83,6 +82,7 @@ Route::middleware(['web', 'app'])->group(function () {
         Route::controller(ProductsController::class)->group(function () {
             Route::delete('/products/delete', 'destroy');
             Route::get('/product/{name}', 'fetch');
+            Route::get('/products/supplier/{id}', 'fetchProductSupplier');
         });
         Route::resource('/products', ProductsController::class);
         Route::resource('/stats/product', ProductStatsController::class);

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}">
-    <title>Q POS | {{ $title ?? 'DASHBOARD' }}</title>
+    <title>Q-IMS | {{ $title ?? 'DASHBOARD' }}</title>
     <link rel="manifest" href="{{ url('manifest.json') }}" />
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.css') }}" />
@@ -42,8 +42,8 @@
     @include('app.footer')
     @include('modals.logout')
     <div id="back-drop" class="back-drop"></div>
-    <script async type="application/javascript" src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>
     <script src="{{ url('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>
     <script src="{{ url('assets/plugins/moment/moment.js') }}"></script>
     <script src="{{ url('assets/plugins/select2/js/select2.min.js') }}"></script>
     <script src="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.min.js') }}"></script>

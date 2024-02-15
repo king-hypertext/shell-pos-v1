@@ -1,7 +1,7 @@
 @extends('app.index')
 @section('content')
     <div class="container-fluid mt-4">
-        <h2 class="h2 text-uppercase">customer Orders</h2>
+        <h2 class="h2 text-uppercase">worker Orders</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
             <div class="mt-1">
                 Select date range:

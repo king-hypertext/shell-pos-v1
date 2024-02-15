@@ -20,8 +20,7 @@ class CreateSupplierOrderController extends Controller
     {
         $title = "CREATE ORDER";
         $suppliers = Suppliers::all();
-        $products = Products::all();
-        return view('pages.create_supplier_order', compact('title', 'suppliers', 'products'));
+        return view('pages.create_supplier_order', compact('title', 'suppliers'));
     }
 
     /**

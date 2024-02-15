@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{{ url('icon.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url('icon.png') }}" />
-    <title>SHELL POS | {{ $title ?? 'INSTALLER' }}</title>
+    <title>SHELL IMS | {{ $title ?? 'INSTALLER' }}</title>
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/mdb/mdb.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap/css/bootstrap.css') }}" />

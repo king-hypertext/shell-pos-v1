@@ -4,7 +4,9 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products;
+use App\Models\Suppliers;
 use Illuminate\Http\Request;
+use Psy\CodeCleaner\ReturnTypePass;
 
 class ProductsController extends Controller
 {
@@ -49,12 +51,11 @@ class ProductsController extends Controller
         $request->validate([
             'product-name' => 'required|string|unique:products,name',
             'supplier' => 'required|string|exists:suppliers,name',
-            'product-image' => 'required|file|mimes:png,jpg,jpeg,webp',
         ], [
             'product-name.unique' => 'The Product Already Exists',
             'supplier.exists' => 'The Supplier Does Not Exist'
         ]);
-
+        $path = "";
         if ($request->hasFile("product-image")) {
             $path = $request->file("product-image")->store('/public/products');
         }
@@ -66,7 +67,7 @@ class ProductsController extends Controller
             'category' => $request->category,
             'prod_date' => $request->prod_date,
             'expiry_date' => $request->expiry_date,
-            'image' => '/storage/products/' . str_replace(['public/', 'products/'], '', $path),
+            'image' => '/storage/products/' . str_replace(['public/', 'products/'], '', $path) ?? null,
             'created_at' => now()->format('Y-m-d')
         ]);
 
@@ -150,5 +151,11 @@ class ProductsController extends Controller
     {
         $data = Products::where('name', $name)->get();
         return response()->json(['data' => $data]);
+    }
+    public function fetchProductSupplier(int $id)
+    {
+        $supplier = Suppliers::query()->where('id', $id)->first();
+        $products = Products::where('supplied_by', $supplier->name)->where('category', $supplier->category)->get('name');
+        return response()->json($products);
     }
 }

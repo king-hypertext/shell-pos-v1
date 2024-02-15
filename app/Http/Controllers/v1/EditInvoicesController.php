@@ -6,18 +6,16 @@ use App\Models\Orders;
 use App\Models\Invoice;
 use App\Models\Products;
 use App\Models\Customers;
+use App\Models\Suppliers;
+use App\Models\ProductStats;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\SupplierOrders;
-
-use function PHPUnit\Framework\isEmpty;
+use App\Models\SupplierInvoice;
+use App\Http\Controllers\Controller;
 
 include_once '_token.php';
 class EditInvoicesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $worker_name = $request->worker;
@@ -40,17 +38,7 @@ class EditInvoicesController extends Controller
             return count($data) > 0 ? response()->json(['data' => route('order.supplier.edit', ['supplier' => $supplier, 'order_date' => $order_date])]) : response()->json(['empty' => 'No Data Found']);
         }
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // $request->dd();
@@ -166,17 +154,7 @@ class EditInvoicesController extends Controller
         ]);
         return redirect()->route('order.supplier.edit', ['supplier' => $customer->name, 'order_date' => $date])->with('success', 'Order Updated');
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Request $request)
     {
         $worker_name = $request->worker;
@@ -215,24 +193,25 @@ class EditInvoicesController extends Controller
         }
         return view("pages.saved_order_supplier", ['data' => $data, 'order_token' => $token, 'supplier_id' => $id, 'supplier' => $supplier, 'date' => $date]);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request)
     {
         $ids = $request->id;
         for ($i = 0; $i < count($ids); $i++) {
-            $qty = Orders::where('id', $ids[$i])->first()->value('quantity');
-            Products::where('id', $ids[$i])->increment('quantity', $qty);
+            $qty = Orders::where('id', $ids[$i])->value('quantity');
+            $product = Orders::where('id', $ids[$i])->value('product');
+            $from = Orders::where('id', $ids[$i])->value('customer');
+            $before_qty = Products::where('name', $product)->value('quantity');
+            ProductStats::insert([
+                'product' => $product,
+                'product_id' => Products::where('name', $product)->value('id'),
+                'qty_received' => $qty,
+                'from' => $from,
+                'before_qty' => $before_qty,
+                'after_qty' => $before_qty + $qty,
+                'date' => now()->format('Y-m-d H:i:s')
+            ]);
+            Invoice::where('customer', $from)->delete();
+            Products::where('name', $product)->increment('quantity', $qty);
         }
         Orders::destroy($ids);
         return response()->json(['success' => 'Deleted']);
@@ -242,8 +221,24 @@ class EditInvoicesController extends Controller
     {
         $ids = $request->id;
         for ($i = 0; $i < count($ids); $i++) {
-            $qty = SupplierOrders::where('id', $ids[$i])->first()->value('quantity');
-            Products::where('id', $ids[$i])->decrement('quantity', $qty);
+            $qty = SupplierOrders::where('id', $ids[$i])->value('quantity');
+            $supplier_id = SupplierOrders::where('id', $ids[$i])->value('supplier_id');
+            $supplier = SupplierOrders::where('id', $ids[$i])->value('supplier');
+            $product = SupplierOrders::where('id', $ids[$i])->value('product');
+            $from = SupplierOrders::where('id', $ids[$i])->value('supplier');
+            $before_qty = Products::where('name', $product)->value('quantity');
+            ProductStats::insert([
+                'product' => $product,
+                'product_id' => Products::where('name', $product)->value('id'),
+                'qty_received' => (0 - intval($qty)),
+                'from' => $from,
+                'before_qty' => $before_qty,
+                'after_qty' => $before_qty - $qty,
+                'date' => now()->format('Y-m-d H:i:s')
+            ]);
+
+            SupplierInvoice::where('supplier_id', $supplier_id)->where('supplier', $supplier)->delete();
+            Products::where('supplied_by', $supplier)->decrement('quantity', $qty);
         }
         SupplierOrders::destroy($ids);
         return response()->json(['success' => 'Deleted']);

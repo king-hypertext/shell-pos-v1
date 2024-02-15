@@ -106,11 +106,6 @@
                                     <select @required(true) class="form-select" data-select-product name="product[]"
                                         id="product">
                                         <option selected value=""> Select Product </option>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->name }}">
-                                                {{ $product->name }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                 </div>
                             </td>
@@ -170,6 +165,7 @@
 @section('script')
     <script>
         var row = 1;
+        var selected_supplier_id;
         $(document).ready(function() {
 
             var select = $('select[name="supplier"]')
@@ -182,6 +178,7 @@
                 var cat = $('input[name="category"]'),
                     address = $('input[name="address"]'),
                     phone = $('input[name="phone"]');
+                selected_supplier_id = e.currentTarget.value;
                 $.ajax({
                     url: "/create-order/supplier/" + e.target.value,
                     success: function(res) {
@@ -194,7 +191,25 @@
                     error: function(err) {
                         console.log(err);
                     }
-                })
+                });
+                // get the products supplied by the selected supply from database
+                $.ajax({
+                    url: '/products/supplier/' + e.currentTarget.value,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var $select = $('select[data-select-product]');
+                        // $select.empty();
+                        $.each(data[0], function(index, value) {
+                            $select.append($('<option></option>').attr('value', value)
+                                .text(value));
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+
             });
             window.addNewRow = function() {
                 var newInvoiceRow = `<tr class="form_row_${row}">
@@ -204,11 +219,7 @@
                                 <div class="form-group">
                                     <select @required(true) style="padding: 0.375rem 2.25rem 0.375rem 0.75rem !important;" required name="product[]" id="product_${row}"
                                         class="form-select select-product">
-                                        <option value="" selected disabled> Select Product </option>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->name }}">
-                                                {{ $product->name }} </option>
-                                        @endforeach
+                                        <option value="" selected disabled> Select Product </option>                                        
                                     </select>
                                 </div>
                             </div>
@@ -237,6 +248,22 @@
                         </button>
                     </td>
                 </tr>`;
+                $.ajax({
+                    url: '/products/supplier/' + selected_supplier_id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var $select = $('select.select-product');
+                        // $select.empty();
+                        $.each(data[0], function(index, value) {
+                            $select.append($('<option></option>').attr('value', value)
+                                .text(value));
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus, errorThrown);
+                    }
+                });
                 if (row > 0) {
                     $("tbody#td-parent").append(newInvoiceRow);
                     row++;

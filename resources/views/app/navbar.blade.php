@@ -5,9 +5,10 @@
             <i class="fas fa-bars"></i>
         </button>
         <div class="nav-item me-4 d-lg-block d-none" data-date-time>Sat, 06 Jan 2024 16:12:54 GMT</div>
-        <form action="" method="get" class="py-2 m-0 d-none d-md-block">
+        {{-- <form action="" method="get" class="py-2 m-0 d-none d-md-block">
             <input class="form-control" type="search" name="q" placeholder="Search..." aria-label="Search" />
-        </form>
+        </form> --}}
+        <h6 class="h6 fw-semibold user-select-none">Q-IMS</h6>
         <div class="dropdown me-2">
             <a href="javascript:void(0)" class="nav-link" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">

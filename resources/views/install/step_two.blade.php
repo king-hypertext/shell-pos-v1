@@ -8,7 +8,7 @@
                     <div class="text-center">
                         {{-- <img src="{{ url('icon.png') }}" style="height: 80px" alt="logo"> --}}
                         <h5 class="h6 text-uppercase text-danger pt-2 text-decoration-underline ">
-                            q-pos installation wizard -Step 2
+                            Q-IMS installation Pannel - Step 2
                         </h5>
                     </div>
                     <h3 class="h4 text-center text-uppercase  text-primary py-4">
@@ -23,8 +23,6 @@
                             </div>
                         </ul>
                     @endif
-                    <div class="h6 alert alert-danger alert-dismissible text-danger text-center"
-                        id="db-configuration-error"></div>
                     <div class="form-outline mb-4">
                         <input required type="text" autofocus name="username" id="username"
                             class="form-control form-control-lg" />
@@ -50,7 +48,7 @@
                     </div>
                     <div class="form-group mb-4">
                         <label class="form-label" for="date_of_birth">Date of Birth <span class="text-danger">*</span></label>
-                        <input required type="date" autofocus name="date_of_birth" id="date_of_birth"
+                        <input required type="date" autofocus name="date_of_birth" id="date_of_birth" max="{{ Date("Y-m-d") }}"
                             class="form-control" />
                     </div>
                     <div class="form-outline mb-4">
@@ -83,7 +81,6 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#db-configuration-error').hide();
             $('#loading-icon').hide();
             $('#user-signup').on('submit', function(e) {
                 $('#loading-icon').show();

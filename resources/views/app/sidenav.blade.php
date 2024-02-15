@@ -3,7 +3,7 @@
         <div class="container-fluid logo-content pt-3 position-sticky top-0">
             <a href="{{ route('dashboard') }}" class="nav-link  my-1">
                 <span class="logo-text">
-                    q-admin
+                    q-softwares
                 </span>
             </a>
         </div>
@@ -115,7 +115,7 @@
                         class="nav-item ps-2 {{ Request::segment(1) === 'invoices' && Request::segment(2) === 'customers' ? 'active' : '' }}">
                         <a href="{{ route('invoices.customers') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
-                            Customers
+                            Workers
                         </a>
                     </li>
                     <li

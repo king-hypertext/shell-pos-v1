@@ -24,7 +24,7 @@
                                 </div>
                             </ul>
                         @endif
-                        <form action="{{ route('products.store') }}" class="px-5 py-2" method="POST"
+                        <form id="create_product" action="{{ route('products.store') }}" class="px-5 py-2" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="form-outline mb-4">
@@ -84,11 +84,10 @@
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label" for="expiryDate">Expiry Date
-                                        <span class="text-danger">*</span>
+                                        {{-- <span class="text-danger">*</span> --}}
                                     </label>
-                                    <input type="date" min="{{ Date('Y-m-d') }}"
-                                        value="{{ @old('expiry-date') }}" name="expiry_date" id="expiryDate"
-                                        class="form-control" />
+                                    <input type="date" min="{{ Date('Y-m-d') }}" value="{{ @old('expiry-date') }}"
+                                        name="expiry_date" id="expiryDate" class="form-control" />
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -101,7 +100,7 @@
                                 <div class="col-8">
                                     <div class="mb-4">
                                         <label for="productImage">Product Image</label>
-                                        <input required type="file" onchange="previewImage()" name="product-image"
+                                        <input type="file" onchange="previewImage()" name="product-image"
                                             id="productImage" class="form-control" accept="image/*" />
                                     </div>
                                 </div>
@@ -160,6 +159,7 @@
 @endsection
 @section('script')
     <script>
+        var cat = $('input[name="category"]');
         $('select[name="supplier"]').on('change', function(e) {
             let name = e.currentTarget.value;
             if (!name) {
@@ -169,14 +169,14 @@
                     url: '/supplier-category/' + e.currentTarget.value,
                     success: (res) => {
                         console.log(res);
-                        $('input[name="category"]').val(res[0].category);
+                        cat.val(res[0].category);
                     },
                     error: (err) => {
                         console.log(err);
                     }
                 })
             }
-        })
+        });
         var table = new DataTable('#products-list', {
             processing: true,
             search: {

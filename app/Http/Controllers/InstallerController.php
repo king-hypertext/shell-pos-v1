@@ -43,13 +43,14 @@ class InstallerController extends Controller
             $content
         );
         $success = file_put_contents($env, $content);
+
         if ($success) {
             // call migration command to save database configuration
             Artisan::call('migrate:fresh', ['--force' => true]);
+            return response()->json(['next' => route('installer.step2')]);
         }
         // Save the content back to the .env file
 
-        return response()->json(['next' => route('installer.step2')]);
     }
     public function stepTwo(Request $request)
     {
@@ -95,10 +96,10 @@ class InstallerController extends Controller
             );
             file_put_contents($env, $content);
             if ($insert) {
+                Artisan::call('storage:link', ['--force' => true]);
                 return redirect()->to('/install/final')->withInput(['id' => $id]);
             }
         } catch (\Throwable $th) {
-            // return $th;
             return redirect()->route('installer.step1')->with('error', 'Step one is not completed');
         }
     }
@@ -117,13 +118,12 @@ class InstallerController extends Controller
                 ]
             );
             if ($request->hasFile('image')) {
-                $path =  $request->file('image')->store('/public/users');
+                $path =  $request->file('image')->store('/public/user');
+                User::where('id', $request->id)->update([
+                    'photo' => '/storage/user/' . str_replace(['public/', 'user/'], '', $path)
+                ]);
             }
-            User::where('id', $request->id)->update([
-                'photo' => '/storage/users/' . str_replace(['public/', 'users/'], '', $path)
-            ]);
             return redirect()->to('/login');
-            // return $request;
         }
     }
 }

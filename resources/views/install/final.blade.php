@@ -5,7 +5,7 @@
             <div class="card px-5 pb-5 border-0 my-5" style="max-width: 520px">
                 <form id="user-signup" method="POST" autocomplete="off" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="skip" value="skip" />
+                    <input readonly type="hidden" name="skip" value="skip" />
                     <div class="text-center">
                         {{-- <img src="{{ url('icon.png') }}" style="height: 80px" alt="logo"> --}}
                         <h5 class="h6 text-uppercase text-danger pt-2 text-decoration-underline ">
@@ -85,8 +85,9 @@
             $('button#skip').on('click', function(e) {
                 var form = e.currentTarget.form;
                 e.currentTarget.form[3].required = false;
-                e.currentTarget.form[3].readonly = true;
+                e.currentTarget.form[3].setAttribute('readonly', true);
                 e.currentTarget.form[1].type = 'text';
+                e.currentTarget.form[1].readonly = false;
                 e.currentTarget.form[1].classList.add('invisible');
                 form.submit();
             });

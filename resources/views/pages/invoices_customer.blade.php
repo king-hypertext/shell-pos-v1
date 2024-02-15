@@ -4,7 +4,7 @@
         use Carbon\Carbon;
     @endphp
     <div class="container-fluid mt-4">
-        <h2 class="h2 text-uppercase">customer invoices</h2>
+        <h2 class="h2 text-uppercase">worker invoices</h2>
         <div class="table-responsive">
             <table class="table table-hover" id="order_invoice">
                 <thead>
@@ -37,6 +37,23 @@
             </table>
         </div>
     </div>
+    @if (session('error'))
+        <script type="text/javascript">
+            const showSuccessAlert = Swal.mixin({
+                position: 'top',
+                toast: true,
+                timer: 14000,
+                showConfirmButton: false,
+                timerProgressBar: false,
+            });
+            showSuccessAlert.fire({
+                icon: 'error',
+                text: '{{ session('error') }}',
+                padding: '20px',
+                width: 'auto'
+            });
+        </script>
+    @endif
 @endsection
 @section('script')
     <script>
