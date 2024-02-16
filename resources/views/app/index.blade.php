@@ -124,6 +124,10 @@
             window.open(href, "Popup Window", "width=" + popupWidth + ",height=" + popupHeight +
                 ",left=" + popupLeft + ",top=" + popupTop);
         }
+        $.fn.dataTable.ext.errMode = 'none';
+        $(document).on('error.dt', function(e, settings, techNote, message) {
+            console.log('An error has been reported by DataTables: ', message);
+        });
     </script>
     @yield('script')
 </body>
