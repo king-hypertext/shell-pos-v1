@@ -33,7 +33,7 @@
             <table class="table table-hover" id="product-table">
                 <thead>
                     <tr>
-                        <th hidden></th>
+                        {{-- <th hidden></th> --}}
                         <th scope="col" class="text-start ">#</th>
                         <th scope="col" class="text-start ">PRODUCT</th>
                         <th scope="col" class="text-start ">IMAGE</th>
@@ -56,7 +56,7 @@
                 <tbody>
                     @foreach ($products as $index => $product)
                         <tr>
-                            <td hidden>{{ $product->created_at }}</td>
+                            {{-- <td hidden>{{ $product->created_at }}</td> --}}
                             <td scope="row">{{ $index + 1 }}</td>
                             <td>{{ $product->name }}</td>
                             <td>
@@ -67,8 +67,8 @@
                             <td>{{ floatval($product->price) * floatval($product->quantity) }}</td>
                             <td>{{ $product->supplied_by }}</td>
                             <td>{{ $product->category }}</td>
-                            <td>{{ Carbon::parse($product->prod_date)->format('Y-M-d') }}</td>
-                            <td>{{ Carbon::parse($product->expiry_date)->format('Y-M-d') }}</td>
+                            <td>{{($product->prod_date) ?? 'N/A' }}</td>
+                            <td>{{ ($product->expiry_date) ?? 'N/A' }}</td>
                             <td>
                                 <button type="button" id="{{ $product->id }}" class="btn_edit btn text-primary my-1"
                                     title="Edit {{ $product->name }}">
@@ -136,8 +136,8 @@
                                         <label for="category" class="form-label">Category
                                             <span class="text-danger">*</span></label>
                                         <select required name="category" id="category" class="form-select">
-                                            <option value="SHELL">SHELL</option>
-                                            <option value="ALLIED">ALLIED</option>
+                                            <option value="shell">shell</option>
+                                            <option value="allied">allied</option>
                                         </select>
                                     </div>
                                     <div class="col-6">
@@ -327,9 +327,9 @@
             search: {
                 return: true,
             },
-            order: [
-                [0, 'desc']
-            ],
+            // order: [
+            //     [0, 'desc']
+            // ],
             pageLength: 200,
             dom: 'Bfrtip',
             buttons: [{

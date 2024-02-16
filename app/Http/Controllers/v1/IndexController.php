@@ -17,7 +17,7 @@ class IndexController extends Controller
         $products = Products::all()->count();
         $out_of_stock = Products::query()->where('quantity', '<', 1)->count();
         $low_stock = Products::query()->where('quantity', '>', 1)->where('quantity', '<=', 5)->count();
-        $expired_products = Products::query()->where('created_at', '>=', now()->addDays(5))->count();
+        $expired_products = Products::query()->where('expiry_date', '<=', now()->addWeek()->format("Y-m-d"))->count();
         $workers = Customers::all()->count();
         $suppliers = Suppliers::all()->count();
         return view('pages.dashboard', compact('orders', 'today_orders', 'products', 'out_of_stock', 'low_stock', 'expired_products', 'workers', 'suppliers'));

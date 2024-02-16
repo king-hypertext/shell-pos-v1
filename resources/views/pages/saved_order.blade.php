@@ -260,7 +260,7 @@
                     });
                     $(document).on('keyup', quantity, function(e) {
                         total.value =
-                            Number.parseInt(price.value) * Number.parseFloat(quantity
+                            Number.parseFloat(price.value) * Number.parseFloat(quantity
                                 .value);
                         if (isNaN(total.value)) {
                             total.value = 0;

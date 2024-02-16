@@ -38,7 +38,7 @@
                     <th role="columnheader" scope="col" class="user-select-none text-uppercase">#</th>
                     <th role="columnheader" scope="col" class="user-select-none text-uppercase">date</th>
                     <th role="columnheader" scope="col" class="user-select-none text-uppercase"
-                        title="Recieved (how much were received)">received</th>
+                        title="Recieved (how much were received)">received qty</th>
                     <th role="columnheader" scope="col" class="user-select-none text-uppercase">from</th>
                     <th role="columnheader" scope="col" class="user-select-none text-uppercase"
                         title="(How much were given out)">qty supply

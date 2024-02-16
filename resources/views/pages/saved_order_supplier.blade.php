@@ -14,6 +14,7 @@
 
             <h6 class="h4">Edit Order</h6>
             <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
+            <div class="alert alert-danger alert-dismissible" style="display: none" id="error"></div>
             <div class="table-responsive text-nowrap">
                 <style type="text/css">
                     .link-delete {
@@ -58,9 +59,10 @@
                         @foreach ($data as $order)
                             <tr class="form_row">
                                 <td class="col-1 col-md-1">
-                                    <div class="row justify-content-center align-items-center mb-0 pt-3">
+                                    <div class="row justify-content-center align-items-center mb-2 pt-3">
                                         <input type="checkbox" name="check-box" id="{{ $order->id }}"
-                                            value="{{ $order->id }}" />
+                                            style="cursor: pointer;" value="{{ $order->id }}"
+                                            data-order_quantity="{{ $order->quantity }}" />
                                     </div>
                                 </td>
                                 <td class="col-md-4">
@@ -131,13 +133,24 @@
             showConfirmButton: false,
             timerProgressBar: false,
         });
+        const showErrorAlert = Swal.mixin({
+            position: 'top',
+            toast: true,
+            timer: 12000,
+            showConfirmButton: false,
+            timerProgressBar: false,
+        });
         var ids = [];
+        var quantities = [];
         $('input[name="check-box"]').on('change', function(e) {
+            console.log(e);
             if (e.currentTarget.checked) {
                 ids.push(e.currentTarget.value);
+                quantities.push(e.currentTarget.dataset.order_quantity);
                 console.log(ids);
             } else {
-                ids.pop(e.currentTarget.value)
+                ids.pop(e.currentTarget.value);
+                quantities.push(e.currentTarget.dataset.order_quantity);
                 console.log(ids);
             }
             if (ids.length != 0) {
@@ -165,9 +178,11 @@
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}",
-                            id: ids
+                            id: ids,
+                            quantities: quantities,
                         },
                         success: function(res) {
+                            console.log(res);
                             if (res.success) {
                                 showSuccessAlert.fire({
                                     icon: 'success',
@@ -176,6 +191,10 @@
                                     width: 'auto'
                                 });
                                 window.location.reload();
+                            }
+                            if (res.error) {
+                                $('#error').show();
+                                $('#error').text(res.error)
                             }
                         }
                     });
@@ -249,20 +268,17 @@
 
                         price = e.currentTarget.parentElement.parentElement.parentElement
                         .parentElement.parentElement.children[3].children[0].children[0];
-                    console.log(selectedValue);
                     $.ajax({
                         method: "GET",
                         url: "/product/" + selectedValue,
                         success: function(res) {
-                            console.log(res);
-                            console.log(price, total, quantity);
                             price.value = res.data[0].price;
                             quantity.max = res.data[0].quantity;
                         }
                     });
                     $(document).on('keyup', quantity, function(e) {
                         total.value =
-                            Number.parseInt(price.value) * Number.parseFloat(quantity
+                            Number.parseFloat(price.value) * Number.parseFloat(quantity
                                 .value);
                         if (isNaN(total.value)) {
                             total.value = 0;

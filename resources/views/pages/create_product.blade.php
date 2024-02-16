@@ -79,14 +79,14 @@
                             <div class="row mb-4">
                                 <div class="col-6">
                                     <label class="form-label" for="productionDate">Manufacturing Date</label>
-                                    <input type="date" max="{{ Date('Y-m-d') }}" value="{{ @old('prod-date') }}"
+                                    <input type="date" max="{{ Date('Y-m-d') }}"
                                         name="prod_date" id="productionDate" class="form-control" />
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label" for="expiryDate">Expiry Date
                                         {{-- <span class="text-danger">*</span> --}}
                                     </label>
-                                    <input type="date" min="{{ Date('Y-m-d') }}" value="{{ @old('expiry-date') }}"
+                                    <input type="date" min="{{ Date('Y-m-d') }}"
                                         name="expiry_date" id="expiryDate" class="form-control" />
                                 </div>
                             </div>

@@ -25,9 +25,9 @@ class ProductsController extends Controller
             $products = Products::query()->where('quantity', '>', 1)->where('quantity', '<=', 5)->get();
         } elseif ($request && $request->query('query') === 'expired') {
             $heading = "Expired Products";
-            $products =  Products::query()->where('created_at', '>=', now()->addDays(5));
+            $products =  Products::query()->where('expiry_date', '<=', now()->addWeek()->format("Y-m-d"))->get();
         } else {
-            $products = Products::all();
+            $products = Products::query()->latest('created_at')->get();
             // return $products;
         }
         return view('pages.products', compact('title', 'products', 'heading'));
@@ -155,7 +155,7 @@ class ProductsController extends Controller
     public function fetchProductSupplier(int $id)
     {
         $supplier = Suppliers::query()->where('id', $id)->first();
-        $products = Products::where('supplied_by', $supplier->name)->where('category', $supplier->category)->get('name');
-        return response()->json($products);
+        $products = Products::where('supplied_by', $supplier->name)->get('name');
+        return $products;
     }
 }

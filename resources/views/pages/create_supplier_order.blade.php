@@ -200,16 +200,15 @@
                     success: function(data) {
                         var $select = $('select[data-select-product]');
                         // $select.empty();
-                        $.each(data[0], function(index, value) {
-                            $select.append($('<option></option>').attr('value', value)
-                                .text(value));
+                        $.each(data, function(index, value) {
+                            $select.append($('<option></option>').attr('value', value.name)
+                                .text(value.name));
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log(textStatus, errorThrown);
                     }
                 });
-
             });
             window.addNewRow = function() {
                 var newInvoiceRow = `<tr class="form_row_${row}">
@@ -255,9 +254,10 @@
                     success: function(data) {
                         var $select = $('select.select-product');
                         // $select.empty();
-                        $.each(data[0], function(index, value) {
-                            $select.append($('<option></option>').attr('value', value)
-                                .text(value));
+                        $.each(data, function(index, value) {
+                            
+                            $select.append($('<option></option>').attr('value', value.name)
+                                .text(value.name));
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -287,8 +287,7 @@
                             }
                         });
                         $(document).on('keyup', quantity, function(e) {
-
-                            total.value = Number.parseInt(price.value) *
+                            total.value = Number.parseFloat(price.value) *
                                 Number.parseFloat(quantity.value);
                             if (isNaN(total.value)) {
                                 total.value = 0;
@@ -329,7 +328,7 @@
                 });
                 $(document).on('keyup', quantity, function(e) {
                     total.value =
-                        Number.parseInt(price.value) * Number.parseFloat(quantity
+                        Number.parseFloat(price.value) * Number.parseFloat(quantity
                             .value);
                     if (isNaN(total.value)) {
                         total.value = 0;
