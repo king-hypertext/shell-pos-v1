@@ -156,8 +156,16 @@
                                 <h5 class="h3 text-capitalize px-5 ">Add New Worker</h5>
                             </div>
                         </div>
-                        <form autocomplete="off" class="px-5 py-2" action="{{ route('customers.store') }}"
-                            method="POST" enctype="multipart/form-data">
+                        <form id="form_add_worker" autocomplete="off" class="px-5 py-2" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="h6 alert alert-danger alert-dismissible text-center error-msg"
+                                style="display: none">
+                                error
+                            </div>
+                            <div class="h6 alert alert-success alert-dismissible text-center success-msg"
+                                style="display: none">
+                                success
+                            </div>
                             @csrf
                             <div class="form-outline mb-4">
                                 <input required type="text" name="customer-name" id="cusName"
@@ -173,7 +181,7 @@
                                 <div class="col-6">
                                     <label class="form-label" for="gender">Gender</label>
                                     <select required name="gender" id="worker-gender" class="form-select">
-                                        <option selected disabled>Select Gender</option>
+                                        <option value="">Select Gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
                                     </select>
@@ -201,7 +209,8 @@
                     </div>
                 </div>
                 <div class="d-flex my-0 pb-2 pe-2 justify-content-end">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Discard</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"
+                        onclick="location.reload()">Discard</button>
                 </div>
             </div>
         </div>
@@ -250,6 +259,39 @@
             })
         }
         $(document).ready(function() {
+            $('#form_add_worker').on('submit', function(e) {
+                e.preventDefault();
+                var data = new FormData(this);
+                console.log(data);
+                $.ajax({
+                    url: "/customers",
+                    type: "POST",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        if (res.success) {
+                            $('.success-msg').text(res.success);
+                            $('.success-msg').show();
+                            e.target.reset();
+                            img_wrapper.hide();
+                            setTimeout(() => {
+                                $('.success-msg').hide();
+                            }, 3000);
+                        }
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    error: function(err) {
+                        console.log(err);
+                        $('.error-msg').text(error.responseJSON.message);
+                        $('.error-msg').show();
+                        setTimeout(() => {
+                            $('.error-msg').hide();
+                        }, 3000);
+                    }
+                });
+            });
             $("#form_edit_worker").submit(function(event) {
                 $(this).attr("action", "/customers/" + event.currentTarget[1].value);
                 return true;

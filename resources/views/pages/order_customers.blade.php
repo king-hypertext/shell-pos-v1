@@ -37,7 +37,7 @@
                 <tbody>
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr class="text-uppercase">
                         <th></th>
                         <th></th>
                         <th></th>

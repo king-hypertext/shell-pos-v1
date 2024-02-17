@@ -57,9 +57,11 @@
                         @foreach ($data as $order)
                             <tr class="form_row">
                                 <td class="col-1 col-md-1">
-                                    <div class="row justify-content-center align-items-center mb-0 pt-3">
-                                        <input type="checkbox" name="check-box" id="{{ $order->id }}"
-                                            value="{{ $order->id }}" />
+                                    <div class="row justify-content-center align-items-center mb-2 pt-3">
+                                        <input type="checkbox" name="check-box" style="cursor: pointer;"
+                                            id="{{ $order->id }}" value="{{ $order->id }}"
+                                            data-order_product="{{ $order->product }}"
+                                            data-order_quantity="{{ $order->quantity }}" />
                                     </div>
                                 </td>
                                 <td class="col-md-4">
@@ -131,13 +133,19 @@
             timerProgressBar: false,
         });
         var ids = [];
+        var quantity = [];
+        var product = [];
         $('input[name="check-box"]').on('change', function(e) {
             if (e.currentTarget.checked) {
                 ids.push(e.currentTarget.value);
-                console.log(ids);
+                quantity.push(e.currentTarget.dataset.order_quantity);
+                product.push(e.currentTarget.dataset.order_product);
+                console.log(ids, quantity, product);
             } else {
-                ids.pop(e.currentTarget.value)
-                console.log(ids);
+                ids.pop(e.currentTarget.value);
+                quantity.pop(e.currentTarget.dataset.order_quantity);
+                product.pop(e.currentTarget.dataset.order_product);
+                console.log(ids, quantity, product);
             }
             if (ids.length != 0) {
                 $('.link-delete').removeClass('d-none')
@@ -164,7 +172,9 @@
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}",
-                            id: ids
+                            id: ids,
+                            product: product,
+                            quantity: quantity
                         },
                         success: function(res) {
                             if (res.success) {

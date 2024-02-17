@@ -127,7 +127,7 @@
                     </thead>
                     <tbody>
                         @foreach ($products as $index => $product)
-                            <tr>
+                            <tr class="text-uppercase">
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->quantity }}</td>

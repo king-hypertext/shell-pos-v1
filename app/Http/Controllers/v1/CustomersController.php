@@ -44,8 +44,8 @@ class CustomersController extends Controller
             "image" => '/storage/customers/' . str_replace(['public/', 'customers/'], '', $path),
             "created_at" => now()->format('Y-m-d')
         ]);
-
-        return back()->with("success", "New Worker Added");
+        return response()->json(['success' => 'Worker added Successfully']);
+        // return back()->with("success", "New Worker Added");
     }
 
     /**

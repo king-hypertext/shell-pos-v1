@@ -14,6 +14,11 @@
         input[readonly] {
             background-color: #fff !important;
             cursor: not-allowed;
+            text-transform: uppercase !important;
+        }
+
+        select option {
+            text-transform: uppercase !important;
         }
     </style>
     <div class="container-fluid ">
@@ -264,6 +269,12 @@
                 if (row > 0) {
                     $("tbody#td-parent").append(newInvoiceRow);
                     row++;
+                    $('select>option').text(function(i, oldText) {
+                        return oldText.toUpperCase();
+                    });
+                    $('select>option').each(function() {
+                        $(this).val($(this).val().toUpperCase());
+                    });
                     $(document).on('change', 'select.select-product', function(e) {
                         var selectedValue = e.currentTarget.value,
 
@@ -341,6 +352,12 @@
                 var currentRow = $(this).parent().parent();
                 $(currentRow).remove();
                 row--;
+            });
+            $('select>option').text(function(i, oldText) {
+                return oldText.toUpperCase();
+            });
+            $('select>option').each(function() {
+                $(this).val($(this).val().toUpperCase());
             });
             $("select[data-select-product]").select2();
             $(document).on('select2:open', () => {

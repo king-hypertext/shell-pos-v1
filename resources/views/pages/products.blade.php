@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                     @foreach ($products as $index => $product)
-                        <tr>
+                        <tr class="text-uppercase">
                             {{-- <td hidden>{{ $product->created_at }}</td> --}}
                             <td scope="row">{{ $index + 1 }}</td>
                             <td>{{ $product->name }}</td>
@@ -67,8 +67,8 @@
                             <td>{{ floatval($product->price) * floatval($product->quantity) }}</td>
                             <td>{{ $product->supplied_by }}</td>
                             <td>{{ $product->category }}</td>
-                            <td>{{($product->prod_date) ?? 'N/A' }}</td>
-                            <td>{{ ($product->expiry_date) ?? 'N/A' }}</td>
+                            <td>{{ $product->prod_date ?? 'N/A' }}</td>
+                            <td>{{ $product->expiry_date ?? 'N/A' }}</td>
                             <td>
                                 <button type="button" id="{{ $product->id }}" class="btn_edit btn text-primary my-1"
                                     title="Edit {{ $product->name }}">
@@ -133,12 +133,9 @@
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-6">
-                                        <label for="category" class="form-label">Category
-                                            <span class="text-danger">*</span></label>
-                                        <select required name="category" id="category" class="form-select">
-                                            <option value="shell">shell</option>
-                                            <option value="allied">allied</option>
-                                        </select>
+                                        <label for="category">Category</label>
+                                        <input type="text" name="category" id="category" class="form-control mt-2"
+                                            readonly />
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
@@ -165,7 +162,7 @@
                                     <div class="col-6">
                                         <label class="form-label" for="expiryDate">Expiry Date <span
                                                 class="text-danger">*</span></label>
-                                        <input required type="date" min="{{ Date('Y-m-d') }}" name="expiry_date"
+                                        <input type="date" min="{{ Date('Y-m-d') }}" name="expiry_date"
                                             id="expiryDate" class="form-control" />
                                     </div>
                                 </div>
@@ -209,6 +206,24 @@
 @endsection
 @section('script')
     <script>
+        var cat = $('input[name="category"]');
+        $('select[name="supplier"]').on('change', function(e) {
+            let name = e.currentTarget.value;
+            if (!name) {
+                return 0;
+            } else {
+                $.ajax({
+                    url: '/supplier-category/' + e.currentTarget.value,
+                    success: (res) => {
+                        console.log(res);
+                        cat.val(res[0].category);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    }
+                })
+            }
+        });
         const showSuccessAlert = Swal.mixin({
             position: 'top-end',
             toast: true,
@@ -288,7 +303,7 @@
                         $('#productName').val(data.name);
                         $('#unitPrice').val(data.price);
                         $('#batchNumber').val(data.batch_number);
-                        $('select[name="category"]').val(data.category);
+                        $('input[name="category"]').val(data.category);
                         $('select[name="supplier"]').val(data.supplied_by);
                         $('#productionDate').val(data.prod_date);
                         $('#expiryDate').val(data.expiry_date);

@@ -17,6 +17,12 @@
                 <button id="reset" class="btn btn-warning text-capitalize">Reset</button>
             </div>
         </div>
+        <style>
+            table,
+            tr,td {
+                text-transform: uppercase !important;
+            }
+        </style>
         <div class="table-responsive">
             <table class="table table-hover" id="supplier_orders" class="display">
                 <thead>
@@ -31,10 +37,10 @@
                         <th scope="col">SUPPLY DATE</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-uppercase">
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr class="text-uppercase">
                         <th></th>
                         <th></th>
                         <th></th>

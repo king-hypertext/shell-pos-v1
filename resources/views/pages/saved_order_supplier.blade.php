@@ -60,8 +60,8 @@
                             <tr class="form_row">
                                 <td class="col-1 col-md-1">
                                     <div class="row justify-content-center align-items-center mb-2 pt-3">
-                                        <input type="checkbox" name="check-box" id="{{ $order->id }}"
-                                            style="cursor: pointer;" value="{{ $order->id }}"
+                                        <input type="checkbox" data-order_product="{{ $order->product }}" name="check-box"
+                                            id="{{ $order->id }}" style="cursor: pointer;" value="{{ $order->id }}"
                                             data-order_quantity="{{ $order->quantity }}" />
                                     </div>
                                 </td>
@@ -141,17 +141,20 @@
             timerProgressBar: false,
         });
         var ids = [];
-        var quantities = [];
+        var quantity = [];
+        var product = [];
         $('input[name="check-box"]').on('change', function(e) {
             console.log(e);
             if (e.currentTarget.checked) {
                 ids.push(e.currentTarget.value);
-                quantities.push(e.currentTarget.dataset.order_quantity);
-                console.log(ids);
+                quantity.push(e.currentTarget.dataset.order_quantity);
+                product.push(e.currentTarget.dataset.order_product);
+                console.log(ids, product, quantity);
             } else {
                 ids.pop(e.currentTarget.value);
-                quantities.push(e.currentTarget.dataset.order_quantity);
-                console.log(ids);
+                quantity.pop(e.currentTarget.dataset.order_quantity);
+                product.pop(e.currentTarget.dataset.order_product);
+                console.log(ids, product, quantity);
             }
             if (ids.length != 0) {
                 $('.link-delete').removeClass('d-none')
@@ -179,7 +182,8 @@
                         data: {
                             _token: "{{ csrf_token() }}",
                             id: ids,
-                            quantities: quantities,
+                            quantity: quantity,
+                            product: product
                         },
                         success: function(res) {
                             console.log(res);

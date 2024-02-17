@@ -89,6 +89,10 @@
                         box-shadow: none;
                         border: 0 none;
                     }
+
+                    select, option, input {
+                        text-transform: uppercase !important;
+                    }
                 </style>
                 <table id="table-create-order" class="table table-bordered mb-0">
                     <thead>
@@ -99,19 +103,19 @@
                             <th class="col-md-3 p-3" scope="col">Total (GHC)</th>
                         </tr>
                     </thead>
-                    <tbody id="td-parent">
-                        <tr class="form_row">
+                    <tbody id="td-parent" class="text-upppercase">
+                        <tr class="form_row text-uppercase ">
                             <td class="col-md-4">
                                 <div class="form-group">
-                                    <select @required(true) class="form-select" data-select-product name="product[]"
-                                        id="product">
+                                    <select @required(true) class="form-select text-uppercase" data-select-product
+                                        name="product[]" id="product">
                                         <option selected value=""> Select Product </option>
                                     </select>
                                 </div>
                             </td>
                             <td class="col-md-2">
                                 <div class="form-group">
-                                    <input type="number" name="quantity[]" onfocus="this.select()" id="quantity"
+                                    <input required type="number" name="quantity[]" onfocus="this.select()" id="quantity"
                                         class="form-control qty" />
                                 </div>
                             </td>
@@ -173,6 +177,12 @@
             $(document).on('select2:open', () => {
                 document.querySelector('.select2-search__field').focus();
             });
+            $('select>option').text(function(i, oldText) {
+                return oldText.toUpperCase();
+            });
+            $('select>option').each(function() {
+                $(this).val($(this).val().toUpperCase());
+            });
             // retrieve selected supplier from database
             select.on('change', (e) => {
                 var cat = $('input[name="category"]'),
@@ -199,9 +209,12 @@
                     dataType: 'json',
                     success: function(data) {
                         var $select = $('select[data-select-product]');
-                        // $select.empty();
+                        $select.empty();
+                        $select.append($('<option></option>').attr('value', '')
+                            .text('Select Product'));
                         $.each(data, function(index, value) {
-                            $select.append($('<option></option>').attr('value', value.name)
+                            $select.append($('<option></option>').attr('value', value
+                                    .name)
                                 .text(value.name));
                         });
                     },
@@ -247,26 +260,33 @@
                         </button>
                     </td>
                 </tr>`;
-                $.ajax({
-                    url: '/products/supplier/' + selected_supplier_id,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        var $select = $('select.select-product');
-                        // $select.empty();
-                        $.each(data, function(index, value) {
-                            
-                            $select.append($('<option></option>').attr('value', value.name)
-                                .text(value.name));
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
-                    }
-                });
                 if (row > 0) {
                     $("tbody#td-parent").append(newInvoiceRow);
                     row++;
+                    $.ajax({
+                        url: '/products/supplier/' + selected_supplier_id,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            var $select = $('select.select-product');
+                            $select.empty();
+                            $select.append($('<option></option>').attr('value', '')
+                                .text('Select Product'));
+                            $.each(data, function(index, value) {
+                                $select.append($('<option></option>').attr('value', value
+                                    .name).text(value.name));
+                            });
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus, errorThrown);
+                        }
+                    });
+                    $('select>option').text(function(i, oldText) {
+                        return oldText.toUpperCase();
+                    });
+                    $('select>option').each(function() {
+                        $(this).val($(this).val().toUpperCase());
+                    });
                     $(document).on('change', 'select.select-product', function(e) {
                         var selectedValue = e.currentTarget.value,
 

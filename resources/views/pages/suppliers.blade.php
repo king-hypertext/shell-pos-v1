@@ -37,7 +37,7 @@
                 </thead>
                 <tbody>
                     @foreach ($suppliers as $index => $supplier)
-                        <tr>
+                        <tr class="text-uppercase">
                             <td scope="row">{{ $index + 1 }}</td>
                             <td>{{ $supplier->name }}</td>
                             <td class="text-uppercase">{{ $supplier->category }}</td>
@@ -120,10 +120,10 @@
                             </div>
                         </div>
                         <form class="px-5 py-2" id="addSupplier" method="POST" autocomplete="off">
-                            <div class="h6 alert alert-danger alert-dismissible text-center error-msg">
+                            <div class="h6 alert alert-danger alert-dismissible text-center error-msg" style="display: none">
                                 error
                             </div>
-                            <div class="h6 alert alert-success alert-dismissible text-center success-msg">
+                            <div class="h6 alert alert-success alert-dismissible text-center success-msg" style="display: none">
                                 success
                             </div>
                             @csrf
@@ -181,8 +181,6 @@
 @endsection
 @section('script')
     <script>
-        $('.error-msg').hide();
-        $('.success-msg').hide();
         $('button#delete_supplier').on('click', e => {
             var form = e.currentTarget.form;
             Swal.fire({
