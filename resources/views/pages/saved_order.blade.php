@@ -12,7 +12,7 @@
 
             <hr class="hr text-dark" />
 
-            <h6 class="h4">Edit Order</h6>
+            <h6 class="h4">Edit Worker Order for {{ $customer }}</h6>
             <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
             <div class="table-responsive text-nowrap">
                 <style type="text/css">
@@ -68,17 +68,19 @@
                                     <div class="form-group">
                                         <select @required(true) class="form-select" name="product[]" id="product">
                                             <option selected value="{{ $order->product }}">{{ $order->product }}</option>
+                                            <input type="hidden" value="{{ $order->product }}" name="old_product[]">
                                     </div>
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
                                         <input readonly type="number" name="quantity[]" value="{{ $order->quantity }}"
                                             onfocus="this.select()" required id="quantity" class="form-control qty" />
+                                            <input type="hidden" value="{{ $order->quantity }}" name="old_qty[]">
                                     </div>
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input readonly type="text" name="price[]" onfocus="this.select()" type="number"
+                                        <input readonly type="text" name="old_price[]" onfocus="this.select()" type="number"
                                             step=".01" value="{{ $order->price }}" id="price"
                                             class="form-control" />
                                     </div>
@@ -186,6 +188,9 @@
                                 });
                                 window.location.reload();
                             }
+                        },
+                        error: function(err){
+                            console.log(err);
                         }
                     });
                 }

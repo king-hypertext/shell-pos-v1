@@ -4,15 +4,15 @@
         use Carbon\Carbon;
     @endphp
     <div class="container fluid">
-        <form autocomplete="off" id="form-invoice" action="{{ route('order.edit.save') }}" method="post">
+        <form autocomplete="off" id="form-invoice" action="{{ route('order.supplier.save') }}" method="post">
             @csrf
-            <input type="hidden" name="customer_id" value="{{ $supplier_id }}" />
+            <input type="hidden" name="supplier_id" value="{{ $supplier_id }}" />
             <input type="hidden" name="invoice-date" value="{{ Carbon::parse($date)->format('Y-m-d') }}" />
             <input type="hidden" name="order_token" value="{{ $order_token }}" />
 
             <hr class="hr text-dark" />
 
-            <h6 class="h4">Edit Order</h6>
+            <h6 class="h4">Edit Supplier Order for {{ $supplier }}</h6>
             <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
             <div class="alert alert-danger alert-dismissible" style="display: none" id="error"></div>
             <div class="table-responsive text-nowrap">
@@ -52,7 +52,6 @@
                         use Illuminate\Support\Facades\DB;
                         $products = DB::table('products')
                             ->where('supplied_by', $supplier)
-                            ->where('quantity', '>', 0)
                             ->get(['name']);
                     @endphp
                     <tbody id="td-parent">
@@ -69,12 +68,14 @@
                                     <div class="form-group">
                                         <select @required(true) class="form-select" name="product[]" id="product">
                                             <option selected value="{{ $order->product }}">{{ $order->product }}</option>
+                                            <input type="hidden" name="old_product[]" value="{{ $order->product }}" />
                                     </div>
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
                                         <input readonly type="number" name="quantity[]" value="{{ $order->quantity }}"
                                             onfocus="this.select()" required id="quantity" class="form-control qty" />
+                                        <input type="hidden" name="old_qty[]" value="{{ $order->quantity }}" />
                                     </div>
                                 </td>
                                 <td class="col-md-2">
@@ -118,6 +119,23 @@
             showSuccessAlert.fire({
                 icon: 'success',
                 text: '{{ session('success') }}',
+                padding: '10px',
+                width: 'auto'
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            var showSuccessAlert = Swal.mixin({
+                position: 'top-center',
+                toast: true,
+                timer: 12500,
+                showConfirmButton: false,
+                timerProgressBar: false,
+            });
+            showSuccessAlert.fire({
+                icon: 'error',
+                text: '{{ session('error') }}',
                 padding: '10px',
                 width: 'auto'
             });
@@ -243,7 +261,7 @@
                     </td>                       
                     <td class="col-md-2">
                         <div class="form-group">
-                            <input readonly required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
+                            <input onfocus="this.select()" required type="number" name="price[]" value="0.00" step=".01" id="price_${row}" class="form-control"/>
                         </div>
                     </td>  
                     <td class="col-md-3">
@@ -277,7 +295,6 @@
                         url: "/product/" + selectedValue,
                         success: function(res) {
                             price.value = res.data[0].price;
-                            quantity.max = res.data[0].quantity;
                         }
                     });
                     $(document).on('keyup', quantity, function(e) {

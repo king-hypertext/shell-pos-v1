@@ -17,7 +17,7 @@
                                     $suppliers = Suppliers::select('name')->get();
                                 @endphp
                                 <select @required(true) class="form-select" name="worker" id="worker">
-                                    <option selected value=""> Select Supplier </option>
+                                    <option selected value="{{ $supplier->name }}"> {{ $supplier->name }} </option>
                                     @foreach ($suppliers as $supplier)
                                         <option value="{{ $supplier->name }}">
                                             {{ $supplier->name }}

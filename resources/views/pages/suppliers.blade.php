@@ -3,13 +3,21 @@
     <div class="container-fluid mt-4 ">
         <h2 class="h2 text-uppercase">All suppliers</h2>
         <div class="d-flex justify-content-end me-1 mb-2">
-            <a href="{{ route('supplier.index') }}" target="_blank" role="button" class="btn btn-success me-2">
-                create invoice
-            </a>
+            {{-- <a href="{{ route('supplier.index') }}" target="_blank" role="button" class="btn btn-success me-2">
+            create invoice
+        </a> --}}
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-addSupplier">Add
                 Supplier
             </button>
         </div>
+        <style>
+            td {
+                margin-top: 0;
+                padding-top: 0 !important;
+                padding-right: 0 !important;
+                vertical-align: middle;
+            }
+        </style>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="d-flex justify-content-center">
@@ -31,8 +39,11 @@
                         <th scope="col">CATEGORY</th>
                         <th scope="col">CONTACT</th>
                         <th scope="col">ADDRESS</th>
-                        <th>DATE</th>
+                        <th>CREATED AT</th>
+                        <th>CREATE</th>
                         <th scope="col">ACTIONS</th>
+                        {{-- <th scope="col">EDIT</th> --}}
+                        {{-- <th scope="col">DELETE</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -45,7 +56,14 @@
                             <td>{{ $supplier->address }}</td>
                             <td>{{ Carbon::parse($supplier->created_at)->format('Y-M-d') }}</td>
                             <td>
-                                <form action='{{ route('suppliers.destroy', ["$supplier->id"]) }}' method="post">
+                                <a href="{{ route('supplier.show', [$supplier->id]) }}" type="button"
+                                    class="btn text-lowercase " target="_blank" title="create order"
+                                    rel="noopener noreferrer"><i class="fas fa-plus-circle"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <form action='{{ route('suppliers.destroy', [$supplier->id]) }}' method="post"
+                                    class="d-inline">
                                     @method('DELETE')
                                     <button type="button" id="{{ $supplier->id }}" class="btn text-primary btn_edit"
                                         title="Edit supplier {{ $supplier->name }}">
@@ -120,10 +138,12 @@
                             </div>
                         </div>
                         <form class="px-5 py-2" id="addSupplier" method="POST" autocomplete="off">
-                            <div class="h6 alert alert-danger alert-dismissible text-center error-msg" style="display: none">
+                            <div class="h6 alert alert-danger alert-dismissible text-center error-msg"
+                                style="display: none">
                                 error
                             </div>
-                            <div class="h6 alert alert-success alert-dismissible text-center success-msg" style="display: none">
+                            <div class="h6 alert alert-success alert-dismissible text-center success-msg"
+                                style="display: none">
                                 success
                             </div>
                             @csrf
@@ -140,8 +160,7 @@
                                 </select>
                             </div>
                             <div class="form-outline mb-4">
-                                <input required type="text" name="contact" id="contact"
-                                    class="form-control" />
+                                <input required type="text" name="contact" id="contact" class="form-control" />
                                 <label class="form-label" for="contact">Supplier's Contact</label>
                             </div>
                             <div class="form-outline mb-4">
@@ -198,11 +217,12 @@
             })
             console.log(e.currentTarget.form);
         });
-        $(document).ready(function() {
+        $(document).ready(function() {;
             $('form#form-edit-supplier').on('submit', (e) => {
                 e.target.action = '/suppliers/' + e.currentTarget[2].value;
                 return true;
-            })
+            });
+
             $('form#addSupplier').on('submit', (e) => {
                 e.preventDefault();
                 console.log(e);

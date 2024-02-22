@@ -9,7 +9,7 @@
             <input class="form-control" type="search" name="q" placeholder="Search..." aria-label="Search" />
         </form> --}}
         <h6 class="h6 fw-semibold user-select-none">Q-IMS</h6>
-        <div class="dropdown me-2">
+        <div class="dropdown">
             <a href="javascript:void(0)" class="nav-link" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 {{ auth()->user()->username ?? 'username' }}

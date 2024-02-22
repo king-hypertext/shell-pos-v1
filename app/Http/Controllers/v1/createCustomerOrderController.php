@@ -80,6 +80,7 @@ class createCustomerOrderController extends Controller
             "invoice_number" => mt_rand(1110001, 9990999),
             "token" => _token,
             "customer" => $customer->name,
+            "customer_id" => $customer->id,
             "amount" => $amount,
             "created_at" => $date
         ]);

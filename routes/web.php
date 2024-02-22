@@ -82,7 +82,7 @@ Route::middleware(['web', 'app'])->group(function () {
         Route::controller(ProductsController::class)->group(function () {
             Route::delete('/products/delete', 'destroy');
             Route::get('/product/{name}', 'fetch');
-            Route::get('/products/supplier/{id}', 'fetchProductSupplier');
+            Route::get('/products/supplied_by//{id}', 'fetchProductSupplier');
         });
         Route::resource('/products', ProductsController::class);
         Route::resource('/stats/product', ProductStatsController::class);

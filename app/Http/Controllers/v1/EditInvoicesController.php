@@ -41,11 +41,11 @@ class EditInvoicesController extends Controller
 
     public function store(Request $request)
     {
-        // $request->dd();
+        $request->dd();
         $request->validate([
             'product.*' => 'required|exists:products,name',
         ]);
-        $customer = Customers::find($request->customer_id);
+        $customer = Customers::findOrFail($request->customer_id);
         $products = $request->product;
         $price = $request->price;
         $quantity = $request->quantity;
@@ -53,21 +53,22 @@ class EditInvoicesController extends Controller
         $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         $day = now()->dayOfWeek;
 
-        if ($request->has('order_token')) {
-            $request->validate(
-                [
-                    'order_token' => 'string|exists:customer_orders,order_token'
-                ],
-                [
-                    'order_token.exists' => 'Token mismatched'
-                ]
-            );
-            for ($i = 0; $i < count($products); $i++) {
-                Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
+        if (is_array($request->old_product)) {
+            for ($i = 0; $i < count($request->old_product); $i++) {
+                $product = Products::where('name', $request->old_product[$i])->first();
+                $product->increment('quantity', $request->old_ty[$i]);
             }
-            Orders::query()->where('order_token', $request->order_token)->delete();
-            Invoice::query()->where('token', $request->order_token)->delete();
+        } else {
+            $product = Products::where('name', $request->old_product)->first();
+            if ($product) {
+                $product->increment('quantity', $request->old_ty);
+            } else {
+                return redirect()->route('order.edit', ['worker' => $customer->name, 'order_date' => $date])->with('error', 'product not found');
+                // Handle error: product not found or quantity insufficient
+            }
         }
+        Orders::query()->where('order_token', $request->order_token)->delete();
+        Invoice::query()->where('token', $request->order_token)->delete();
         for ($i = 0; $i < count($products); $i++) {
             $order = [
                 'order_number' => mt_rand(000011, 990099),
@@ -99,60 +100,81 @@ class EditInvoicesController extends Controller
 
     public function storeSupplier(Request $request)
     {
-        // $request->dd();
         $request->validate([
             'product.*' => 'required|exists:products,name',
         ]);
-        $customer = Customers::find($request->customer_id);
+        $supplier = Suppliers::findOrFail($request->supplier_id);
+
         $products = $request->product;
         $price = $request->price;
         $quantity = $request->quantity;
-        $date = $request->input('invoice-date');
-        $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
-        $day = now()->dayOfWeek;
 
-        if ($request->has('order_token')) {
-            $request->validate(
-                [
-                    'order_token' => 'string|exists:customer_orders,order_token'
-                ],
-                [
-                    'order_token.exists' => 'Token mismatched'
-                ]
-            );
-            for ($i = 0; $i < count($products); $i++) {
-                Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
+        $date = $request->input('invoice-date');
+        $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+        $day = now()->dayOfWeek;
+        if (is_array($request->old_product)) {
+            for ($i = 0; $i < count($request->old_product); $i++) {
+                $product = Products::where('name', $request->old_product[$i])->first();
+                if ($product && $product->quantity >= $request->old_qty[$i]) {
+                    $product->decrement('quantity', $request->old_qty[$i]);
+                } else {
+                    return redirect()->route('order.supplier.edit', ['supplier' => $supplier->name, 'order_date' => $date])->with('error', 'products quantity insufficient');
+                    // Handle error: product not found or quantity insufficient
+                }
             }
-            Orders::query()->where('order_token', $request->order_token)->delete();
-            Invoice::query()->where('token', $request->order_token)->delete();
+        } else {
+            $product = Products::where('name', $request->old_product)->first();
+            if ($product && $product->quantity >= $request->old_qty) {
+                $product->decrement('quantity', $request->old_qty);
+            } else {
+                return redirect()->route('order.supplier.edit', ['supplier' => $supplier->name, 'order_date' => $date])->with('error', 'product quantity insufficient');
+                // Handle error: product not found or quantity insufficient
+            }
         }
+
+        SupplierOrders::query()->where('token', $request->order_token)->delete();
+        SupplierInvoice::query()->where('token', $request->order_token)->delete();
         for ($i = 0; $i < count($products); $i++) {
             $order = [
-                'order_number' => mt_rand(000011, 990099),
-                'customer_id' => $customer->id,
-                'order_token' => _token,
-                'customer' => $customer->name,
+                'order_number' => mt_rand(110000, 909009),
+                'token' => _token,
+                'supplier_id' => $supplier->id,
+                'supplier' => $supplier->name,
                 'product' => $products[$i],
                 'price' => $price[$i],
                 'quantity' => $quantity[$i],
-                'day' => $days[$day],
                 'amount' => ($price[$i] * $quantity[$i]),
-                'created_at' => $date,
-                'updated_at' => now()->format('Y-m-d')
+                'day' => $days[$day],
+                'created_at' => $date
             ];
-            Orders::insert($order);
-            Products::where('name', $products[$i])->decrement('quantity', $quantity[$i]);
+            $before_qty = Products::where('name', $products[$i])->value('quantity');
+            ProductStats::insert([
+                'qty_received' => $quantity[$i],
+                'product' => $products[$i],
+                'product_id' => Products::where('name', $products[$i])->value('id'),
+                'from' => $supplier->name,
+                'before_qty' => $before_qty,
+                'after_qty' => $before_qty + $quantity[$i],
+                'date' => now()->format('Y-m-d H:i:s')
+            ]);
+            SupplierOrders::insert($order);
+            Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
+            /* update the price of the products when price is changed */
+            Products::where('name', $products[$i])->update([
+                'price' => $price[$i],
+            ]);
         }
-        $amount = Orders::where('order_token', _token)->sum('amount');
-        Invoice::insert([
-            "invoice_number" => mt_rand(1110001, 9990999),
-            "token" => _token,
-            "customer" => $customer->name,
-            "amount" => $amount,
-            "created_at" => $date,
-            "updated_at" => now()->format('Y-m-d')
+        $amount = SupplierOrders::where('token', _token)->sum('amount');
+        SupplierInvoice::insert([
+            'token' => _token,
+            'invoice_number' => mt_rand(100001, 909099),
+            'supplier_id' => $supplier->id,
+            'supplier' => $supplier->name,
+            'amount' => $amount,
+            'created_at' => $date
         ]);
-        return redirect()->route('order.supplier.edit', ['supplier' => $customer->name, 'order_date' => $date])->with('success', 'Order Updated');
+
+        return redirect()->route('order.supplier.edit', ['supplier' => $supplier->name, 'order_date' => $date])->with('success', 'Order Updated');
     }
 
     public function edit(Request $request)
@@ -180,34 +202,34 @@ class EditInvoicesController extends Controller
         $order_date = $request->order_date;
         $data = SupplierOrders::where('supplier', $supplier)->where(function ($date) use ($order_date) {
             $date->where('created_at', $order_date);
-        })->get();
-        // dd($data);
+        });
+        $all = $data->get();
+        // dd($data->count());
         if ($data->count() == 0) {
             return "Empty data " . "<a href='/dashboard'>Go to dashboard</a>";
         }
-        foreach ($data as $order) {
-            $token = $order->token;
-            $id = $order->supplier_id;
-            $supplier = $order->supplier;
-            $date = $order->created_at;
-        }
-        return view("pages.saved_order_supplier", ['data' => $data, 'order_token' => $token, 'supplier_id' => $id, 'supplier' => $supplier, 'date' => $date]);
+        $token = $data->first()->token;
+        $id = $data->first()->supplier_id;
+        $supplier = $data->first()->supplier;
+        $date = $data->first()->created_at;
+        return view("pages.saved_order_supplier", ['data' => $all, 'order_token' => $token, 'supplier_id' => $id, 'supplier' => $supplier, 'date' => $date]);
     }
     public function destroy(Request $request)
     {
+        // $request->dd();
         $ids = $request->id;
         $products = $request->product;
         $quantities = $request->quantity;
         for ($i = 0; $i < count($ids); $i++) {
             $qty = Orders::where('id', $ids[$i])->value('quantity');
-            $product = Orders::where('id', $ids[$i])->value('product');
+            // $product = Orders::where('id', $ids[$i])->value('product');
             $from = Orders::where('id', $ids[$i])->value('customer');
             $customer_id = Orders::where('id', $ids[$i])->value('customer_id');
-            $before_qty = Products::where('name', $product)->value('quantity');            
+            $before_qty = Products::where('name', $products[$i])->value('quantity');
             Invoice::where('customer', $from)->where('customer_id', $customer_id)->delete();
             ProductStats::insert([
-                'product' => $product,
-                'product_id' => Products::where('name', $product)->value('id'),
+                'product' => $products[$i],
+                'product_id' => Products::where('name', $products[$i])->value('id'),
                 'qty_received' => $qty,
                 'from' => $from,
                 'before_qty' => $before_qty,
@@ -222,6 +244,7 @@ class EditInvoicesController extends Controller
 
     public function destroySupplier(Request $request)
     {
+        // $request->dd();
         $ids = $request->id;
         $products = $request->product;
         $quantities = $request->quantity;

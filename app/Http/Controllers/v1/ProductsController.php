@@ -154,8 +154,8 @@ class ProductsController extends Controller
     }
     public function fetchProductSupplier(int $id)
     {
-        $supplier = Suppliers::query()->where('id', $id)->first();
-        $products = Products::where('supplied_by', $supplier->name)->get('name');
-        return $products;
+        $supplier = Suppliers::where('id', $id)->first()->name;
+        $products = Products::where('supplied_by', $supplier)->get('name');
+        return response()->json($products);
     }
 }

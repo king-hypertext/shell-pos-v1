@@ -21,7 +21,7 @@
             <div class="mt-3">
                 <div class="form-group">
                     <label for="products">Change Product</label>
-                    <select name="product" id="product">
+                    <select name="product" id="product" class="form-select">
                         <option value="" selected>Select Product</option>
                         @foreach ($products as $product)
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -102,7 +102,7 @@
                 order: [
                     [1, 'asc']
                 ],
-                pageLength: 200,
+                pageLength: 100,
                 dom: 'Bfrtip',
                 buttons: [{
                         extend: 'excel',

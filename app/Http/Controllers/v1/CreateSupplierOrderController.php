@@ -94,8 +94,10 @@ class CreateSupplierOrderController extends Controller
      */
     public function show(string $id)
     {
-        $supplier = Suppliers::where('id', $id)->get();
-        return response()->json(['data' => $supplier]);
+        $title = "CREATE ORDER";
+        $supplier = Suppliers::where('id', $id)->first();
+        return view('pages.create_supplier_order', compact('title', 'supplier'));
+        // return response()->json(['data' => $supplier]);
     }
 
     /**
