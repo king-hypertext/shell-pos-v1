@@ -44,7 +44,7 @@
                 <a href="#" class="nav-link dropdown" data-bs-toggle="collapse" data-bs-target="#create-order">
                     <span>
                         <i class="fa-solid fa-file-circle-plus"></i>
-                        Create Order
+                        Add Order
                     </span>
                     <span class="float-right">
                         <i
@@ -62,7 +62,7 @@
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'create-order' && Request::segment(2) === 'supplier' ? 'active' : '' }}">
-                        <a hidden href="{{ route('supplier.index') }}" target="_blank" class="nav-link">
+                        <a href="{{ route('supplier.show', [$s_id]) }}" target="_blank" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Supplier
                         </a>

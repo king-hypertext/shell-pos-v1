@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\IndexController;
-use App\Http\Controllers\test\TestController;
 use App\Http\Controllers\v1\ProductsController;
 use App\Http\Controllers\v1\CustomersController;
 use App\Http\Controllers\v1\SuppliersController;

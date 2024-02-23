@@ -77,8 +77,8 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <button class="btn btn-success mt-4" type="button" data-bs-toggle="modal"
-                            data-bs-target="#saved-invoice">Saved
+                        <button class="btn btn-success mt-4 text-truncate " type="button" data-bs-toggle="modal"
+                            data-bs-target="#saved-invoice" title="Saved Orders">Saved
                             Invoices
                         </button>
                     </div>

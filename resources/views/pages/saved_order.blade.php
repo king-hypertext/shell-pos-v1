@@ -9,6 +9,7 @@
             <input type="hidden" name="customer_id" value="{{ $customer_id }}" />
             <input type="hidden" name="invoice-date" value="{{ Carbon::parse($date)->format('Y-m-d') }}" />
             <input type="hidden" name="order_token" value="{{ $order_token }}" />
+            <input type="hidden" name="invoice-number" value="{{ $invoice_number }}" />
 
             <hr class="hr text-dark" />
 
@@ -75,14 +76,15 @@
                                     <div class="form-group">
                                         <input readonly type="number" name="quantity[]" value="{{ $order->quantity }}"
                                             onfocus="this.select()" required id="quantity" class="form-control qty" />
-                                            <input type="hidden" value="{{ $order->quantity }}" name="old_qty[]">
+                                        <input type="hidden" value="{{ $order->quantity }}" name="old_qty[]">
                                     </div>
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input readonly type="text" name="old_price[]" onfocus="this.select()" type="number"
-                                            step=".01" value="{{ $order->price }}" id="price"
+                                        <input readonly type="text" name="price[]" onfocus="this.select()"
+                                            type="number" step=".01" value="{{ $order->price }}" id="price"
                                             class="form-control" />
+                                            <input type="hidden" name="old_price" value="{{ $order->price }}">
                                     </div>
                                 </td>
                                 <td class="col-md-3">
@@ -189,7 +191,7 @@
                                 window.location.reload();
                             }
                         },
-                        error: function(err){
+                        error: function(err) {
                             console.log(err);
                         }
                     });

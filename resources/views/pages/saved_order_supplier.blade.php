@@ -9,7 +9,7 @@
             <input type="hidden" name="supplier_id" value="{{ $supplier_id }}" />
             <input type="hidden" name="invoice-date" value="{{ Carbon::parse($date)->format('Y-m-d') }}" />
             <input type="hidden" name="order_token" value="{{ $order_token }}" />
-
+            <input type="hidden" name="invoice-number" value="{{ $invoice_number }}"/>
             <hr class="hr text-dark" />
 
             <h6 class="h4">Edit Supplier Order for {{ $supplier }}</h6>

@@ -27,6 +27,10 @@
 </head>
 
 <body style="background-color: var(--bs-gray-200);height: 100vh!important;">
+    @php
+        use App\Models\Suppliers;
+        $s_id = Suppliers::orderBy('created_at', 'DESC')->first()->id;
+    @endphp
     <div class="container-fluid px-0 text-black mb-3 ">
         {{-- sidenav --}}
         @include('app.sidenav')
@@ -105,6 +109,9 @@
                 $("button#nav-toggler > i").toggleClass("fas fa-bars");
                 $("button#nav-toggler > i").toggleClass("fas fa-x");
             });
+            // $.each($('form'), (i,form)=>{
+            //     form.setAttribute('autocorrect', false);
+            // })
             // dropdown icon change
             $('.nav-item > a.dropdown[data-bs-toggle="collapse"]')
                 .on("click", (e) => {

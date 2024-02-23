@@ -40,7 +40,7 @@
                         <th scope="col">CONTACT</th>
                         <th scope="col">ADDRESS</th>
                         <th>CREATED AT</th>
-                        <th>CREATE</th>
+                        <th>ADD ORDER</th>
                         <th scope="col">ACTIONS</th>
                         {{-- <th scope="col">EDIT</th> --}}
                         {{-- <th scope="col">DELETE</th> --}}

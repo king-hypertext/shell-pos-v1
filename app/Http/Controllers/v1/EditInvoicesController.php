@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\SupplierOrders;
 use App\Models\SupplierInvoice;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 include_once '_token.php';
 class EditInvoicesController extends Controller
@@ -41,7 +42,7 @@ class EditInvoicesController extends Controller
 
     public function store(Request $request)
     {
-        $request->dd();
+        // $request->dd();
         $request->validate([
             'product.*' => 'required|exists:products,name',
         ]);
@@ -52,16 +53,18 @@ class EditInvoicesController extends Controller
         $date = $request->input('invoice-date');
         $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         $day = now()->dayOfWeek;
+        $invoice_number = $request->input('invoice-number');
+
 
         if (is_array($request->old_product)) {
             for ($i = 0; $i < count($request->old_product); $i++) {
                 $product = Products::where('name', $request->old_product[$i])->first();
-                $product->increment('quantity', $request->old_ty[$i]);
+                $product->increment('quantity', $request->old_qty[$i]);
             }
         } else {
             $product = Products::where('name', $request->old_product)->first();
             if ($product) {
-                $product->increment('quantity', $request->old_ty);
+                $product->increment('quantity', $request->old_qty);
             } else {
                 return redirect()->route('order.edit', ['worker' => $customer->name, 'order_date' => $date])->with('error', 'product not found');
                 // Handle error: product not found or quantity insufficient
@@ -85,11 +88,21 @@ class EditInvoicesController extends Controller
             ];
             Orders::insert($order);
             Products::where('name', $products[$i])->decrement('quantity', $quantity[$i]);
+            ProductStats::insert([
+                'supplied' => $quantity[$i],
+                'product' => $products[$i],
+                'product_id' => Products::where('name', $products[$i])->value('id'),
+                'to' => $customer->name,
+                'before_qty' => intval(Products::where('name', $products[$i])->value('quantity')),
+                'after_qty' => intval(Products::where('name', $products[$i])->value('quantity')) + $quantity[$i],
+                'date' => now()->format('Y-m-d H:i:s')
+            ]);
         }
         $amount = Orders::where('order_token', _token)->sum('amount');
         Invoice::insert([
-            "invoice_number" => mt_rand(1110001, 9990999),
+            "invoice_number" => $invoice_number,
             "token" => _token,
+            "customer_id" => $request->customer_id,
             "customer" => $customer->name,
             "amount" => $amount,
             "created_at" => $date,
@@ -108,6 +121,7 @@ class EditInvoicesController extends Controller
         $products = $request->product;
         $price = $request->price;
         $quantity = $request->quantity;
+        $invoice_number = $request->input('invoice-number');
 
         $date = $request->input('invoice-date');
         $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
@@ -167,7 +181,7 @@ class EditInvoicesController extends Controller
         $amount = SupplierOrders::where('token', _token)->sum('amount');
         SupplierInvoice::insert([
             'token' => _token,
-            'invoice_number' => mt_rand(100001, 909099),
+            'invoice_number' => $invoice_number,
             'supplier_id' => $supplier->id,
             'supplier' => $supplier->name,
             'amount' => $amount,
@@ -187,13 +201,15 @@ class EditInvoicesController extends Controller
         if ($data->count() == 0) {
             return "Empty data " . "<a href='/dashboard'>Go to dashboard</a>";
         }
-        foreach ($data as $order) {
-            $token = $order->order_token;
-            $id = $order->customer_id;
-            $customer = $order->customer;
-            $date = $order->created_at;
-        }
-        return view("pages.saved_order", ['data' => $data, 'order_token' => $token, 'customer_id' => $id, 'customer' => $customer, 'date' => $date]);
+
+        $token = $data->first()->order_token;
+        $id = $data->first()->customer_id;
+        $customer = $data->first()->customer;
+        $date = $data->first()->created_at;
+        $invoice_number = Invoice::where('customer', $worker_name)->where(function ($date) use ($order_date) {
+            $date->where('created_at', $order_date);
+        })->first()->invoice_number;
+        return view("pages.saved_order", ['data' => $data, 'invoice_number' => $invoice_number, 'order_token' => $token, 'customer_id' => $id, 'customer' => $customer, 'date' => $date]);
     }
 
     public function editSupplier(Request $request)
@@ -212,71 +228,125 @@ class EditInvoicesController extends Controller
         $id = $data->first()->supplier_id;
         $supplier = $data->first()->supplier;
         $date = $data->first()->created_at;
-        return view("pages.saved_order_supplier", ['data' => $all, 'order_token' => $token, 'supplier_id' => $id, 'supplier' => $supplier, 'date' => $date]);
+        $invoice_number = SupplierInvoice::where('supplier', $supplier)->where(function ($date) use ($order_date) {
+            $date->where('created_at', $order_date);
+        })->first()->invoice_number;
+        return view("pages.saved_order_supplier", ['data' => $all, 'invoice_number' => $invoice_number, 'order_token' => $token, 'supplier_id' => $id, 'supplier' => $supplier, 'date' => $date]);
     }
     public function destroy(Request $request)
     {
-        // $request->dd();
         $ids = $request->id;
         $products = $request->product;
         $quantities = $request->quantity;
+        // Orders::destroy($ids);
+        $ids = array_unique($ids); // Remove duplicate IDs if any
         for ($i = 0; $i < count($ids); $i++) {
-            $qty = Orders::where('id', $ids[$i])->value('quantity');
-            // $product = Orders::where('id', $ids[$i])->value('product');
-            $from = Orders::where('id', $ids[$i])->value('customer');
-            $customer_id = Orders::where('id', $ids[$i])->value('customer_id');
-            $before_qty = Products::where('name', $products[$i])->value('quantity');
-            Invoice::where('customer', $from)->where('customer_id', $customer_id)->delete();
+            try {
+                $order = Orders::findOrFail($ids[$i]);
+            } catch (ModelNotFoundException $e) {
+                continue; // Skip if order not found
+            }
+
+            $qty = $order->quantity;
+            $from = $order->customer;
+            // $customer_id = $order->customer_id;
+
+            try {
+                $product = Products::where('name', $products[$i])->firstOrFail();
+            } catch (ModelNotFoundException $e) {
+                continue; // Skip if product not found
+            }
+
+            $before_qty = $product->quantity;
+
+            // Invoice::where('customer', $from)->where('customer_id', $customer_id)->delete();
+
             ProductStats::insert([
-                'product' => $products[$i],
-                'product_id' => Products::where('name', $products[$i])->value('id'),
+                'product' => $product->name,
+                'product_id' => $product->id,
                 'qty_received' => $qty,
                 'from' => $from,
                 'before_qty' => $before_qty,
                 'after_qty' => $before_qty + $qty,
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
-            Products::where('name', $products[$i])->increment('quantity', $quantities[$i]);
+
+            $product->increment('quantity', $quantities[$i]);
+
+            $order->delete();
         }
-        Orders::destroy($ids);
+
         return response()->json(['success' => 'Deleted']);
     }
 
     public function destroySupplier(Request $request)
     {
         // $request->dd();
+        // $ids = $request->id;
+        // $products = $request->product;
+        // $quantities = $request->quantity;
+        // for ($i = 0; $i < count($ids); $i++) {
+        //     $product = SupplierOrders::where('id', $ids[$i])->value('product');
+        //     $before_qty = Products::where('name', $product)->value('quantity');
+        //     if (($quantities[$i] > $before_qty)) {
+        //         return response()->json(['error' => 'Available product quantity is less than the supplied quantity, Please return the orders made for these products']);
+        //         exit;
+        //     }
+        // }
+        // for ($i = 0; $i < count($ids); $i++) {
+        //     $qty = SupplierOrders::where('id', $ids[$i])->value('quantity');
+        //     $supplier_id = SupplierOrders::where('id', $ids[$i])->value('supplier_id');
+        //     $supplier = SupplierOrders::where('id', $ids[$i])->value('supplier');
+        //     $product = SupplierOrders::where('id', $ids[$i])->value('product');
+        //     $from = SupplierOrders::where('id', $ids[$i])->value('supplier');
+        //     $before_qty = Products::where('name', $product)->value('quantity');
+        //     ProductStats::insert([
+        //         'product' => $product,
+        //         'product_id' => Products::where('name', $product)->value('id'),
+        //         'qty_received' => (0 - intval($qty)),
+        //         'from' => $from,
+        //         'before_qty' => $before_qty,
+        //         'after_qty' => $before_qty - $qty,
+        //         'date' => now()->format('Y-m-d H:i:s')
+        //     ]);
+
+        //     // SupplierInvoice::where('supplier_id', $supplier_id)->where('supplier', $supplier)->delete();
+        //     Products::where('name', $products[$i])->decrement('quantity', $quantities[$i]);
+        //     SupplierOrders::destroy($ids[$i]);
+        // }
         $ids = $request->id;
         $products = $request->product;
         $quantities = $request->quantity;
-        for ($i = 0; $i < count($ids); $i++) {
-            $product = SupplierOrders::where('id', $ids[$i])->value('product');
-            $before_qty = Products::where('name', $product)->value('quantity');
-            if (($quantities[$i] > $before_qty)) {
+
+        foreach ($ids as $index => $id) {
+            $supplierOrder = SupplierOrders::find($id);
+            if (!$supplierOrder) continue;
+            $product = Products::where('name', $supplierOrder->product)->first();
+
+            if ($quantities[$index] > $product->quantity) {
                 return response()->json(['error' => 'Available product quantity is less than the supplied quantity, Please return the orders made for these products']);
-                exit;
             }
         }
-        for ($i = 0; $i < count($ids); $i++) {
-            $qty = SupplierOrders::where('id', $ids[$i])->value('quantity');
-            $supplier_id = SupplierOrders::where('id', $ids[$i])->value('supplier_id');
-            $supplier = SupplierOrders::where('id', $ids[$i])->value('supplier');
-            $product = SupplierOrders::where('id', $ids[$i])->value('product');
-            $from = SupplierOrders::where('id', $ids[$i])->value('supplier');
-            $before_qty = Products::where('name', $product)->value('quantity');
+
+        foreach ($ids as $index => $id) {
+            $supplierOrder = SupplierOrders::find($id);
+            if (!$supplierOrder) continue;
+            $product = Products::where('name', $supplierOrder->product)->first();
+
             ProductStats::insert([
-                'product' => $product,
-                'product_id' => Products::where('name', $product)->value('id'),
-                'qty_received' => (0 - intval($qty)),
-                'from' => $from,
-                'before_qty' => $before_qty,
-                'after_qty' => $before_qty - $qty,
+                'product' => $supplierOrder->product,
+                'product_id' => $product->id,
+                'qty_received' => (0 - intval($supplierOrder->quantity)),
+                'from' => $supplierOrder->supplier,
+                'before_qty' => $product->quantity,
+                'after_qty' => $product->quantity - $supplierOrder->quantity,
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
 
-            SupplierInvoice::where('supplier_id', $supplier_id)->where('supplier', $supplier)->delete();
-            Products::where('name', $products[$i])->decrement('quantity', $quantities[$i]);
+            $product->decrement('quantity', $quantities[$index]);
+            $supplierOrder->delete();
         }
-        SupplierOrders::destroy($ids);
+
         return response()->json(['success' => 'Deleted']);
     }
 }
