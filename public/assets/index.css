@@ -98,6 +98,7 @@
 }
 
 .nav-wrapper {
+    width: calc(100% - 280px);
     position: fixed;
     top: 0;
     right: 0;
@@ -161,7 +162,7 @@
 /* main content css */
 .main-content {
     position: relative;
-    width: 100%;
+    width: 100% !important;
     max-width: calc(100% - 280px) !important;
     margin-top: 70px;
     margin-left: 280px;
@@ -182,12 +183,12 @@
     }
 
     .nav-wrapper {
-        max-width: 100%;
+        width: 100%;
         left: 0;
     }
 
     .main-content {
-        max-width: 100% !important;
+        width: 100% !important;
         margin-left: 0 !important;
         transition: all ease-in .1s;
     }

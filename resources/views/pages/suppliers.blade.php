@@ -40,7 +40,7 @@
                         <th scope="col">CONTACT</th>
                         <th scope="col">ADDRESS</th>
                         <th>CREATED AT</th>
-                        <th>ADD ORDER</th>
+                        <th class="px-0">ADD ORDER</th>
                         <th scope="col">ACTIONS</th>
                         {{-- <th scope="col">EDIT</th> --}}
                         {{-- <th scope="col">DELETE</th> --}}
@@ -55,7 +55,7 @@
                             <td>{{ $supplier->contact }}</td>
                             <td>{{ $supplier->address }}</td>
                             <td>{{ Carbon::parse($supplier->created_at)->format('Y-M-d') }}</td>
-                            <td>
+                            <td class="pe-0 mx-auto">
                                 <a href="{{ route('supplier.show', [$supplier->id]) }}" type="button"
                                     class="btn text-lowercase " target="_blank" title="create order"
                                     rel="noopener noreferrer"><i class="fas fa-plus-circle"></i>

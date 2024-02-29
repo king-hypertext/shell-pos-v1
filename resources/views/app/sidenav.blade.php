@@ -62,7 +62,7 @@
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'create-order' && Request::segment(2) === 'supplier' ? 'active' : '' }}">
-                        <a href="{{ route('supplier.show', [$s_id]) }}" target="_blank" class="nav-link">
+                        <a href="#" target="_blank" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Supplier
                         </a>

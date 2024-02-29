@@ -122,6 +122,7 @@
                 padding: '10px',
                 width: 'auto'
             });
+            location.reload();
         </script>
     @endif
     @if (session('error'))

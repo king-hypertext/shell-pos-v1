@@ -42,13 +42,12 @@ class InstallerController extends Controller
             ],
             $content
         );
-        $success = file_put_contents($env, $content);
+        file_put_contents($env, $content);
 
-        if ($success) {
-            // call migration command to save database configuration
-            Artisan::call('migrate:fresh', ['--force' => true]);
-            return response()->json(['next' => route('installer.step2')]);
-        }
+        // call migration command to save database configuration
+        Artisan::call('migrate:fresh', ['--force' => true]);
+        return response()->json(['next' => route('installer.step2')]);
+
         // Save the content back to the .env file
 
     }

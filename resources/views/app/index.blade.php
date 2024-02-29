@@ -18,10 +18,10 @@
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap-datepicker/css/bootstrap-datetimepicker.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap-daterangepicker/daterangepicker.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/alert/sweetalert2.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/plugins/animate.css/animate.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/mdb/mdb.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/plugins/bootstrap/css/bootstrap.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/index.css') }}" />
-    <link rel="stylesheet" href="{{ url('assets/plugins/animate.css/animate.min.css') }}" />
     <script src="{{ url('assets/plugins/alert/sweetalert2.all.min.js') }}"></script>
     <script src="{{ url('assets/plugins/jquery-ui-1.13.2/external/jquery/jquery.js') }}"></script>
 </head>
@@ -29,7 +29,7 @@
 <body style="background-color: var(--bs-gray-200);height: 100vh!important;">
     @php
         use App\Models\Suppliers;
-        $s_id = Suppliers::orderBy('created_at', 'DESC')->first()->id;
+        $s_id = Suppliers::orderBy('created_at', 'DESC')->first()->id ?? 0;
     @endphp
     <div class="container-fluid px-0 text-black mb-3 ">
         {{-- sidenav --}}
@@ -37,7 +37,7 @@
         <div class="main-content">
             {{-- navbar --}}
             @include('app.navbar')
-            <div class="container-fluid mt-4">
+            <div class="container-fluid">
                 @yield('content')
             </div>
         </div>
@@ -126,16 +126,16 @@
             });
         });
 
-        function openPopup(href) {
-            var screenWidth = window.screen.width,
-                screenHeight = window.screen.height;
-            var popupWidth = (screenWidth - 55),
-                popupHeight = (screenHeight - 45);
-            var popupLeft = 10,
-                popupTop = 10;
-            window.open(href, "Popup Window", "width=" + popupWidth + ",height=" + popupHeight +
-                ",left=" + popupLeft + ",top=" + popupTop);
-        }
+        // function openPopup(href) {
+        //     var screenWidth = window.screen.width,
+        //         screenHeight = window.screen.height;
+        //     var popupWidth = (screenWidth - 55),
+        //         popupHeight = (screenHeight - 45);
+        //     var popupLeft = 10,
+        //         popupTop = 10;
+        //     window.open(href, "Popup Window", "width=" + popupWidth + ",height=" + popupHeight +
+        //         ",left=" + popupLeft + ",top=" + popupTop);
+        // }
     </script>
     @yield('script')
 </body>
