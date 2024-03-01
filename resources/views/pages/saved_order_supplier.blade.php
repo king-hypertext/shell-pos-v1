@@ -12,7 +12,7 @@
             <input type="hidden" name="invoice-number" value="{{ $invoice_number }}"/>
             <hr class="hr text-dark" />
 
-            <h6 class="h4">Edit Supplier Order for {{ $supplier }}</h6>
+            <h6 class="h4">Edit Supplier Order : {{ $supplier }} | Date : {{ Carbon::parse($date)->format('Y-m-d') }}</h6>
             <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
             <div class="alert alert-danger alert-dismissible" style="display: none" id="error"></div>
             <div class="table-responsive text-nowrap">

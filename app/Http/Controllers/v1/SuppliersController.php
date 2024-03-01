@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Products;
 use App\Models\Suppliers;
 use Illuminate\Http\Request;
 
@@ -63,6 +64,9 @@ class SuppliersController extends Controller
             "address" => $request->input("edit-address"),
             "contact" => $request->input("edit-contact"),
             "created_at" => now()->format('Y-m-d H:i:s')
+        ]);
+        Products::wheresupplied_by($request->input("edit-supplier"))->update([
+            "category" => $request->input("edit-category")
         ]);
         return back()->with("success", "Supplier Updated");
     }

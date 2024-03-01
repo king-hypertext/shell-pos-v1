@@ -55,7 +55,6 @@ class EditInvoicesController extends Controller
         $day = now()->dayOfWeek;
         $invoice_number = $request->input('invoice-number');
 
-
         if (is_array($request->old_product)) {
             for ($i = 0; $i < count($request->old_product); $i++) {
                 $product = Products::where('name', $request->old_product[$i])->first();

@@ -13,7 +13,8 @@
 
             <hr class="hr text-dark" />
 
-            <h6 class="h4">Edit Worker Order for {{ $customer }}</h6>
+            <h6 class="h4">Edit Worker Order : {{ $customer }} | Date : {{ Carbon::parse($date)->format('Y-m-d') }}
+            </h6>
             <a href="#" role="button" class="link-delete d-none " onclick="confirmDelete(event)">Delete selected</a>
             <div class="table-responsive text-nowrap">
                 <style type="text/css">
@@ -81,10 +82,10 @@
                                 </td>
                                 <td class="col-md-2">
                                     <div class="form-group">
-                                        <input readonly type="text" name="price[]" onfocus="this.select()"
-                                            type="number" step=".01" value="{{ $order->price }}" id="price"
+                                        <input readonly type="text" name="price[]" onfocus="this.select()" type="number"
+                                            step=".01" value="{{ $order->price }}" id="price"
                                             class="form-control" />
-                                            <input type="hidden" name="old_price" value="{{ $order->price }}">
+                                        <input type="hidden" name="old_price" value="{{ $order->price }}">
                                     </div>
                                 </td>
                                 <td class="col-md-3">
