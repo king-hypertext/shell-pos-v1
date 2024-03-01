@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 
 class InstallerController extends Controller
 {
     /**  Datebase configuration */
     public function stepOne(Request $request)
     {
-
         // $request->dd();
         $db_name = $request->db_name;
         $db_username = $request->db_username;
@@ -28,16 +28,12 @@ class InstallerController extends Controller
                 'DB_DATABASE=' . $_ENV['DB_DATABASE'],
                 'DB_USERNAME=' . $_ENV['DB_USERNAME'],
                 'DB_PASSWORD=' . $_ENV['DB_PASSWORD'],
-                'APP_ENV=' . $_ENV['APP_ENV'],
-                'APP_DEBUG=' . $_ENV['APP_DEBUG'],
-                'APP_URL=' . $_ENV['APP_URL']
+                'APP_URL=' . $_ENV['APP_URL'],
             ],
             [
                 'DB_DATABASE=' . $db_name,
                 'DB_USERNAME=' . $db_username ?? 'root',
                 'DB_PASSWORD=' . $db_password ?? '',
-                'APP_ENV=' . 'production',
-                'APP_DEBUG=' . 'false',
                 'APP_URL=' . $url
             ],
             $content
@@ -46,9 +42,7 @@ class InstallerController extends Controller
 
         // call migration command to save database configuration
         Artisan::call('migrate:fresh', ['--force' => true]);
-        return response()->json(['next' => route('installer.step2')]);
-
-        // Save the content back to the .env file
+        return Response::json(['next' => route('installer.step2')]);
 
     }
     public function stepTwo(Request $request)
@@ -84,11 +78,9 @@ class InstallerController extends Controller
             // Replace the APP_NAME value with the new value
             $content = str_replace(
                 [
-                    'APP_ENV=' . $_ENV['APP_ENV'],
                     'APP_DEBUG=' . $_ENV['APP_DEBUG']
                 ],
                 [
-                    'APP_ENV=' . 'production',
                     'APP_DEBUG=' . 'false'
                 ],
                 $content
@@ -99,6 +91,7 @@ class InstallerController extends Controller
                 return redirect()->to('/install/final')->withInput(['id' => $id]);
             }
         } catch (\Throwable $th) {
+            // return $th;
             return redirect()->route('installer.step1')->with('error', 'Step one is not completed');
         }
     }

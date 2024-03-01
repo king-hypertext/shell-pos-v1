@@ -1,6 +1,6 @@
 @extends('app.index')
 @section('content')
-    <h3 class="fw-bold text-uppercase mt-2 ">create customer order</h3>
+    <h3 class="fw-bold text-uppercase mt-2 ">create worker order</h3>
     <hr class="hr text-dark" />
     @php
         use Illuminate\Support\Facades\DB;
@@ -96,7 +96,7 @@
             @endif
             @if (count($empty_p) == 0)
                 <div class="alert alert-danger mt-2 text-center">There are no products available, please <a
-                        href="{{ route('supplier.create') }}" class="btn btn-link text-lowercase">Add Products</a> </div>
+                        href="{{ route('products.create') }}" class="btn btn-link text-lowercase">Add Products</a> </div>
             @endif
             <h6 class="h4">Create Order</h6>
             <div class="table-responsive text-nowrap">
