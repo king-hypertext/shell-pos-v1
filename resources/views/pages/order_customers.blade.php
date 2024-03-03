@@ -182,7 +182,7 @@
                 }).data().reduce(function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0.00);
-                $(api.column(5).footer()).html('GHS ' + formatter.format(pageTotal));
+                $(api.column(5).footer()).html(formatter.format(pageTotal));
             },
             scrollY: false,
             processing: true,
