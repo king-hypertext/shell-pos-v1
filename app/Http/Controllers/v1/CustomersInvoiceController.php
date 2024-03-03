@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use App\Models\Orders;
 use Illuminate\Http\Request;
 
 class CustomersInvoiceController extends Controller
@@ -14,7 +15,8 @@ class CustomersInvoiceController extends Controller
     public function index()
     {
         $title = "CUSTOMER INVOICES";
-        $invoices = Invoice::orderBy('created_at', 'DESC')->get();
+        $d = Orders::select('order_token')->get();
+        $invoices = Invoice::whereIn('token', $d)->orderBy('created_at', 'DESC')->get();
         return view('pages.invoices_customer', compact('title', 'invoices'));
     }
 

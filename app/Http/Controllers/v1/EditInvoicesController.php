@@ -314,7 +314,7 @@ class EditInvoicesController extends Controller
 
 
             if (Orders::whereorder_token($order->token)->count() == 0) {
-                Invoice::wheretoken($order->token)->where('customer_id', $order->customer_id)->where('customer', $order->customer)->delete();
+                Invoice::where('token', $order->token)->delete();
             }
             $order->delete();
         }

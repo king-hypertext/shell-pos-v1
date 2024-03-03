@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\SupplierInvoice;
+use App\Models\SupplierOrders;
 use Illuminate\Http\Request;
 
 class SuppliersInvoiceController extends Controller
@@ -15,7 +16,8 @@ class SuppliersInvoiceController extends Controller
     public function index()
     {
         $title = "INVOICE SUPPLIERS";
-        $data = SupplierInvoice::orderBy('created_at', 'DESC')->get();
+        $d = SupplierOrders::select('token')->get();
+        $data = SupplierInvoice::whereIn('token', $d)->orderBy('created_at', 'DESC')->get();
         return view('pages.invoices_supplier', compact('title', 'data'));
     }
 
