@@ -16,7 +16,8 @@ return new class extends Migration
             $table->integer('invoice_number');
             $table->longText('token');
             $table->string('customer');
-            $table->decimal('amount'); 
+            $table->integer('customer_id');
+            $table->decimal('amount');
             $table->timestamps();
         });
     }

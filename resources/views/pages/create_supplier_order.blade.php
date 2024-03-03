@@ -66,12 +66,12 @@
                     </div>
                     <div class="col-md-3">
                         <label for="invoice-date">Invoice Date: </label>
-                        <input required type="date" value="{{ Date('Y-m-d') }}" class="form-control datepicker" id="invoice-date"
-                            name="invoice-date" />
+                        <input required type="date" value="{{ Date('Y-m-d') }}" class="form-control datepicker"
+                            id="invoice-date" name="invoice-date" />
                     </div>
                     <div class="col-md-3">
-                        <button class="btn btn-success mt-4 d-inline-block text-lowercase " type="button" data-bs-toggle="modal"
-                            data-bs-target="#saved-invoice">Saved
+                        <button class="btn btn-success mt-4 d-inline-block text-lowercase " type="button"
+                            data-bs-toggle="modal" data-bs-target="#saved-invoice">Saved
                             Invoices
                         </button>
                     </div>
@@ -218,9 +218,8 @@
                     }
                 });
                 $(document).on('keyup', quantity, function(e) {
-                    total.value =
-                        Number.parseFloat(price.value) * Number.parseFloat(quantity
-                            .value);
+                    total.value = Number.parseFloat(price.value) * Number.parseFloat(quantity.value)
+                        .toFixed(2);
                     if (isNaN(total.value)) {
                         total.value = 0;
                     }
@@ -302,7 +301,7 @@
                         });
                         $(document).on('keyup', quantity, function(e) {
                             total.value = Number.parseFloat(price.value) *
-                                Number.parseFloat(quantity.value);
+                                Number.parseFloat(quantity.value).toFixed(2);
                             if (isNaN(total.value)) {
                                 total.value = 0;
                             }

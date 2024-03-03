@@ -57,11 +57,31 @@ class EditInvoicesController extends Controller
 
         if (is_array($request->old_product)) {
             for ($i = 0; $i < count($request->old_product); $i++) {
+                ProductStats::where(
+                    'to',
+                    $customer->name,
+                )->where(
+                    'supplied',
+                    $request->old_qty[$i]
+                )->where(
+                    'before_qty',
+                    Products::where('name', $request->old_product[$i])->value('quantity')
+                )->delete();
                 $product = Products::where('name', $request->old_product[$i])->first();
                 $product->increment('quantity', $request->old_qty[$i]);
             }
         } else {
             $product = Products::where('name', $request->old_product)->first();
+            ProductStats::where(
+                'to',
+                $customer->name,
+            )->where(
+                'supplied',
+                $request->old_qty
+            )->where(
+                'before_qty',
+                Products::where('name', $request->old_product)->value('quantity')
+            )->delete();
             if ($product) {
                 $product->increment('quantity', $request->old_qty);
             } else {
@@ -112,6 +132,7 @@ class EditInvoicesController extends Controller
 
     public function storeSupplier(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'product.*' => 'required|exists:products,name',
         ]);
@@ -127,6 +148,16 @@ class EditInvoicesController extends Controller
         $day = now()->dayOfWeek;
         if (is_array($request->old_product)) {
             for ($i = 0; $i < count($request->old_product); $i++) {
+                ProductStats::where(
+                    'from',
+                    $supplier->name,
+                )->where(
+                    'qty_received',
+                    $request->old_qty[$i]
+                )->where(
+                    'before_qty',
+                    Products::where('name', $request->old_product[$i])->value('quantity')
+                )->delete();
                 $product = Products::where('name', $request->old_product[$i])->first();
                 if ($product && $product->quantity >= $request->old_qty[$i]) {
                     $product->decrement('quantity', $request->old_qty[$i]);
@@ -137,6 +168,16 @@ class EditInvoicesController extends Controller
             }
         } else {
             $product = Products::where('name', $request->old_product)->first();
+            ProductStats::where(
+                'from',
+                $supplier->name,
+            )->where(
+                'qty_received',
+                $request->old_qty
+            )->where(
+                'before_qty',
+                Products::where('name', $request->old_product)->value('quantity')
+            )->delete();
             if ($product && $product->quantity >= $request->old_qty) {
                 $product->decrement('quantity', $request->old_qty);
             } else {

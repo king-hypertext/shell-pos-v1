@@ -2,7 +2,7 @@
     "name": "Q_OMS",
     "lang": "en-us",
     "short_name": "Q_OMS",
-    "description": "Q Stock Management System",
+    "description": "Q INVENTORY MANAGMENT SYSTEM",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
