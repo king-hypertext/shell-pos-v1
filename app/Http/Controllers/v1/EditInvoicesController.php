@@ -13,6 +13,7 @@ use App\Models\SupplierOrders;
 use App\Models\SupplierInvoice;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 include_once '_token.php';
 class EditInvoicesController extends Controller
@@ -299,8 +300,6 @@ class EditInvoicesController extends Controller
 
             $before_qty = $product->quantity;
 
-            // Invoice::where('customer', $from)->where('customer_id', $customer_id)->delete();
-
             ProductStats::insert([
                 'product' => $product->name,
                 'product_id' => $product->id,
@@ -313,47 +312,17 @@ class EditInvoicesController extends Controller
 
             $product->increment('quantity', $quantities[$i]);
 
+
+            if (Orders::whereorder_token($order->token)->count() == 0) {
+                Invoice::wheretoken($order->token)->where('customer_id', $order->customer_id)->where('customer', $order->customer)->delete();
+            }
             $order->delete();
         }
-
         return response()->json(['success' => 'Deleted']);
     }
 
     public function destroySupplier(Request $request)
     {
-        // $request->dd();
-        // $ids = $request->id;
-        // $products = $request->product;
-        // $quantities = $request->quantity;
-        // for ($i = 0; $i < count($ids); $i++) {
-        //     $product = SupplierOrders::where('id', $ids[$i])->value('product');
-        //     $before_qty = Products::where('name', $product)->value('quantity');
-        //     if (($quantities[$i] > $before_qty)) {
-        //         return response()->json(['error' => 'Available product quantity is less than the supplied quantity, Please return the orders made for these products']);
-        //         exit;
-        //     }
-        // }
-        // for ($i = 0; $i < count($ids); $i++) {
-        //     $qty = SupplierOrders::where('id', $ids[$i])->value('quantity');
-        //     $supplier_id = SupplierOrders::where('id', $ids[$i])->value('supplier_id');
-        //     $supplier = SupplierOrders::where('id', $ids[$i])->value('supplier');
-        //     $product = SupplierOrders::where('id', $ids[$i])->value('product');
-        //     $from = SupplierOrders::where('id', $ids[$i])->value('supplier');
-        //     $before_qty = Products::where('name', $product)->value('quantity');
-        //     ProductStats::insert([
-        //         'product' => $product,
-        //         'product_id' => Products::where('name', $product)->value('id'),
-        //         'qty_received' => (0 - intval($qty)),
-        //         'from' => $from,
-        //         'before_qty' => $before_qty,
-        //         'after_qty' => $before_qty - $qty,
-        //         'date' => now()->format('Y-m-d H:i:s')
-        //     ]);
-
-        //     // SupplierInvoice::where('supplier_id', $supplier_id)->where('supplier', $supplier)->delete();
-        //     Products::where('name', $products[$i])->decrement('quantity', $quantities[$i]);
-        //     SupplierOrders::destroy($ids[$i]);
-        // }
         $ids = $request->id;
         $products = $request->product;
         $quantities = $request->quantity;
@@ -366,11 +335,9 @@ class EditInvoicesController extends Controller
             if ($quantities[$index] > $product->quantity) {
                 return response()->json(['error' => 'Available product quantity is less than the supplied quantity, Please return the orders made for these products']);
             }
-        }
-
-        foreach ($ids as $index => $id) {
-            $supplierOrder = SupplierOrders::find($id);
-            if (!$supplierOrder) continue;
+            if (SupplierOrders::wheretoken($supplierOrder->token)->count() == 0) {
+                DB::table('supplier_invoices')->where('token', $supplierOrder->token)->delete();
+            }
             $product = Products::where('name', $supplierOrder->product)->first();
 
             ProductStats::insert([
@@ -382,11 +349,9 @@ class EditInvoicesController extends Controller
                 'after_qty' => $product->quantity - $supplierOrder->quantity,
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
-
             $product->decrement('quantity', $quantities[$index]);
             $supplierOrder->delete();
         }
-
         return response()->json(['success' => 'Deleted']);
     }
 }
