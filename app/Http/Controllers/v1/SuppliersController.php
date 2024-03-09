@@ -4,6 +4,8 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products;
+use App\Models\SupplierInvoice;
+use App\Models\SupplierOrders;
 use App\Models\Suppliers;
 use Illuminate\Http\Request;
 
@@ -64,6 +66,12 @@ class SuppliersController extends Controller
             "address" => $request->input("edit-address"),
             "contact" => $request->input("edit-contact"),
             "created_at" => now()->format('Y-m-d H:i:s')
+        ]);
+        SupplierInvoice::where('supplier_id', $id)->update([
+            'supplier' => $request->input("edit-supplier"),
+        ]);
+        SupplierOrders::where('supplier_id', $id)->update([
+            'supplier' => $request->input("edit-supplier"),
         ]);
         Products::wheresupplied_by($request->input("edit-supplier"))->update([
             "category" => $request->input("edit-category")

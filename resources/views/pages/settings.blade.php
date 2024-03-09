@@ -37,7 +37,7 @@
                                 <tr>
                                     <th class="me-2 text-capitalize">date of birth</th>
                                     <td class="ms-3 fw-semibold text-uppercase text-success">:
-                                        {{ Carbon::parse(auth()->user()->date_of_birth)->format('l,d F Y') }}</td>
+                                        {{ Carbon::parse(auth()->user()->date_of_birth)->format('l, d F Y') }}</td>
                                 </tr>
                                 <tr>
                                     <th class="me-2 text-capitalize">login time</th>

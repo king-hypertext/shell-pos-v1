@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="card px-5 pb-5 border-0 my-5" style="max-width: 520px">
-                <form id="database-configuration" method="POST" autocomplete="off">
+                <form id="step_one" action="{{ route('installer.step1') }}" method="POST" autocomplete="off">
                     @csrf
                     <div class="text-center">
                         {{-- <img src="{{ url('icon.png') }}" style="height: 80px" alt="logo"> --}}
@@ -24,7 +24,8 @@
                         </ul>
                     @endif
                     <div class="alert alert-danger text-center" id="db-configuration-error"></div>
-                    <div class="alert alert-info text-center" id="db-configuration-error-1">Please submit the form again</div>
+                    <div class="alert alert-info text-center" id="db-configuration-error-1">Please submit the form again
+                    </div>
                     <div class="form-outline mb-4">
                         <input required type="url" value="http://" autofocus name="app_url" id="app_url"
                             class="form-control form-control-lg" />
@@ -68,9 +69,13 @@
             $('#db-configuration-error').hide();
             $('#db-configuration-error-1').hide();
             $('#loading-icon').hide();
-            $('#database-configuration').on('submit', function(e) {
+            $('#step_one').on('submit', e => {
+                $('#loading-icon').show();
+                e.target.closest('form').submit();
+                return true;
+            });
+            /* $('#database-configuration').on('submit', function(e) {
                 e.preventDefault();
-                console.log(e);
                 $('#loading-icon').show();
                 var _token = e.currentTarget[0].value,
                     app_url = e.currentTarget[1].value,
@@ -108,7 +113,8 @@
                             "\n: Unknown Database \"" + db_name + "\"")
                     }
                 });
-            })
+            }) */
+
         })
     </script>
 @endsection

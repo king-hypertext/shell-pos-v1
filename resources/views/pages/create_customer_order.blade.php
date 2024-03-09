@@ -151,8 +151,8 @@
                             </td>
                             <td class="col-md-3">
                                 <div class="form-group">
-                                    <input readonly type="number" step=".01" value="0" name="total[]" id="total"
-                                        class="form-control" />
+                                    <input readonly type="number" step=".01" value="0" name="total[]"
+                                        id="total" class="form-control" />
                                 </div>
                             </td>
                         </tr>
@@ -296,8 +296,8 @@
                             }
                         });
                         $(document).on('keyup', quantity, function(e) {
-                            total.value = Number.parseFloat(price.value) * Number
-                                .parseFloat(quantity.value).toFixed(2);
+                            total.value = (Number.parseFloat(price.value) * Number
+                                .parseFloat(quantity.value)).toFixed(2);
                             if (isNaN(total.value)) {
                                 total.value = 0;
                             }
@@ -339,8 +339,8 @@
                 });
                 $(document).on('keyup', quantity, function(e) {
                     total.value =
-                        Number.parseFloat(price.value) * Number.parseFloat(quantity
-                            .value).toFixed(2);
+                        (Number.parseFloat(price.value) * Number.parseFloat(quantity
+                            .value)).toFixed(2);
                     if (isNaN(total.value)) {
                         total.value = 0;
                     }

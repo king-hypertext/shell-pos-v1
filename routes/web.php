@@ -23,11 +23,11 @@ use App\Models\Suppliers;
 Route::controller(InstallerController::class)->group(function () {
     Route::redirect('/install', '/install/step-1');
     Route::view('/install/step-1', 'install.step_one', ['title' =>  'INSTALLER-STEP 1'])->name('installer.step1');
-    Route::post('/install/step-1', 'stepOne');
+    Route::post('/install/step-1', 'stepOne')->name('step1');
     Route::view('/install/step-2', 'install.step_two', ['title' =>  'INSTALLER-STEP 2'])->name('installer.step2');
-    Route::post('/install/step-2', 'stepTwo');
+    Route::post('/install/step-2', 'stepTwo')->name('step2');
     Route::view('/install/final', 'install.final', ['title' =>  'INSTALLER-STEP 3'])->name('installer.step3');
-    Route::post('/install/final', 'stepThree');
+    Route::post('/install/final', 'stepThree')->name('step3');
 });
 Route::middleware(['web', 'app'])->group(function () {
     Route::controller(AuthController::class)->group(function () {

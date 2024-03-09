@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Response;
 
 class InstallerController extends Controller
 {
+    public function __invoke()
+    {
+        Artisan::call('storage:link', ['--force' => true]);
+    }
     /**  Datebase configuration */
     public function stepOne(Request $request)
     {
@@ -41,8 +45,9 @@ class InstallerController extends Controller
         file_put_contents($env, $content);
 
         // call migration command to save database configuration
-        Artisan::call('migrate:fresh', ['--force' => true]);
-        return Response::json(['next' => route('installer.step2')]);
+        Artisan::call('migrate:refresh', ['--force' => true]);
+        return redirect()->route('installer.step2');
+        // return Response::json(['next' => route('installer.step2')]);
 
     }
     public function stepTwo(Request $request)
@@ -86,10 +91,7 @@ class InstallerController extends Controller
                 $content
             );
             file_put_contents($env, $content);
-            if ($insert) {
-                Artisan::call('storage:link', ['--force' => true]);
-                return redirect()->to('/install/final')->withInput(['id' => $id]);
-            }
+            return redirect()->route('step3')->withInput(['id' => $id]);
         } catch (\Throwable $th) {
             // return $th;
             return redirect()->route('installer.step1')->with('error', 'Step one is not completed');

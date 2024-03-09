@@ -47,9 +47,10 @@
                         </select>
                     </div>
                     <div class="form-group mb-4">
-                        <label class="form-label" for="date_of_birth">Date of Birth <span class="text-danger">*</span></label>
-                        <input required type="date" autofocus name="date_of_birth" id="date_of_birth" max="{{ Date("Y-m-d") }}"
-                            class="form-control" />
+                        <label class="form-label" for="date_of_birth">Date of Birth <span
+                                class="text-danger">*</span></label>
+                        <input required type="date" autofocus name="date_of_birth" id="date_of_birth"
+                            max="{{ Date(' Y-m-d') }}" class="form-control" />
                     </div>
                     <div class="form-outline mb-4">
                         <input required type="text" autofocus name="secret_code" id="secret_code"
@@ -84,7 +85,7 @@
             $('#loading-icon').hide();
             $('#user-signup').on('submit', function(e) {
                 $('#loading-icon').show();
-                $(this).attr('action', '{{ route('installer.step2') }}')
+                e.target.closest('form').submit();
                 return true;
             })
         })

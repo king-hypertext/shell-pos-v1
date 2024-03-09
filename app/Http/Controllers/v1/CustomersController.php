@@ -4,6 +4,8 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customers;
+use App\Models\Invoice;
+use App\Models\Orders;
 use Illuminate\Http\Request;
 
 class CustomersController extends Controller
@@ -80,6 +82,12 @@ class CustomersController extends Controller
                 'image' => '/storage/customers/' . str_replace(['public/', 'customers/'], '', $path),
                 'updated_at' => now()->format('Y-m-d')
             ]);
+            Invoice::where('customer_id', $request->id)->update([
+                'customer' => $request->input('customer-name'),
+            ]);
+            Orders::where('customer_id', $request->id)->update([
+                'customer' => $request->input('customer-name'),
+            ]);
         } else {
             Customers::where('id', $request->id)->update([
                 'name' => $request->input('customer-name'),
@@ -87,6 +95,12 @@ class CustomersController extends Controller
                 'address' => $request->input('address'),
                 'contact' => $request->input('contact'),
                 'updated_at' => now()->format('Y-m-d')
+            ]);
+            Invoice::where('customer_id', $request->id)->update([
+                'customer' => $request->input('customer-name'),
+            ]);
+            Orders::where('customer_id', $request->id)->update([
+                'customer' => $request->input('customer-name'),
             ]);
         }
         return back()->with('success', 'Worker Updated');
