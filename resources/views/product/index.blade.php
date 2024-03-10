@@ -100,7 +100,7 @@
                     return: true,
                 },
                 order: [
-                    [1, 'asc']
+                    [0, 'asc']
                 ],
                 pageLength: 100,
                 dom: 'Bfrtip',
@@ -111,7 +111,7 @@
                         title: '{{ $data->name }} analysis',
                         filename: '{{ $data->name }}_analysis',
                         exportOptions: {
-                            columns: [0, 1, 3, 4, 5, 6, 7]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
                         }
                     },
                     {
@@ -121,7 +121,7 @@
                         filename: '{{ $data->name }}_analysis',
                         extend: 'pdf',
                         exportOptions: {
-                            columns: [0, 1, 3, 4, 5, 6, 7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 0]
                         }
                     },
                     {
@@ -131,7 +131,7 @@
                         filename: '{{ $data->name }}_analysis',
                         extend: 'print',
                         exportOptions: {
-                            columns: [0, 1, 3, 4, 5, 6, 7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 0]
                         }
                     },
                 ]

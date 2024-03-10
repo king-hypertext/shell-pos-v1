@@ -217,7 +217,8 @@
             })
             console.log(e.currentTarget.form);
         });
-        $(document).ready(function() {;
+        $(document).ready(function() {
+            ;
             $('form#form-edit-supplier').on('submit', (e) => {
                 e.target.action = '/suppliers/' + e.currentTarget[2].value;
                 return true;
@@ -291,7 +292,7 @@
                     text: 'Export Excel <i class="fas fa-file-excel" ></i>',
                     className: 'btn btn-success text-capitalize',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5]
+                        columns: [1, 2, 3, 4, 5]
                     }
                 },
                 {

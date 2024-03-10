@@ -53,7 +53,7 @@
                         footer: true,
                         title: 'RETURNS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5, 6]
                         }
                     },
                     {

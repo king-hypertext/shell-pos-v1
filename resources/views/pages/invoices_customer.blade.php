@@ -73,7 +73,7 @@
                         footer: true,
                         title: 'INVOICE ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4]
+                            columns: [1, 2, 3, 4]
                         }
                     },
                     {

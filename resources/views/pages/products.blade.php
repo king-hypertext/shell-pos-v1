@@ -354,7 +354,7 @@
                     title: 'All Products',
                     filename: 'products',
                     exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9]
+                        columns: [1, 3, 4, 5, 6, 7, 8, 9]
                     }
                 },
                 {
@@ -364,7 +364,7 @@
                     extend: 'pdf',
                     filename: 'products',
                     exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9]
+                        columns: [0, 1, 3, 4, 5, 6, 7, 8, 9]
                     }
                 },
                 {
@@ -374,7 +374,7 @@
                     extend: 'print',
                     filename: 'products',
                     exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9]
+                        columns: [0, 1, 3, 4, 5, 6, 7, 8, 9]
                     }
                 },
             ]

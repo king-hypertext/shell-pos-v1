@@ -6,6 +6,13 @@
 	}, 1000);
 })();
 $(document).ready(function () {
+	$.each($('input.return_input'), function (index, value) {
+		$(value).keypress(function (e) {
+			if (isNaN(String.fromCharCode(e.which))) {
+				e.preventDefault();
+			}
+		});
+	});
 	$(document).on('click', 'button#nav-toggler', () => {
 		$(".side-wrapper").toggleClass("show");
 		$(".back-drop").toggleClass("show");

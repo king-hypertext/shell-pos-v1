@@ -41,7 +41,7 @@ class ProductStatsController extends Controller
     {
         $data = Products::find($id);
         // return Products::query()->where('id', $id)->get();
-        $stats = ProductStats::where('product', $data->name)->orderBy('date', 'ASC')->get();
+        $stats = ProductStats::where('product', $data->name)->orderBy('date', 'DESC')->get();
         return view('product.index', ['title' => 'PRODUCT STATS', 'data' => $data, 'stats' => $stats]);
     }
 

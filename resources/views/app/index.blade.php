@@ -47,7 +47,7 @@
     @include('modals.logout')
     <div id="back-drop" class="back-drop"></div>
     <script src="{{ url('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ url('assets/plugins/mdb/js/mdb.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/mdb/js/mdb.min.js') }}"></script>
     <script src="{{ url('assets/plugins/moment/moment.js') }}"></script>
     <script src="{{ url('assets/plugins/select2/js/select2.min.js') }}"></script>
     <script src="{{ url('assets/plugins/jquery-ui-1.13.2/jquery-ui.min.js') }}"></script>
@@ -64,15 +64,17 @@
     <script src="{{ url('assets/plugins/datatables/buttons.html5.min.js') }}"></script>
     <script src="{{ url('assets/plugins/datatables/buttons.print.min.js') }}"></script>
     <script src="{{ url('sw.js') }}"></script>
-    <script type="text/javascript">
+    <script>
         (function() {
             console.log("js loaded");
-            document.querySelectorAll(".nav-item > a").forEach((target) => {
-                new mdb.Ripple(target, {
-                    rippleColor: "#fff",
-                    rippleDuration: "1000ms",
+            if (typeof mdb !== "undefined") {
+                document.querySelectorAll(".nav-item > a").forEach((target) => {
+                    new mdb.Ripple(target, {
+                        rippleColor: "#fff",
+                        rippleDuration: "1000ms",
+                    });
                 });
-            });
+            }
             document.querySelectorAll('a[target="_blank"]').forEach((a) => {
                 a.setAttribute('rel', 'noopener noreferrer');
             });

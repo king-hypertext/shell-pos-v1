@@ -111,7 +111,8 @@
                         let totalAmount =
                             rows
                             .data()
-                            .pluck('amount').map((str) => parseFloat(str)).reduce((a, b) => a + b, 0.00);
+                            .pluck('amount').map((str) => parseFloat(str)).reduce((a, b) => a + b,
+                                0.00);
 
                         totalAmount = $.fn.dataTable.render
                             .number(',', '.', 2, 'GHS ')
@@ -258,7 +259,7 @@
                         footer: true,
                         title: 'WORKER_ORDERS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                         }
                     },
                     {
@@ -268,7 +269,7 @@
                         footer: true,
                         title: 'WORKER_ORDERS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                         }
                     },
                     {
@@ -278,7 +279,7 @@
                         footer: true,
                         title: 'WORKER_ORDERS ' + moment((new Date())).format('dddd-Do-MMMM-YYYY'),
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                         }
                     },
                 ]

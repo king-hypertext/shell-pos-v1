@@ -76,7 +76,7 @@ class CustomerOrdersController extends Controller
      */
     public function show()
     {
-        $title = "RETURN ORDERS";
+        $title = "RETURNED ORDERS";
         $data = OrderReturns::all();
         return view('pages.return_orders', compact('title', 'data'));
     }
@@ -107,8 +107,8 @@ class CustomerOrdersController extends Controller
             'date' => now()->format('Y-m-d H:i')
         ]);
         Orders::where('id', $order_id)->update([
-            'quantity' => (intval($order->quantity) - intval($quantity_to_return)),
-            'amount' => (intval($order->price) * (intval($order->quantity) - intval($quantity_to_return))),
+            'quantity' => (floatval($order->quantity) - floatval($quantity_to_return)),
+            'amount' => (floatval($order->price) * (floatval($order->quantity) - floatval($quantity_to_return))),
             'returns' => $quantity_to_return,
             'updated_at' => now()->format('Y-m-d H:i:s')
         ]);
@@ -119,7 +119,7 @@ class CustomerOrdersController extends Controller
             'product' => $order->product,
             'quantity' => $quantity_to_return,
             'price' => $order->price,
-            'amount' => (intval($order->price) * intval($quantity_to_return)),
+            'amount' => (floatval($order->price) * floatval($quantity_to_return)),
             'created_at' => now()->format('Y-m-d H:i:s')
         ]);
 
@@ -135,8 +135,8 @@ class CustomerOrdersController extends Controller
         $order = $orders->find($order_id);
         $quantity_returned = $request->quantity_returned;
         Orders::where('id', $order_id)->update([
-            'quantity' => (intval($order->quantity) + intval($quantity_returned)),
-            'amount' => (intval($order->price) * (intval($order->quantity) + intval($quantity_returned))),
+            'quantity' => (floatval($order->quantity) + floatval($quantity_returned)),
+            'amount' => (floatval($order->price) * (floatval($order->quantity) + floatval($quantity_returned))),
             'returns' => 0,
             'updated_at' => now()->format('Y-m-d')
         ]);

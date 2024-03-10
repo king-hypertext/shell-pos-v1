@@ -361,7 +361,7 @@
                     text: 'Export Excel <i class="fas fa-file-excel" ></i>',
                     className: 'btn btn-success text-capitalize',
                     exportOptions: {
-                        columns: [0, 1, 3, 4, 5, 6]
+                        columns: [1, 3, 4, 5, 6]
                     }
                 },
                 {
