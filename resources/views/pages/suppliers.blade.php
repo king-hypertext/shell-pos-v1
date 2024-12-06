@@ -57,8 +57,8 @@
                             <td>{{ Carbon::parse($supplier->created_at)->format('Y-M-d') }}</td>
                             <td class="pe-0 mx-auto">
                                 <a href="{{ route('supplier.show', [$supplier->id]) }}" type="button"
-                                    class="btn text-lowercase " target="_blank" title="create order"
-                                    rel="noopener noreferrer"><i class="fas fa-plus-circle"></i>
+                                    class="btn text-lowercase " title="create order" rel="noopener noreferrer"><i
+                                        class="fas fa-plus-circle"></i>
                                 </a>
                             </td>
                             <td>

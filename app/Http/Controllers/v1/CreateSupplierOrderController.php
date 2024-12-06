@@ -72,7 +72,7 @@ class CreateSupplierOrderController extends Controller
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             SupplierOrders::insert($order);
-            Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
+            Products::query()->find($products[$i])->increment('quantity', $quantity[$i]);
             /* update the price of the products when price is changed */
             $product->price = $price[$i];
             $product->save();

@@ -100,7 +100,7 @@ class AuthController extends Controller
             'date_of_birth' => 'required|exists:users,date_of_birth'
         ]);
         $secret_code = Hash::check($request->secret_code, DB::table('users')->first()->secret_code);
-        if ($secret_code && User::first()->date_of_birth === $request->date_of_birth) {
+        if ($secret_code && auth()->user()->date_of_birth === $request->date_of_birth) {
             return redirect()->route('new.password');
         }
         return back()->withErrors(['secret_code' => 'Secret Code is Invalid', 'date_of_birth' => 'Date of Birth is Invalid']);

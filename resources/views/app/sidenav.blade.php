@@ -55,14 +55,14 @@
                     id="create-order">
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'create-order' && Request::segment(2) === 'customer' ? 'active' : '' }}">
-                        <a href="{{ route('customer.index') }}" target="_blank" class="nav-link">
+                        <a href="{{ route('customer.index') }}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Worker
                         </a>
                     </li>
                     <li
                         class="nav-item ps-2 {{ Request::segment(1) === 'create-order' && Request::segment(2) === 'supplier' ? 'active' : '' }}">
-                        <a href="#" target="_blank" class="nav-link">
+                        <a href="{{route('suppliers.index')}}" class="nav-link">
                             <i class="fa fa-circle fa-sm nav-list-icon"></i>
                             Supplier
                         </a>
