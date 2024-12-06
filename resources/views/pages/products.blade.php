@@ -36,7 +36,7 @@
                         {{-- <th hidden></th> --}}
                         <th scope="col" class="text-start ">#</th>
                         <th scope="col" class="text-start ">PRODUCT</th>
-                        <th scope="col" class="text-start ">IMAGE</th>
+                        {{-- <th scope="col" class="text-start ">IMAGE</th> --}}
                         <th scope="col" class="text-start " title="available quantity">QTY</th>
                         <th scope="col" class="text-start ">PRICE(GHS)</th>
                         <th scope="col" class="text-start ">TOTAL(GHS)</th>
@@ -57,11 +57,11 @@
                     @foreach ($products as $index => $product)
                         <tr class="text-uppercase">
                             {{-- <td hidden>{{ $product->created_at }}</td> --}}
-                            <td scope="row">{{ $index + 1 }}</td>
+                            <td scope="row">{{ $loop->iteration }}</td>
                             <td>{{ $product->name }}</td>
-                            <td>
+                            {{-- <td>
                                 <img src="{{ $product->image }}" alt="product-image" class="table-image" />
-                            </td>
+                            </td> --}}
                             <td>{{ $product->quantity }}</td>
                             <td>{{ $product->price }}</td>
                             <td>{{ floatval($product->price) * floatval($product->quantity) }}</td>

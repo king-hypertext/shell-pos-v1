@@ -37,7 +37,7 @@ class CreateSupplierOrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product.*' => 'required|exists:products,name',
+            'product.*' => 'required|exists:products,id',
         ]);
         $supplier = Suppliers::find($request->supplier);
         $products = $request->product;
@@ -47,35 +47,35 @@ class CreateSupplierOrderController extends Controller
         $date = $request->input('invoice-date');
         $days = array('sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         $day = now()->dayOfWeek;
+        // dd($request->all());
         for ($i = 0; $i < count($products); $i++) {
+            $product = Products::find($products[$i]);
             $order = [
                 'order_number' => mt_rand(110000, 909009),
                 'token' => _token,
                 'supplier_id' => $supplier->id,
                 'supplier' => $supplier->name,
-                'product' => $products[$i],
+                'product' => $product->name,
                 'price' => $price[$i],
                 'quantity' => $quantity[$i],
                 'amount' => ($price[$i] * $quantity[$i]),
                 'day' => $days[$day],
                 'created_at' => $date
             ];
-            $before_qty = Products::where('name', $products[$i])->value('quantity');
             ProductStats::insert([
                 'qty_received' => $quantity[$i],
                 'product' => $products[$i],
-                'product_id' => Products::where('name', $products[$i])->value('id'),
+                'product_id' => $product->id,
                 'from' => $supplier->name,
-                'before_qty' => $before_qty,
-                'after_qty' => $before_qty + $quantity[$i],
+                'before_qty' => $product->quantity,
+                'after_qty' => $product->quantity + $quantity[$i],
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             SupplierOrders::insert($order);
             Products::where('name', $products[$i])->increment('quantity', $quantity[$i]);
             /* update the price of the products when price is changed */
-            Products::where('name', $products[$i])->update([
-                'price' => $price[$i],
-            ]);
+            $product->price = $price[$i];
+            $product->save();
         }
         $amount = SupplierOrders::where('token', _token)->sum('amount');
         SupplierInvoice::insert([

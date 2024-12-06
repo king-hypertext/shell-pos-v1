@@ -76,7 +76,7 @@ class AuthController extends Controller
             'password' => 'required|alpha_num'
         ]);
         if (Auth::attempt($request->only('username', 'password'))) {
-            DB::table('users')->where('id', auth()->user()->id)->update(['login_at' => now()->format('Y-m-d H:i:s')]);
+            // DB::table('users')->where('id', auth()->user()->id)->update(['login_at' => now()->format('Y-m-d H:i:s')]);
             $request->session()->regenerate();
             return  redirect()->intended(RouteServiceProvider::HOME);
         }
@@ -86,7 +86,7 @@ class AuthController extends Controller
 
     public function user_logout()
     {
-        DB::table('users')->where('id', auth()->user()->id)->update(['logout_at' => now()->format('Y-m-d H:i:s')]);
+        // DB::table('users')->where('id', auth()->user()->id)->update(['logout_at' => now()->format('Y-m-d H:i:s')]);
         session()->regenerate();
         session()->invalidate();
         Auth::guard('web')->logout();

@@ -16,9 +16,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user() && Auth::user()->admin === 1) {
+        // if (Auth::user() && Auth::user()->admin === 1) {
             return $next($request);
-        }
-        abort(403, 'Unauthorized! You Are Not an Administrator.');
+        // }
+        // abort(403, 'Unauthorized! You Are Not an Administrator.');
     }
 }

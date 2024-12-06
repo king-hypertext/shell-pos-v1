@@ -25,7 +25,7 @@
             use App\Models\Suppliers;
             use App\Models\Products;
             $suppliers = Suppliers::all();
-            $products = Products::where('supplied_by', $supplier->name)->get('name');
+            $products = Products::where('supplied_by', $supplier->name)->get(['name','id']);
         @endphp
         @if ($products->count() > 0)
             <form autocomplete="off" id="form-invoice" action="{{ route('supplier.store') }}" method="post">
@@ -121,7 +121,7 @@
                                             id="product">
                                             <option value=""> Select Product </option>
                                             @foreach ($products as $product)
-                                                <option value="{{ $product->name }}">{{ $product->name }}</option>
+                                                <option value="{{ $product->id }}">{{ $product->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -218,10 +218,10 @@
                     .children[0];
                 $.ajax({
                     method: "GET",
-                    url: "/product/" + selectedValue,
+                    url: "{{ route('products.index') }}" + '/' + selectedValue,
                     success: function(res) {
-                        // console.log(res);
-                        price.value = res.data[0].price;
+                        console.log(res);
+                        price.value = res.price;
                     }
                 });
                 $(document).on('keyup', quantity, function(e) {
@@ -249,7 +249,7 @@
                                         class="form-select select-product">
                                         <option selected value=""> Select Product </option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->name }}">{{ $product->name }}</option>
+                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
                                         @endforeach                                        
                                     </select>
                                 </div>
@@ -301,10 +301,10 @@
                             .parentElement.parentElement.children[1].children[0].children[0];
                         $.ajax({
                             method: "GET",
-                            url: "/product/" + selectedValue,
+                            url: "{{ route('products.index') }}" + '/' + selectedValue,
                             success: function(res) {
-                                // console.log(res);
-                                price.value = res.data[0].price;
+                                console.log(res);
+                                price.value = res.price;
                             }
                         });
                         $(document).on('keyup', quantity, function(e) {
