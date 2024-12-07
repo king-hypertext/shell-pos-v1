@@ -39,7 +39,7 @@ class createCustomerOrderController extends Controller
     {
 
         $request->validate([
-            'product.*' => 'required|exists:products,name',
+            'product.*' => 'required|exists:products,id',
         ]);
         $customer = Customers::find($request->customer);
         $products = $request->product;
@@ -48,32 +48,32 @@ class createCustomerOrderController extends Controller
         $date = $request->input('invoice-date');
         $days = array('sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         $day = now()->dayOfWeek;
-
+        // dd($request->all());
         for ($i = 0; $i < count($products); $i++) {
+            $product = Products::find($products[$i]);
             $order = [
                 'order_number' => mt_rand(000011, 990099),
                 'customer_id' => $customer->id,
                 'order_token' => _token,
                 'customer' => $customer->name,
-                'product' => $products[$i],
+                'product' => $product->name,
                 'price' => $price[$i],
                 'quantity' => $quantity[$i],
                 'day' => $days[$day],
                 'amount' => ($price[$i] * $quantity[$i]),
                 'created_at' => $date
             ];
-            $before_qty = Products::where('name', $products[$i])->value('quantity');
             ProductStats::insert([
                 'product' => $products[$i],
-                'product_id' => Products::where('name', $products[$i])->value('id'),
+                'product_id' => $product->id,
                 'supplied' => $quantity[$i],
                 'to' => $customer->name,
-                'before_qty' => $before_qty,
-                'after_qty' => $before_qty - $quantity[$i],
+                'before_qty' => $product->quantity,
+                'after_qty' => $product->quantity - $quantity[$i],
                 'date' => now()->format('Y-m-d H:i:s')
             ]);
             Orders::insert($order);
-            Products::where('name', $products[$i])->decrement('quantity', $quantity[$i]);
+            Products::find($products[$i])->decrement('quantity', $quantity[$i]);
         }
         $amount = Orders::where('order_token', _token)->sum('amount');
         Invoice::insert([
@@ -91,8 +91,9 @@ class createCustomerOrderController extends Controller
     /** 
      * Display the specified resource.
      */
-    public function show(string $id, Customers $customers)
+    public function show(Customers $customer)
     {
+        return $customer;
         $customer = $customers->find($id);
         return response()->json(['data' => $customer]);
     }

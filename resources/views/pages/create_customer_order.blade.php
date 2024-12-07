@@ -6,7 +6,7 @@
         use Illuminate\Support\Facades\DB;
         $products = DB::table('products')
             ->where('quantity', '>', 0)
-            ->get(['name']);
+            ->get(['id', 'name']);
         $empty_q = DB::table('products')->where('quantity', '<', 1)->count('name');
         $empty_p = DB::table('products')->get(['*']);
     @endphp
@@ -71,11 +71,11 @@
                         <input required type="date" value="{{ Date('Y-m-d') }}" class="form-control" id="invoice-date"
                             name="invoice-date" />
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <div class="d-flex justify-content-center">
                             <img src="" alt="customer image" id="customer-img" width="80" height="80" />
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-3">
                         <button class="btn btn-success mt-4 text-truncate " type="button" data-bs-toggle="modal"
                             data-bs-target="#saved-invoice" title="Saved Orders">Saved
@@ -130,7 +130,7 @@
                                         id="product">
                                         <option selected value=""> Select Product </option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->name }}">
+                                            <option value="{{ $product->id }}">
                                                 {{ $product->name }}
                                             </option>
                                         @endforeach
@@ -139,8 +139,8 @@
                             </td>
                             <td class="col-md-2">
                                 <div class="form-group">
-                                    <input type="number" name="quantity[]" onfocus="this.select()" required
-                                        id="quantity" class="form-control qty" />
+                                    <input type="number" name="quantity[]" onfocus="this.select()" required id="quantity"
+                                        class="form-control qty" />
                                 </div>
                             </td>
                             <td class="col-md-3">
@@ -201,24 +201,24 @@
                 document.querySelector('.select2-search__field').focus();
             });
             // retrieve selected customer from database
-            $('img#customer-img').hide();
+            // $('img#customer-img').hide();
             select.on('change', (e) => {
                 var gender = $('input[name="gender"]'),
                     address = $('input[name="address"]'),
                     phone = $('input[name="phone"]'),
-                    id = $('input[name="customer-id"]'),
-                    image = $('img#customer-img')[0];
+                    id = $('input[name="customer-id"]');
+                // image = $('img#customer-img')[0];
                 $.ajax({
-                    url: "/create-order/customer/" + e.target.value,
+                    url: "{{ route('customers.index') }}" + "/" + e.target.value,
                     success: function(res) {
-                        $('img#customer-img').show();
-                        console.log(res.data);
-                        gender.val(res.data.gender).addClass('active');
-                        address.val(res.data.address).addClass('active');
-                        phone.val(res.data.contact).addClass('active');
-                        id.val(res.data.id);
-                        image.src = res.data.image;
-                        $('.selected_worker').text(res.data.name);
+                        // $('img#customer-img').show();
+                        console.log(res);
+                        gender.val(res.gender).addClass('active');
+                        address.val(res.address).addClass('active');
+                        phone.val(res.contact).addClass('active');
+                        id.val(res.id);
+                        // image.src = res.image;
+                        $('.selected_worker').text(res.name);
                     },
                     error: function(err) {
                         console.log(err);
@@ -235,7 +235,7 @@
                                         class="form-select select-product">
                                         <option value="" selected disabled> Select Product </option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->name }}">
+                                            <option value="{{ $product->id }}">
                                                 {{ $product->name }} </option>
                                         @endforeach
                                     </select>
@@ -288,11 +288,11 @@
                             .parentElement.parentElement.children[1].children[0].children[0];
                         $.ajax({
                             method: "GET",
-                            url: "/product/" + selectedValue,
+                            url: "{{ route('products.index') }}" + "/" + selectedValue,
                             success: function(res) {
                                 console.log(res);
-                                price.value = res.data[0].price;
-                                quantity.max = res.data[0].quantity;
+                                price.value = res.price;
+                                quantity.max = res.quantity;
                             }
                         });
                         $(document).on('keyup', quantity, function(e) {
@@ -330,11 +330,11 @@
                 console.log(selectedValue);
                 $.ajax({
                     method: "GET",
-                    url: "/product/" + selectedValue,
+                    url: "{{ route('products.index') }}" + "/" + selectedValue,
                     success: function(res) {
                         console.log(res);
-                        price.value = res.data[0].price;
-                        quantity.max = res.data[0].quantity;
+                        price.value = res.price;
+                        quantity.max = res.quantity;
                     },
                 });
                 $(document).on('keyup', quantity, function(e) {

@@ -36,7 +36,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">WORKER</th>
-                        <th scope="col">IMAGE</th>
+                        {{-- <th scope="col">IMAGE</th> --}}
                         <th scope="col">CONTACT</th>
                         <th scope="col">ADDRESS</th>
                         <th scope="col">GENDER</th>
@@ -47,11 +47,11 @@
                 <tbody>
                     @foreach ($customers as $index => $customer)
                         <tr class="text-uppercase ">
-                            <td id="col_id" scope="col">{{ $index + 1 }}</td>
+                            <td id="col_id" scope="col">{{ $loop->iteration }}</td>
                             <td>{{ $customer->name }}</td>
-                            <td>
+                            {{-- <td>
                                 <img class="table-image" src="{{ $customer->image }}" alt="product-image" />
-                            </td>
+                            </td> --}}
                             <td>{{ $customer->contact }}</td>
                             <td>{{ $customer->address }}</td>
                             <td>{{ $customer->gender }}</td>
@@ -201,7 +201,7 @@
                             </div>
                             <div class="mb-4">
                                 <label for="customerImage">Worker Image</label>
-                                <input required type="file" onchange="preview()" name="customer-image"
+                                <input type="file" onchange="preview()" name="customer-image"
                                     id="customerImage" accept="image/*" class="form-control" />
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Add Customer</button>

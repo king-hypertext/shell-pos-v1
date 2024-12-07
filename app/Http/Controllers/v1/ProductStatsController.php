@@ -37,12 +37,12 @@ class ProductStatsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(Products $product)
     {
-        $data = Products::find($id);
         // return Products::query()->where('id', $id)->get();
-        $stats = ProductStats::where('product', $data->name)->orderBy('date', 'DESC')->get();
-        return view('product.index', ['title' => 'PRODUCT STATS', 'data' => $data, 'stats' => $stats]);
+        $stats = ProductStats::where('product_id', $product->id)->orderBy('date', 'DESC')->get();
+        // dd($stats);
+        return view('product.index', ['title' => 'PRODUCT STATS', 'product' => $product, 'stats' => $stats]);
     }
 
     /**

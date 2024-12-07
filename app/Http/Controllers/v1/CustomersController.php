@@ -53,10 +53,9 @@ class CustomersController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id, Customers $customers)
+    public function show(Customers $customer)
     {
-        $customer = $customers->find($id);
-        return response()->json($customer);
+        return $customer;
     }
 
     /**

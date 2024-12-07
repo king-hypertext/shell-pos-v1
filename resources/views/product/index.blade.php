@@ -8,13 +8,13 @@
     <div class="row d-flex justify-content-between">
         <div class="col-md-8">
             <h4 class="h4 fw-semibold text-capitalize ">
-                product ({{ $data->name }}) stats
+                product ({{ $product->name }}) stats
             </h4>
             <ul class="list-inline">
-                <li class="list-inline-item"><span class="h6">Price: </span>{{ $data->price }}</li>
-                <li class="list-inline-item"><span class="h6">Quantity: </span>{{ $data->quantity }}</li>
-                <li class="list-inline-item"><span class="h6">Supplier: </span>{{ $data->supplied_by }}</li>
-                <li class="list-inline-item"><span class="h6">Category: </span>{{ $data->category }}</li>
+                <li class="list-inline-item"><span class="h6">Price: </span>{{ $product->price }}</li>
+                <li class="list-inline-item"><span class="h6">Quantity: </span>{{ $product->quantity }}</li>
+                <li class="list-inline-item"><span class="h6">Supplier: </span>{{ $product->supplied_by }}</li>
+                <li class="list-inline-item"><span class="h6">Category: </span>{{ $product->category }}</li>
             </ul>
         </div>
         <div class="col-md-4">
@@ -22,9 +22,10 @@
                 <div class="form-group">
                     <label for="products">Change Product</label>
                     <select name="product" id="product" class="form-select">
-                        <option value="" selected>Select Product</option>
+                        {{-- <option value="" selected>Select Product</option> --}}
                         @foreach ($products as $product)
-                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                            <option {{ request()->product->id === $product->id ? 'selected' : '' }}
+                                value="{{ $product->id }}">{{ $product->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -108,8 +109,8 @@
                         extend: 'excel',
                         text: 'Export Excel <i class="fas fa-file-excel" ></i>',
                         className: 'btn btn-success text-capitalize',
-                        title: '{{ $data->name }} analysis',
-                        filename: '{{ $data->name }}_analysis',
+                        title: '{{ $product->name }} analysis',
+                        filename: '{{ $product->name }}_analysis',
                         exportOptions: {
                             columns: [1, 2, 3, 4, 5, 6, 7, 8]
                         }
@@ -117,8 +118,8 @@
                     {
                         text: 'Save <i class="fas fa-file-pdf"></i>',
                         className: 'btn btn-danger text-capitalize',
-                        title: '{{ $data->name }} analysis',
-                        filename: '{{ $data->name }}_analysis',
+                        title: '{{ $product->name }} analysis',
+                        filename: '{{ $product->name }}_analysis',
                         extend: 'pdf',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6, 7, 0]
@@ -127,8 +128,8 @@
                     {
                         text: 'Print <i class="fas fa-print"></i>',
                         className: 'btn btn-primary text-capitalize',
-                        title: '{{ $data->name }} analysis',
-                        filename: '{{ $data->name }}_analysis',
+                        title: '{{ $product->name }} analysis',
+                        filename: '{{ $product->name }}_analysis',
                         extend: 'print',
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6, 7, 0]
